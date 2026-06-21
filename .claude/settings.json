@@ -1,0 +1,11 @@
+{
+  "model": "claude-opus-4-8",
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(python:*)",
+      "Bash(python3:*)"
+    ],
+    "deny": []
+  }
+}

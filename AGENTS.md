@@ -1,0 +1,50 @@
+# AGENTS.md
+
+Shared agent rules for Codex and Claude Code. Language-agnostic.
+
+> Codex reads this file directly. Claude Code reads `CLAUDE.md`, which imports this file via `@AGENTS.md` and adds Claude-specific rules. Keep all shared rules here — do not duplicate them in `CLAUDE.md`.
+
+## Commands / Verify
+
+- Prefer project scripts over raw commands. Check for `Makefile`, `package.json` scripts, shell scripts in `scripts/`, or equivalent before issuing raw tool invocations.
+- Cap potentially large command output at 4,000 chars (pipe through `head` or limit explicitly).
+- Final response states: changes made, verification ran, blockers/gaps, and API/env/permission impact if relevant.
+
+## Work Rules
+
+- Read nearby code before editing; follow existing architecture, naming, patterns, and test conventions.
+- Check `.agents/project-map.md` before broad search; if missing or stale, preview `<python> .agents/tools/generate_project_map.py`, then update via `apply_patch`.
+- Use relevant `.agents/skills/<skill>/SKILL.md`; project conventions beat generic examples.
+- Use `grill-requirements` when acceptance criteria, scope, target flow/state, or contradictions may cause rework.
+- Keep changes scoped. Preserve user changes. Never reset unrelated work or modify generated/vendored files.
+- Follow SOLID/DRY/KISS. Ask before adding packages, tools, or global dependencies. Ask before architecture, state-management, or generator changes.
+- Keep secrets out. Stop suspicious or unexpectedly long commands; report the command and elapsed time.
+- Add/update tests when requested, when following TDD, or when matching project practice. Run narrow verification.
+- Tiered review: small = self-check; medium single-owner = `production-code-review` + max one specialist skill; large/risky/multi-agent = full review.
+- Default `$caveman lite`; expand only for safety warnings, blockers, or explicit user request.
+
+## Contracts
+
+- Do not silently change public APIs. Update consumers, mocks/fixtures, migrations, and verification together.
+- Keep PRs single-goal.
+
+## Subagents
+
+For medium/large/risky/unclear work, use `.agents/skills/subagent-workflow`. Skip for trivial edits.
+
+## Git
+
+Branch: `<type>/<ticket-title-summary>`, e.g. `feature/add-auth`, `fix/login-crash`.
+
+For commit messages from staged changes, use `git-staged-commit-message`.
+
+Commit with ticket:
+
+```text
+<ticket> - <summary>
+
+- <point A>
+- <point B>
+```
+
+Without ticket, omit `<ticket> - `.
