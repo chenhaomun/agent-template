@@ -1,8 +1,6 @@
 # AGENTS.md
 
-Shared agent rules for Codex and Claude Code. Language-agnostic.
-
-> Codex reads this file directly. Claude Code reads `CLAUDE.md`, which imports this file via `@AGENTS.md` and adds Claude-specific rules. Keep all shared rules here — do not duplicate them in `CLAUDE.md`.
+Shared agent rules for Codex and Claude Code. Core rules are language-agnostic; Flutter/Dart is the primary stack (see `## Flutter`). For other stacks, add a section here.
 
 ## Commands / Verify
 
@@ -22,6 +20,17 @@ Shared agent rules for Codex and Claude Code. Language-agnostic.
 - Add/update tests when requested, when following TDD, or when matching project practice. Run narrow verification.
 - Tiered review: small = self-check; medium single-owner = `production-code-review` + max one specialist skill; large/risky/multi-agent = full review.
 - Default `$caveman lite`; expand only for safety warnings, blockers, or explicit user request.
+
+## Flutter
+
+- Verify with `flutter analyze`, `flutter test`, `flutter run --dart-define-from-file=.env.dev.json`, `flutter build <target> --dart-define-from-file=.env.prod.json`.
+- Prefer Dart/Flutter MCP for analyzer, symbols, fixes, format, tests, pub.dev, dependencies, and running-app/widget inspection.
+- Check `analysis_options.yaml` and `.agents/flutter-dependencies.md`.
+- Prefer composition, immutable widgets, `const`, pure/fast `build()`, lazy lists, and off-UI-thread expensive work.
+- Keep null safety; avoid `!` unless guaranteed. Use project logging, theme/assets/tokens, l10n, responsive/a11y, platform parity, permissions, and fallbacks.
+- Cover loading, success, empty, error, disabled, and permission states. Keep errors actionable.
+- Use configured flavors and `--dart-define-from-file`.
+- Native/FFI/binary downloads require explicit user approval and hash/offline fallback review.
 
 ## Contracts
 

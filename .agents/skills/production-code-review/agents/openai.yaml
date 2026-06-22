@@ -1,0 +1,3 @@
+display_name: Production Code Review
+short_description: Review diffs for production readiness, regressions, and verification gaps.
+default_prompt: Use production-code-review on this diff.

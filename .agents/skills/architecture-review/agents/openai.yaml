@@ -1,0 +1,3 @@
+display_name: Architecture Review
+short_description: Check layers, ownership boundaries, dependency flow, contracts, and integration risk.
+default_prompt: Use architecture-review on this plan or diff.

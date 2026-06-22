@@ -1,0 +1,54 @@
+personality = "pragmatic"
+model = "gpt-5.5"
+model_reasoning_effort = "medium"
+
+[windows]
+sandbox = "elevated"
+
+[desktop]
+usePointerCursors = true
+followUpQueueMode = "steer"
+reviewDelivery = "inline"
+git-commit-instructions = """
+${feature/bugfix/task}/${ticket number}-ticket-name ${Summary of this ticket}
+
+- ${Point 1}
+- ${Point 2}
+- ${Point N}"""
+selected-avatar-id = "custom:codehound"
+conversationDetailMode = "STEPS_COMMANDS"
+defaultTerminalLocation = "bottom"
+appearanceDarkCodeThemeId = "github"
+appearanceTheme = "dark"
+appearanceLightCodeThemeId = "vscode-plus"
+
+[desktop.appearanceDarkChromeTheme]
+accent = "#1f6feb"
+contrast = 50
+ink = "#e6edf3"
+opaqueWindows = true
+surface = "#0d1117"
+
+[desktop.appearanceDarkChromeTheme.fonts]
+code = '"Geist Mono", ui-monospace, "SFMono-Regular"'
+ui = "Geist, Inter"
+
+[desktop.appearanceDarkChromeTheme.semanticColors]
+diffAdded = "#3fb950"
+diffRemoved = "#f85149"
+skill = "#bc8cff"
+
+[desktop.appearanceLightChromeTheme]
+accent = "#007acc"
+contrast = 40
+ink = "#000000"
+opaqueWindows = true
+surface = "#ffffff"
+
+[desktop.appearanceLightChromeTheme.semanticColors]
+diffAdded = "#008000"
+diffRemoved = "#ee0000"
+skill = "#0000ff"
+
+[features]
+js_repl = false

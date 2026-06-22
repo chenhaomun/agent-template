@@ -1,0 +1,11 @@
+{
+  "theme": "dark",
+  "model": "claude-opus-4-8",
+  "editorMode": "normal",
+  "effortLevel": "high",
+  "autoUpdatesChannel": "stable",
+  "includeCoAuthoredBy": true,
+  "prefersReducedMotion": false,
+  "cleanupPeriodDays": 30,
+  "preferredNotifChannel": "auto"
+}
