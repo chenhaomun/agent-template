@@ -1,6 +1,6 @@
 ---
 name: security-review
-description: Review code for security and privacy risks. Use for auth, permissions, secrets, storage, networking, input validation, payments, user data, logs, analytics, file access, and dependency risk.
+description: Review security/privacy risks: auth, permissions, secrets, storage, networking, input validation, payments, user data, logs, dependencies.
 ---
 
 # Security Review

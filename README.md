@@ -8,7 +8,10 @@ Shared agent configuration for **Claude Code** and **OpenAI Codex**, designed to
 |---|---|
 | `AGENTS.md` | Single source of shared rules. Codex reads it directly |
 | `CLAUDE.md` | Claude Code entry point — imports `AGENTS.md` via `@AGENTS.md`, adds Claude-only rules |
-| `.claude/settings.json` | Claude Code project settings (model, permissions) |
+| `.claude/settings.json` | Claude Code project settings (model, permissions, **hooks**) |
+| `.codex/hooks.json` | Codex project hooks using the shared enforcement scripts |
+| `.codex/agents/` | Codex-native custom agent definitions matching shared subagent roles |
+| `Makefile` | Canonical verify entrypoints — `make verify` / `make help` |
 | `.claude/skills` → `.agents/skills` | Symlink so Claude sees every skill as `/<skill-name>` |
 | `.claude/agents` → `.agents/subagents` | Symlink so Claude sees every subagent natively |
 | `.claude/device-setup/` | Portable Claude **user** prefs (theme/model/behaviour) — `settings.example.json`, `install.py`. Not auto-loaded; applied per machine |
@@ -16,7 +19,7 @@ Shared agent configuration for **Claude Code** and **OpenAI Codex**, designed to
 | `.agents/skills/` | **The** skill files (core + Flutter/Dart), read by both tools. Review/workflow skills also carry an `agents/openai.yaml` so Codex surfaces them as `$`-commands |
 | `.agents/subagents/` | Subagent definitions with Claude frontmatter (BA, TL, Developer, DevOps, Security, QA, UX, Flutter, Backend API) |
 | `.agents/flutter-dependencies.md` | Default Flutter package choices (bloc, go_router, dio) |
-| `.agents/tools/` | Python helper scripts (project map, detect project type) |
+| `.agents/tools/` | Python helpers — project map, project detection, hook scripts, template integrity check |
 | `.agents/project-map.md` | Folder map for fast code navigation |
 | `skills-lock.json` | Dependency lock for all skill versions (core + Flutter/Dart) |
 | `.gitignore` | Ignores `reports/`, `.DS_Store`, `.env.*.json` |
@@ -30,6 +33,7 @@ Copy these files into your project root:
 ```
 AGENTS.md
 CLAUDE.md
+Makefile
 .claude/
 .codex/
 .agents/
@@ -68,6 +72,20 @@ Shared rules live in `AGENTS.md` only; `CLAUDE.md` imports them via `@AGENTS.md`
 - Replies default to **`$caveman lite`** mode (terse, no filler). Say "normal mode" to turn it off.
 - Medium/large/risky work routes through the subagent workflow (see `.agents/skills/subagent-workflow/SKILL.md`).
 - Commit messages are generated from staged changes using `.agents/skills/git-staged-commit-message/SKILL.md`.
+
+## Verification & Hooks
+
+Run `make verify` as the canonical gate. It checks template integrity and project-map freshness, runs shared tool tests, then analyzes/tests/format-checks Dart or Flutter when `pubspec.yaml` exists. `make help` lists all targets. Both agents prefer these over raw commands.
+
+Claude Code and Codex enforce quality with deterministic project hooks. Claude configuration lives in `.claude/settings.json`; Codex configuration lives in `.codex/hooks.json`. Both call the same scripts:
+
+| Hook | Script | Effect |
+|---|---|---|
+| PostToolUse | `hook_format_analyze.py` | Auto-formats + analyzes each edited `.dart` file; surfaces analyzer issues to the agent |
+| PreToolUse | `hook_guard_generated.py` | Blocks edits to generated/vendored files (`*.g.dart`, `build/`, …) |
+| SessionStart | `check_project_map.py` | Flags missing mapped folders and newly detected unmapped areas |
+
+Format/analyze no-ops safely outside a Dart/Flutter project. Codex requires a trusted project and one-time review of new or changed hooks through `/hooks`; untrusted hooks are skipped. `AGENTS.md` remains the fallback contract when either client cannot run hooks.
 
 ## Skills Reference
 

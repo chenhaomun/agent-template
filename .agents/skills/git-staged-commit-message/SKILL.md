@@ -1,6 +1,6 @@
 ---
 name: git-staged-commit-message
-description: Generate a commit message from currently staged git changes and copy it to clipboard. Use when the user asks for a commit message, commit title/body, staged-change summary, or commit message based on git staged/index content.
+description: Generate a commit message from staged git changes and copy to clipboard. Use for commit message/title/body or staged-change summary.
 ---
 
 # Git Staged Commit Message

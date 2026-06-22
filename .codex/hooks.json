@@ -1,0 +1,45 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.agents/tools/hook_guard_generated.py\"",
+            "commandWindows": "python \"$(git rev-parse --show-toplevel)/.agents/tools/hook_guard_generated.py\"",
+            "timeout": 30,
+            "statusMessage": "Checking generated-file policy"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.agents/tools/hook_format_analyze.py\"",
+            "commandWindows": "python \"$(git rev-parse --show-toplevel)/.agents/tools/hook_format_analyze.py\"",
+            "timeout": 120,
+            "statusMessage": "Formatting and analyzing edited Dart files"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.agents/tools/check_project_map.py\"",
+            "commandWindows": "python \"$(git rev-parse --show-toplevel)/.agents/tools/check_project_map.py\"",
+            "timeout": 30,
+            "statusMessage": "Checking project-map freshness"
+          }
+        ]
+      }
+    ]
+  }
+}

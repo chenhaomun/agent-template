@@ -1,6 +1,6 @@
 ---
 name: test-driven-development
-description: Automatically use test-driven development for clear behavior changes, even when the user does not explicitly ask for TDD. Trigger for bug fixes, validation rules, business logic, parser/mapper behavior, service/repository behavior, state transitions, and user-flow logic where the expected result can be expressed as a focused failing test before implementation.
+description: Use TDD for clear behavior changes (even unprompted): bug fixes, validation rules, business logic, parser/mapper/service/repository behavior, state transitions expressible as a focused failing test.
 ---
 
 # Test Driven Development

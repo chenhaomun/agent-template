@@ -1,6 +1,6 @@
 ---
 name: architecture-review
-description: Review architecture and system boundaries. Use for feature placement, layering, module ownership, dependency flow, public contracts, cross-platform behavior, refactors, and integration risk.
+description: Review architecture/boundaries: feature placement, layering, ownership, dependency flow, public contracts, refactors, integration risk.
 ---
 
 # Architecture Review

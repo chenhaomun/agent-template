@@ -1,6 +1,6 @@
 ---
 name: dry-review
-description: Review code for DRY maintainability. Use for duplicated business rules, mappings, validation, queries, routing, UI state, fixtures, test setup, and copy/paste drift risks.
+description: Review DRY: duplicated rules, mappings, validation, queries, routing, UI state, fixtures, copy/paste drift.
 ---
 
 # DRY Review

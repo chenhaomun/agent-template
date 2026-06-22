@@ -4,9 +4,12 @@ Shared agent rules for Codex and Claude Code. Core rules are language-agnostic; 
 
 ## Commands / Verify
 
-- Prefer project scripts over raw commands. Check for `Makefile`, `package.json` scripts, shell scripts in `scripts/`, or equivalent before issuing raw tool invocations.
+- Prefer project scripts over raw commands. This template ships a `Makefile` — use `make verify` (integrity + map freshness + analysis + tests + format check) as the canonical gate; `make help` lists targets. Check `package.json` scripts or `scripts/` for non-Flutter stacks.
+- Do not hand-edit generated/vendored files (`*.g.dart`, `*.freezed.dart`, `build/`, `.dart_tool/`, etc.); edit the source and re-run the generator.
 - Cap potentially large command output at 4,000 chars (pipe through `head` or limit explicitly).
 - Final response states: changes made, verification ran, blockers/gaps, and API/env/permission impact if relevant.
+
+> Claude Code and Codex enforce these rules via project hooks in `.claude/settings.json` and `.codex/hooks.json`. Both run shared scripts from `.agents/tools/`; agents must still follow the rules when hooks are unavailable or untrusted.
 
 ## Work Rules
 

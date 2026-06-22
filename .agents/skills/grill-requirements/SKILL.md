@@ -1,6 +1,6 @@
 ---
 name: grill-requirements
-description: Automatically ask concise blocking clarification questions before planning or implementation when requirements are unclear, risky, broad, contradictory, missing acceptance criteria, missing target flow/state, or likely to cause rework, even if the user did not explicitly request clarification.
+description: Ask blocking clarification questions before planning/implementation when requirements are unclear, broad, contradictory, missing acceptance criteria or target flow/state, or likely to cause rework.
 ---
 
 # Grill Requirements

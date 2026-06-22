@@ -1,9 +1,6 @@
 ---
 name: subagent-workflow
-description: >
-  Subagent workflow rules. Use when asked to use subagents, route BA/TL/dev/QA,
-  choose models, write reports, compact context, or manage
-  multi-agent work.
+description: Subagent workflow rules. Use to route subagents (BA/TL/dev/QA), choose models, write reports, manage multi-agent work.
 ---
 
 Use only for medium, large, risky, or unclear work. Use `grill-requirements` first when requirements are unclear, missing acceptance criteria, missing target flow/state, contradictory, or likely to cause rework.

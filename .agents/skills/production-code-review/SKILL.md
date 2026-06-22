@@ -1,6 +1,6 @@
 ---
 name: production-code-review
-description: Review implementation diffs for production readiness. Use when an agent, TL, QA, or a reviewer needs to check correctness, maintainability, edge cases, verification, regressions, and whether code is ready to ship.
+description: Review diffs for production readiness: correctness, maintainability, edge cases, verification, regressions, ship-readiness.
 ---
 
 # Production Code Review

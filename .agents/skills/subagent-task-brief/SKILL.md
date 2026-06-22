@@ -1,9 +1,6 @@
 ---
 name: subagent-task-brief
-description: >
-  Turn raw or messy requirements into a subagent-ready task brief. Use when the user invokes
-  /subagent-task, /taskbrief, asks to split requirements into Task/Requirements/Verify, or
-  wants help preparing work for subagents.
+description: Turn messy requirements into a subagent-ready task brief. Use for /subagent-task, /taskbrief, or splitting work into Task/Requirements/Verify.
 ---
 
 Create a concise subagent task brief from raw requirements.

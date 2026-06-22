@@ -7,7 +7,7 @@ import argparse
 from pathlib import Path
 
 
-ROOT = Path.cwd()
+ROOT = Path(__file__).resolve().parents[2]
 MAP = ROOT / ".agents" / "project-map.md"
 MAX_AREAS = 40
 
