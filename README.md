@@ -34,7 +34,6 @@ CLAUDE.md
 .codex/
 .agents/
 skills-lock.json
-.gitignore
 ```
 
 Copy `.claude/` and `.agents/` **together** — `.claude/skills` and `.claude/agents` are relative symlinks into `.agents/`. `git` and `cp -R` preserve them on macOS/Linux. (On Windows, enable Developer Mode or `git config core.symlinks true`, or replace the two links with copies.)
