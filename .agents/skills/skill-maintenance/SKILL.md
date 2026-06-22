@@ -1,8 +1,6 @@
 ---
 name: skill-maintenance
-description: >
-  Refresh and review project-local agent skills. Use when the user asks to update,
-  refresh, install, or keep skills current, or asks to run skill maintenance for this template.
+description: Refresh/review project-local agent skills. Use to update, refresh, install, or keep skills current.
 ---
 
 # Skill Maintenance

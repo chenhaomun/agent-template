@@ -1,6 +1,6 @@
 ---
 name: kiss-review
-description: Review code for KISS simplicity. Use for over-engineering, unnecessary abstraction, excessive indirection, clever code, avoidable complexity, broad patterns, or implementations larger than the requirement needs.
+description: Review KISS/simplicity: over-engineering, needless abstraction, indirection, clever code, complexity beyond the requirement.
 ---
 
 # KISS Review

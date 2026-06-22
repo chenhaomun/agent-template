@@ -4,7 +4,14 @@ Use this map before broad searches. Start with mapped folders and nearby tests.
 
 ## Areas
 
-No areas mapped yet. Run `python .agents/tools/generate_project_map.py` to generate a starter map, then refine after the first real task.
+- agent-configuration
+  - folders: .agents/skills, .agents/subagents, .claude, .codex
+  - terms: skills, subagents, hooks, project map, device setup
+  - notes: shared agent configuration plus Claude/Codex-specific adapters
+- agent-tools
+  - folders: .agents/tools, .agents/tests
+  - terms: hooks, integrity, freshness, enforcement
+  - notes: deterministic tests for agent tooling
 
 ## Rules
 

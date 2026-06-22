@@ -1,6 +1,6 @@
 ---
 name: performance-review
-description: Review code for performance risks. Use for UI rendering, async work, data processing, caching, memory, startup, network calls, expensive loops, and responsiveness.
+description: Review performance risks: rendering, async, data processing, caching, memory, startup, network calls, expensive loops.
 ---
 
 # Performance Review

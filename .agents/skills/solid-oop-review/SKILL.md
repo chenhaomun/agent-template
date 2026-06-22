@@ -1,6 +1,6 @@
 ---
 name: solid-oop-review
-description: Review code for SOLID and OOP quality. Use for refactors, class design, service boundaries, dependency direction, responsibility splits, abstractions, coupling, and maintainability risks.
+description: Review SOLID/OOP: class design, service boundaries, dependency direction, responsibility splits, abstractions, coupling.
 ---
 
 # SOLID OOP Review
