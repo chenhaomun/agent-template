@@ -13,6 +13,8 @@ Keep skills current like vendored dependencies. Run only when the user invokes t
 
 `sourceType: github-adapted` entries (e.g. `caveman-compress`) are local-only and intentionally diverge from upstream — **exclude them from any refresh.**
 
+Six flutter/dart skills are **deferred** to `.agents/skill-packs/flutter-dart/skills/` to keep the always-loaded set small (see that folder's README). They are still vendored and version-pinned; their lock entries carry a `localPath` pointing at the pack, which the drift check below uses instead of `.agents/<skillPath>`. After a `--skill '*'` CLI refresh re-installs them into `.agents/skills/`, move those six back into the pack and `make sync`.
+
 ## Refresh (drift check — canonical, no mutation)
 
 Invocation is the command. Run this immediately when the skill is mentioned; rely on system approval prompts for the network clone. Clone each upstream source to a temp dir and diff against the vendored `SKILL.md` files — this is reliable regardless of `skills` CLI version:
@@ -22,8 +24,9 @@ TMP=$(mktemp -d)
 git clone --depth 1 https://github.com/flutter/skills      "$TMP/flutter"
 git clone --depth 1 https://github.com/dart-lang/skills     "$TMP/dart"
 git clone --depth 1 https://github.com/JuliusBrussee/caveman "$TMP/caveman"
-# For each non-"github-adapted" skill in skills-lock.json, diff:
-#   diff -u .agents/<skillPath>  "$TMP/<repo>/<skillPath>"
+# For each non-"github-adapted" skill in skills-lock.json, diff its local copy
+# against upstream. local = entry's "localPath" if present, else .agents/<skillPath>:
+#   diff -u <local>  "$TMP/<repo>/<skillPath>"
 ```
 
 Apply only the diffs you want, file by file. Leave `caveman-compress` untouched.

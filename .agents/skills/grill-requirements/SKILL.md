@@ -1,6 +1,6 @@
 ---
 name: grill-requirements
-description: Ask blocking clarification questions before planning/implementation when requirements are unclear, broad, contradictory, missing acceptance criteria or target flow/state, or likely to cause rework.
+description: Ask blocking clarification before planning when requirements are unclear, broad, contradictory, missing acceptance criteria or target flow/state, or likely to cause rework.
 ---
 
 # Grill Requirements

@@ -22,3 +22,7 @@ What it does not sync:
 - MCP server binary paths or local marketplace cache paths.
 
 The installer backs up `~/.codex/config.toml` before writing.
+
+## Agents
+
+`.codex/agents/*.toml` are **generated** from `.agents/subagents/*.md` by `.agents/tools/sync_shared.py` (run via `make sync`, or automatically at SessionStart). Edit the subagent `.md` under `.agents/subagents/`, never the `.toml` — a hand edit is overwritten on the next sync, and `make check-template` fails if they drift.

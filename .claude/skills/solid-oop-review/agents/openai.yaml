@@ -1,0 +1,3 @@
+display_name: SOLID OOP Review
+short_description: Check class design, responsibilities, coupling, abstractions, and dependency direction.
+default_prompt: Use solid-oop-review on this implementation.

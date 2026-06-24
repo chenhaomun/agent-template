@@ -1,6 +1,6 @@
 # Agent Template
 
-Shared agent configuration for **Claude Code** and **OpenAI Codex**, designed to work simultaneously from the same project. **Flutter/Dart is the primary stack**; the core rules and workflow are language-agnostic. One copy of every skill and subagent lives in `.agents/`, and Claude reads the same files through symlinks — so both tools always have an identical set.
+Shared agent configuration for **Claude Code** and **OpenAI Codex**, designed to work simultaneously from the same project. **Flutter/Dart is the primary stack**; the core rules and workflow are language-agnostic. The single source of every skill and subagent lives in `.agents/`; Claude reads synced copies under `.claude/` — so both tools always have an identical set, on every OS including Windows.
 
 ## What's Included
 
@@ -10,10 +10,10 @@ Shared agent configuration for **Claude Code** and **OpenAI Codex**, designed to
 | `CLAUDE.md` | Claude Code entry point — imports `AGENTS.md` via `@AGENTS.md`, adds Claude-only rules |
 | `.claude/settings.json` | Claude Code project settings (model, permissions, **hooks**) |
 | `.codex/hooks.json` | Codex project hooks using the shared enforcement scripts |
-| `.codex/agents/` | Codex-native custom agent definitions matching shared subagent roles |
+| `.codex/agents/` | Codex agent definitions — **generated** from `.agents/subagents/*.md` by `make sync` |
 | `Makefile` | Canonical verify entrypoints — `make verify` / `make help` |
-| `.claude/skills` → `.agents/skills` | Symlink so Claude sees every skill as `/<skill-name>` |
-| `.claude/agents` → `.agents/subagents` | Symlink so Claude sees every subagent natively |
+| `.claude/skills` (copy of `.agents/skills`) | Synced copy so Claude sees every skill as `/<skill-name>` |
+| `.claude/agents` (copy of `.agents/subagents`) | Synced copy so Claude sees every subagent natively |
 | `.claude/device-setup/` | Portable Claude **user** prefs (theme/model/behaviour) — `settings.example.json`, `install.py`. Not auto-loaded; applied per machine |
 | `.codex/` | Portable Codex **device** setup — `config.example.toml`, `install.py`, optional pet. Not auto-loaded; applied per machine |
 | `.agents/skills/` | **The** skill files (core + Flutter/Dart), read by both tools. Review/workflow skills also carry an `agents/openai.yaml` so Codex surfaces them as `$`-commands |
@@ -40,13 +40,13 @@ Makefile
 skills-lock.json
 ```
 
-Copy `.claude/` and `.agents/` **together** — `.claude/skills` and `.claude/agents` are relative symlinks into `.agents/`. `git` and `cp -R` preserve them on macOS/Linux. (On Windows, enable Developer Mode or `git config core.symlinks true`, or replace the two links with copies.)
+Copy `.claude/` and `.agents/` **together**. `.claude/skills` and `.claude/agents` are real directory copies of `.agents/skills` and `.agents/subagents`, kept current by `sync_shared.py` (runs at SessionStart and via `make sync`). This works on every OS — no symlinks, no Developer Mode. After your first checkout, run `make sync` (or just start a session) to refresh them.
 
 ### 2. Stacks
 
 **Flutter/Dart is the primary stack** — wired in by default (`## Flutter` rules in `AGENTS.md`, `flutter-*`/`dart-*` skills, `flutter-developer`/`backend-api-developer` subagents). For a Flutter project you're ready to go.
 
-**TypeScript, Python, and other stacks are secondary** — the core rules, review skills, and subagent workflow are language-agnostic and work for them out of the box. When a secondary stack needs its own conventions, add a section to `AGENTS.md` (e.g. `## TypeScript`, `## Python`) and drop any stack-specific skills under `.agents/skills/your-skill/SKILL.md` — both tools pick them up automatically (Claude via the symlink, Codex directly).
+**TypeScript, Python, and other stacks are secondary** — the core rules, review skills, and subagent workflow are language-agnostic and work for them out of the box. When a secondary stack needs its own conventions, add a section to `AGENTS.md` (e.g. `## TypeScript`, `## Python`) and drop any stack-specific skills under `.agents/skills/your-skill/SKILL.md`, then run `make sync` — both tools pick them up (Codex directly, Claude via the synced copy).
 
 **Update the project map** on first use:
 
@@ -65,7 +65,14 @@ Then edit `.agents/project-map.md` to reflect actual ownership boundaries.
 
 Shared rules live in `AGENTS.md` only; `CLAUDE.md` imports them via `@AGENTS.md` and adds the Claude-only delta. (The files can't be merged: Claude Code reads only `CLAUDE.md`, Codex only `AGENTS.md`.)
 
-**Skills and subagents have a single source** in `.agents/skills/` and `.agents/subagents/`. Codex reads them directly; Claude reads the same files through `.claude/skills` and `.claude/agents` symlinks. Add or edit once and both tools get it — no duplication, no sync step.
+**Skills and subagents have a single source** in `.agents/skills/` and `.agents/subagents/`. Everything else is a derived adapter, rebuilt by `make sync` (and at SessionStart):
+
+| Source (`.agents/`) | Claude adapter | Codex adapter |
+|---|---|---|
+| `skills/<name>/SKILL.md` | `.claude/skills/` (copy) | read in place + `agents/openai.yaml` |
+| `subagents/<name>.md` | `.claude/agents/` (copy) | `.codex/agents/<name>.toml` (generated) |
+
+Edit only under `.agents/`; never touch the copies or the generated `.toml`. `make check-template` fails if any adapter drifts, so a forgotten sync never ships silently.
 
 ## Default Behaviour
 
@@ -125,7 +132,7 @@ Plus the bundled **Flutter/Dart** skills (11 `flutter-*` + 10 `dart-*`): widgets
 
 ## Claude Code-Specific Features
 
-- **Skills & subagents**: every skill in `.agents/skills/` is invocable as `/<skill-name>` (via the `.claude/skills` symlink); every subagent in `.agents/subagents/` is available to the Agent tool (via `.claude/agents`). No per-skill command files needed
+- **Skills & subagents**: every skill in `.agents/skills/` is invocable as `/<skill-name>` (via the `.claude/skills` copy); every subagent in `.agents/subagents/` is available to the Agent tool (via the `.claude/agents` copy). No per-skill command files needed
 - **Settings**: Edit `.claude/settings.json` to configure model, permissions, and MCP servers
 - **Memory**: Claude Code reads `~/.claude/CLAUDE.md` for user-level preferences; project memory goes in `CLAUDE.md`
 - **Device setup**: `.claude/device-setup/` carries portable *user* prefs (theme, model, behaviour, custom themes) across machines — the Claude counterpart to `.codex/`. Configure one device, then:

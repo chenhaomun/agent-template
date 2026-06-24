@@ -1,0 +1,3 @@
+display_name: Performance Review
+short_description: Check Flutter jank, rebuilds, async work, memory, rendering, and scaling risks.
+default_prompt: Use performance-review on this implementation.

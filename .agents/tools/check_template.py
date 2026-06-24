@@ -4,9 +4,11 @@
 Verifies the two pieces that silently break when the template is copied to a
 new project (especially on Windows, where symlinks need extra setup):
 
-1. `.claude/skills`  -> `.agents/skills`   (symlink, resolves)
-2. `.claude/agents`  -> `.agents/subagents` (symlink, resolves)
+1. `.claude/skills`  mirrors `.agents/skills`    (resolving symlink, or in-sync copy)
+2. `.claude/agents`  mirrors `.agents/subagents` (resolving symlink, or in-sync copy)
 3. every `.agents/subagents/*.md` has YAML frontmatter with name + description
+
+A copy that has drifted from its source fails the check; run `make sync`.
 
 Exit 0 = healthy, 1 = problem. Run via `make check-template`.
 """
