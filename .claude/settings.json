@@ -16,7 +16,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.agents/tools/hook_guard_generated.py\""
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.agents/tools/hook_guard_generated.py\"",
+            "commandWindows": "python \"$CLAUDE_PROJECT_DIR/.agents/tools/hook_guard_generated.py\""
           }
         ]
       }
@@ -27,7 +28,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.agents/tools/hook_format_analyze.py\""
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.agents/tools/hook_format_analyze.py\"",
+            "commandWindows": "python \"$CLAUDE_PROJECT_DIR/.agents/tools/hook_format_analyze.py\""
           }
         ]
       }
@@ -37,7 +39,13 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.agents/tools/check_project_map.py\""
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.agents/tools/sync_shared.py\"",
+            "commandWindows": "python \"$CLAUDE_PROJECT_DIR/.agents/tools/sync_shared.py\""
+          },
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.agents/tools/check_project_map.py\"",
+            "commandWindows": "python \"$CLAUDE_PROJECT_DIR/.agents/tools/check_project_map.py\""
           }
         ]
       }

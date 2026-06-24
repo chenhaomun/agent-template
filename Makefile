@@ -2,10 +2,12 @@
 # (see AGENTS.md "Commands / Verify"). Flutter/Dart is the primary stack;
 # adjust the analyze/test/format targets for other stacks.
 
-PYTHON ?= python3
+# Pick an interpreter that actually runs: prefer python3, but fall back to
+# python on Windows where `python3` is a Microsoft Store stub that errors.
+PYTHON ?= $(shell python3 -c "" >/dev/null 2>&1 && echo python3 || echo python)
 export PYTHONDONTWRITEBYTECODE := 1
 
-.PHONY: help verify analyze test format format-check tool-tests map check-map check-template
+.PHONY: help verify analyze test format format-check tool-tests map check-map check-template sync
 
 help: ## List available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -41,3 +43,6 @@ check-map: ## Verify mapped folders exist and detected areas are mapped
 
 check-template: ## Verify shared Claude/Codex template integrity
 	$(PYTHON) .agents/tools/check_template.py
+
+sync: ## Refresh .claude/skills + .claude/agents copies from .agents/ (run after editing skills/subagents)
+	$(PYTHON) .agents/tools/sync_shared.py
