@@ -15,32 +15,39 @@ Exit 0 = healthy, 1 = problem. Run via `make check-template`.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from pathlib import Path
+
+from _template_lib import LINKS, ROOT, gated_skill_names, parse_frontmatter, relevant
+from detect_project import detect
 
 try:
     import tomllib
 except ModuleNotFoundError:  # Python 3.10 fallback; template already requires 3.10 syntax.
     tomllib = None
 
-ROOT = Path(__file__).resolve().parents[2]
 
-LINKS = {
-    ".claude/skills": ".agents/skills",
-    ".claude/agents": ".agents/subagents",
-}
+def directory_snapshot(root: Path, exclude_top: set[str] = frozenset()) -> dict[Path, str]:
+    """Map each relevant file to a content hash for cheap tree comparison.
 
-
-def directory_snapshot(root: Path) -> dict[Path, bytes]:
-    return {
-        path.relative_to(root): path.read_bytes()
-        for path in root.rglob("*")
-        if path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc"
-    }
+    Top-level entries named in `exclude_top` are omitted, matching the
+    stack-gated skills that sync deliberately leaves out of the copy.
+    """
+    snapshot: dict[Path, str] = {}
+    for path in root.rglob("*"):
+        if not (path.is_file() and relevant(path)):
+            continue
+        rel = path.relative_to(root)
+        if rel.parts[0] in exclude_top:
+            continue
+        snapshot[rel] = hashlib.sha256(path.read_bytes()).hexdigest()
+    return snapshot
 
 
 def check_shared_directories(errors: list[str]) -> None:
+    detected = set(detect())
     for link, expected_target in LINKS.items():
         link_path = ROOT / link
         target = (ROOT / expected_target).resolve()
@@ -53,7 +60,9 @@ def check_shared_directories(errors: list[str]) -> None:
         if not link_path.is_dir():
             errors.append(f"{link} is missing")
             continue
-        if directory_snapshot(link_path) != directory_snapshot(target):
+        # The copy is the gated mirror, so compare against the same gated source.
+        exclude = gated_skill_names(target, detected) if expected_target == ".agents/skills" else frozenset()
+        if directory_snapshot(link_path) != directory_snapshot(target, exclude):
             errors.append(f"{link} copy has drifted from {expected_target}")
 
 
@@ -69,11 +78,10 @@ def check_subagents(errors: list[str]) -> int:
         if not text.startswith("---"):
             errors.append(f"{md.name}: missing YAML frontmatter")
             continue
-        end = text.find("\n---", 3)
-        front = text[3:end] if end != -1 else ""
-        if not re.search(r"^name:\s*\S+", front, re.MULTILINE):
+        front, _ = parse_frontmatter(text)
+        if not front.get("name"):
             errors.append(f"{md.name}: frontmatter missing 'name:'")
-        if not re.search(r"^description:\s*\S+", front, re.MULTILINE):
+        if not front.get("description"):
             errors.append(f"{md.name}: frontmatter missing 'description:'")
     return len(files)
 
@@ -89,6 +97,12 @@ def parse_agent_toml(text: str) -> dict[str, object]:
         r'^\s*developer_instructions\s*=\s*"""(.*?)"""',
         text,
         re.MULTILINE | re.DOTALL,
+    ):
+        data["developer_instructions"] = match.group(1)
+    elif match := re.search(
+        r'^\s*developer_instructions\s*=\s*"((?:[^"\\]|\\.)*)"',
+        text,
+        re.MULTILINE,
     ):
         data["developer_instructions"] = match.group(1)
     return data

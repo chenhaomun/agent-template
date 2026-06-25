@@ -1,5 +1,6 @@
 ---
 name: dart-fix-runtime-errors
+stack: dart
 description: Uses get_runtime_errors and lsp to fetch an active stack trace, locate the failing line, apply a fix, and verify resolution via hot_reload.
 metadata:
   model: models/gemini-3.1-pro-preview

@@ -1,5 +1,6 @@
 ---
 name: dart-use-pattern-matching
+stack: dart
 description: Use switch expressions and pattern matching where appropriate
 metadata:
   model: models/gemini-3.1-pro-preview

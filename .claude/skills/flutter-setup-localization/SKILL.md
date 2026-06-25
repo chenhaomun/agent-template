@@ -1,5 +1,6 @@
 ---
 name: flutter-setup-localization
+stack: flutter
 description: Add `flutter_localizations` and `intl` dependencies, enable "generate true" in `pubspec.yaml`, and create an `l10n.yaml` configuration file. Use when initializing localization support for a new Flutter project.
 metadata:
   model: models/gemini-3.1-pro-preview
