@@ -20,34 +20,26 @@ Idempotent. A correctly-resolving symlink is left untouched. Run via
 from __future__ import annotations
 
 import filecmp
-import re
 import shutil
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
-
-# destination (Claude adapter) -> source (canonical)
-LINKS = {
-    ".claude/skills": ".agents/skills",
-    ".claude/agents": ".agents/subagents",
-}
+from _template_lib import LINKS, ROOT, gated_skill_names, parse_frontmatter, relevant
+from detect_project import detect
 
 SUBAGENTS = ROOT / ".agents" / "subagents"
 CODEX_AGENTS = ROOT / ".codex" / "agents"
-
-IGNORED_PARTS = {"__pycache__"}
-
-
-def relevant(path: Path) -> bool:
-    return not (set(path.parts) & IGNORED_PARTS) and path.suffix != ".pyc"
 
 
 def is_good_symlink(link: Path, target: Path) -> bool:
     return link.is_symlink() and link.exists() and link.resolve() == target.resolve()
 
 
-def mirror(src: Path, dst: Path) -> bool:
-    """Copy src tree into dst, removing stale entries. Return True if changed."""
+def mirror(src: Path, dst: Path, exclude_top: set[str] = frozenset()) -> bool:
+    """Copy src tree into dst, removing stale entries. Return True if changed.
+
+    Top-level entries named in `exclude_top` are skipped (and pruned from dst
+    if already present), which is how stack-gated skills stay out of the copy.
+    """
     changed = False
     dst.mkdir(parents=True, exist_ok=True)
 
@@ -56,6 +48,8 @@ def mirror(src: Path, dst: Path) -> bool:
         if not relevant(path):
             continue
         rel = path.relative_to(src)
+        if rel.parts[0] in exclude_top:
+            continue
         wanted.add(rel)
         out = dst / rel
         if path.is_dir():
@@ -84,30 +78,34 @@ def mirror(src: Path, dst: Path) -> bool:
     return changed
 
 
-def parse_frontmatter(text: str) -> tuple[dict[str, str], str]:
-    """Return ({name, description, ...}, body) from a `---` frontmatter doc."""
-    if not text.startswith("---"):
-        return {}, text.strip()
-    end = text.find("\n---", 3)
-    if end == -1:
-        return {}, text.strip()
-    front_block = text[3:end]
-    body = text[end + 4:].lstrip("\n").rstrip()
-    front: dict[str, str] = {}
-    for match in re.finditer(r"^([A-Za-z_]+):[ \t]*(.+?)[ \t]*$", front_block, re.MULTILINE):
-        front[match.group(1)] = match.group(2)
-    return front, body
-
-
 def toml_basic(value: str) -> str:
     return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
+def toml_body(value: str) -> str:
+    """Render an arbitrary subagent body as a TOML string.
+
+    Prefer a readable multiline basic string; fall back to an escaped
+    single-line basic string when the body contains the `\"\"\"` delimiter
+    (which a multiline basic string cannot represent), so a body is never
+    silently dropped from the generated adapter.
+    """
+    if '"""' not in value:
+        return f'"""\n{value}"""'
+    escaped = (
+        value.replace("\\", "\\\\")
+        .replace('"', '\\"')
+        .replace("\t", "\\t")
+        .replace("\n", "\\n")
+    )
+    return f'"{escaped}"'
 
 
 def render_codex_toml(name: str, description: str, body: str) -> str:
     return (
         f"name = {toml_basic(name)}\n"
         f"description = {toml_basic(description)}\n"
-        f'developer_instructions = """\n{body}"""\n'
+        f"developer_instructions = {toml_body(body)}\n"
     )
 
 
@@ -120,8 +118,8 @@ def generate_codex_agents(actions: list[str]) -> None:
     for md in sorted(SUBAGENTS.glob("*.md")):
         front, body = parse_frontmatter(md.read_text(encoding="utf-8"))
         name, description = front.get("name"), front.get("description")
-        if not name or not description or '"""' in body:
-            actions.append(f"skip {md.name}: missing name/description or unsafe body")
+        if not name or not description:
+            actions.append(f"skip {md.name}: missing name/description")
             continue
         out = CODEX_AGENTS / f"{name}.toml"
         wanted.add(out.name)
@@ -138,6 +136,7 @@ def generate_codex_agents(actions: list[str]) -> None:
 def main() -> int:
     actions: list[str] = []
     generate_codex_agents(actions)
+    detected = set(detect())
     for link, target in LINKS.items():
         link_path = ROOT / link
         target_path = ROOT / target
@@ -149,7 +148,9 @@ def main() -> int:
         # Clear a dead symlink or a placeholder file occupying the path.
         if link_path.is_symlink() or (link_path.exists() and not link_path.is_dir()):
             link_path.unlink()
-        if mirror(target_path, link_path):
+        # Only the skills adapter is stack-gated; subagents always mirror whole.
+        exclude = gated_skill_names(target_path, detected) if target == ".agents/skills" else frozenset()
+        if mirror(target_path, link_path, exclude):
             actions.append(f"synced {link} <- {target}")
 
     for action in actions:

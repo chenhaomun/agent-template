@@ -1,5 +1,6 @@
 ---
 name: dart-collect-coverage
+stack: dart
 description: Collect coverage using the coverage packge and create an LCOV report
 metadata:
   model: models/gemini-3.1-pro-preview

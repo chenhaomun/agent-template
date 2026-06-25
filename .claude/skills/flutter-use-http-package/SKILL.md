@@ -1,5 +1,6 @@
 ---
 name: flutter-use-http-package
+stack: flutter
 description: Use the `http` package to execute GET, POST, PUT, or DELETE requests. Use when you need to fetch from or send data to a REST API.
 metadata:
   model: models/gemini-3.1-pro-preview

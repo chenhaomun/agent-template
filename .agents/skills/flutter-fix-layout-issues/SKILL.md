@@ -1,5 +1,6 @@
 ---
 name: flutter-fix-layout-issues
+stack: flutter
 description: Fixes Flutter layout errors (overflows, unbounded constraints) using Dart and Flutter MCP tools. Use when addressing "RenderFlex overflowed", "Vertical viewport was given unbounded height", or similar layout issues.
 metadata:
   model: models/gemini-3.1-pro-preview

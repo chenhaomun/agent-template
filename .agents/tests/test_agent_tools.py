@@ -14,6 +14,10 @@ TOOLS = ROOT / ".agents" / "tools"
 
 
 def load_tool(name: str):
+    # Tools import siblings as top-level modules (e.g. `import _template_lib`),
+    # which only resolves with the tools dir on sys.path.
+    if str(TOOLS) not in sys.path:
+        sys.path.insert(0, str(TOOLS))
     spec = importlib.util.spec_from_file_location(name, TOOLS / f"{name}.py")
     if spec is None or spec.loader is None:
         raise RuntimeError(f"cannot load {name}")
@@ -82,6 +86,74 @@ class ProjectMapFreshnessTest(unittest.TestCase):
             errors = checker.check_map(root)
 
         self.assertIn("lib/features/auth", "\n".join(errors))
+
+
+class SkillGatingTest(unittest.TestCase):
+    def _skills(self, root: Path) -> Path:
+        skills = root / "skills"
+        for name, stack in (("flutter-x", "flutter"), ("dart-y", "dart"), ("generic-z", None)):
+            (skills / name).mkdir(parents=True)
+            front = f"name: {name}\n" + (f"stack: {stack}\n" if stack else "")
+            (skills / name / "SKILL.md").write_text(
+                f"---\n{front}description: d\n---\nbody\n", encoding="utf-8"
+            )
+        return skills
+
+    def test_gates_stack_specific_skills(self) -> None:
+        lib = load_tool("_template_lib")
+        with tempfile.TemporaryDirectory() as temp:
+            skills = self._skills(Path(temp))
+
+            # Non-matching stack drops both stack-specific skills.
+            self.assertEqual(lib.gated_skill_names(skills, {"node"}), {"flutter-x", "dart-y"})
+            # Flutter pulls in Dart (implied), so neither is gated out.
+            self.assertEqual(lib.gated_skill_names(skills, {"flutter"}), set())
+            # Dart keeps Dart but still gates Flutter.
+            self.assertEqual(lib.gated_skill_names(skills, {"dart"}), {"flutter-x"})
+            # Unknown / empty detection never gates (full set is the safe default).
+            self.assertEqual(lib.gated_skill_names(skills, {"unknown"}), set())
+            self.assertEqual(lib.gated_skill_names(skills, set()), set())
+
+
+class FrontmatterTest(unittest.TestCase):
+    def test_strips_surrounding_quotes_from_scalars(self) -> None:
+        lib = load_tool("_template_lib")
+
+        front, body = lib.parse_frontmatter('---\nname: "foo"\ndesc: \'bar\'\n---\nbody\n')
+
+        self.assertEqual(front["name"], "foo")
+        self.assertEqual(front["desc"], "bar")
+        self.assertEqual(body, "body")
+
+    def test_keeps_bare_scalars_unchanged(self) -> None:
+        lib = load_tool("_template_lib")
+
+        front, _ = lib.parse_frontmatter("---\nname: foo\n---\nbody\n")
+
+        self.assertEqual(front["name"], "foo")
+
+
+class CodexTomlTest(unittest.TestCase):
+    def test_body_with_triple_quote_round_trips(self) -> None:
+        sync = load_tool("sync_shared")
+        check = load_tool("check_template")
+        body = 'use """triple""" and a "quote" here'
+
+        toml = sync.render_codex_toml("dev", "d", body)
+        parsed = check.parse_agent_toml(toml)
+
+        # No silent drop: the body survives a render -> parse round trip.
+        self.assertEqual(parsed["developer_instructions"], body)
+        self.assertEqual(parsed["name"], "dev")
+
+    def test_plain_body_uses_multiline_string(self) -> None:
+        sync = load_tool("sync_shared")
+        check = load_tool("check_template")
+        body = "line one\nline two"
+
+        parsed = check.parse_agent_toml(sync.render_codex_toml("dev", "d", body))
+
+        self.assertEqual(parsed["developer_instructions"], body)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 ---
 name: flutter-implement-json-serialization
+stack: flutter
 description: Create model classes with `fromJson` and `toJson` methods using `dart:convert`. Use when manually mapping JSON keys to class properties for simple data structures.
 metadata:
   model: models/gemini-3.1-pro-preview
