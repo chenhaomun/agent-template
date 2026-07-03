@@ -5,8 +5,9 @@ Claude-only additions follow (shared rules are imported above).
 ## Memory
 
 - User memory: `~/.claude/CLAUDE.md`. Project memory: this file.
-- Remember preferences, decisions, and recurring patterns; surface relevant ones at session start.
-- Write to `~/.claude/projects/<project>/memory/` when asked to remember, or when you learn a durable preference.
+- Read memory files only if they exist; never infer or fabricate memory from missing paths. If none exist, proceed without them.
+- Surface a remembered preference only when it's relevant to the current task.
+- Write to `~/.claude/projects/<project>/memory/` (create it if absent) when asked to remember, or when you learn a durable preference.
 
 ## Thinking
 
