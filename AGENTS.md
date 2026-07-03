@@ -7,7 +7,7 @@ Shared agent rules for Codex and Claude Code. Core rules are language-agnostic; 
 - Prefer project scripts over raw commands. Use `make verify` as the canonical gate (integrity + map + analysis + tests + format); `make help` lists targets. Non-Flutter stacks: check `package.json` scripts or `scripts/`.
 - Do not hand-edit generated/vendored files (`*.g.dart`, `*.freezed.dart`, `build/`, `.dart_tool/`, etc.); edit the source and re-run the generator.
 - Cap large command output at 4,000 chars (pipe through `head` or limit explicitly).
-- Final response states: changes made, verification ran, blockers/gaps, and API/env/permission impact if relevant.
+- Final response: short and precise. Lead with the outcome, then only changes made, verification run, and any blocker/API/env impact. No preamble, no restating the request, no step-by-step recap. Prose or a short list — not both. Expand only when asked or when safety requires it.
 
 > Hooks in `.claude/settings.json` and `.codex/hooks.json` enforce these via shared `.agents/tools/` scripts; follow the rules even when hooks are unavailable.
 
@@ -23,6 +23,7 @@ Shared agent rules for Codex and Claude Code. Core rules are language-agnostic; 
 - Add/update tests when requested, when following TDD, or when matching project practice. Run narrow verification.
 - Tiered review: small = self-check; medium single-owner = `production-code-review` + max one specialist skill; large/risky/multi-agent = full review.
 - Default `$caveman lite`; expand only for safety warnings, blockers, or explicit user request.
+- Default to low reasoning effort for small, well-scoped edits. Raise effort for risky, multi-step, architectural, or ambiguous work (Codex: `/reasoning high` or `model_reasoning_effort`).
 
 ## Flutter
 
