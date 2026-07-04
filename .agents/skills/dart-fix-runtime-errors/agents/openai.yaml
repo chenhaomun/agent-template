@@ -1,0 +1,3 @@
+display_name: "Dart Fix Runtime Errors"
+short_description: "Fetch the active stack trace (get_runtime_errors/LSP), fix the failing line, verify via hot reload."
+default_prompt: "Use dart-fix-runtime-errors for this task."

@@ -28,6 +28,7 @@ from detect_project import detect
 
 SUBAGENTS = ROOT / ".agents" / "subagents"
 CODEX_AGENTS = ROOT / ".codex" / "agents"
+SKILLS = ROOT / ".agents" / "skills"
 
 
 def is_good_symlink(link: Path, target: Path) -> bool:
@@ -133,9 +134,55 @@ def generate_codex_agents(actions: list[str]) -> None:
             actions.append(f"removed stale .codex/agents/{toml.name}")
 
 
+def yaml_quote(value: str) -> str:
+    return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
+def short_description(description: str, limit: int = 140) -> str:
+    """First sentence of a skill description, capped for the $-command list."""
+    text = " ".join(description.split())
+    cut = text.find(". ")
+    if cut != -1:
+        text = text[: cut + 1]
+    if len(text) > limit:
+        text = text[: limit - 1].rstrip() + "…"
+    return text
+
+
+def generate_openai_adapters(actions: list[str]) -> None:
+    """Create a default agents/openai.yaml for any skill that lacks one.
+
+    Codex only surfaces a skill as a `$`-command when this adapter exists;
+    generating missing ones keeps the Codex and Claude skill sets identical
+    without hand-maintaining a second description. Curated adapters are never
+    overwritten — only absent ones are filled in.
+    """
+    if not SKILLS.is_dir():
+        return
+    for skill_md in sorted(SKILLS.glob("*/SKILL.md")):
+        out = skill_md.parent / "agents" / "openai.yaml"
+        if out.exists():
+            continue
+        front, _ = parse_frontmatter(skill_md.read_text(encoding="utf-8", errors="ignore"))
+        name = front.get("name") or skill_md.parent.name
+        description = front.get("description")
+        if not description:
+            actions.append(f"skip openai.yaml for {name}: missing description")
+            continue
+        content = (
+            f"display_name: {yaml_quote(name.replace('-', ' ').title())}\n"
+            f"short_description: {yaml_quote(short_description(description))}\n"
+            f"default_prompt: {yaml_quote(f'Use {name} for this task.')}\n"
+        )
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(content, encoding="utf-8")
+        actions.append(f"generated .agents/skills/{skill_md.parent.name}/agents/openai.yaml")
+
+
 def main() -> int:
     actions: list[str] = []
     generate_codex_agents(actions)
+    generate_openai_adapters(actions)
     detected = set(detect())
     for link, target in LINKS.items():
         link_path = ROOT / link

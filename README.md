@@ -16,7 +16,7 @@ Shared agent configuration for **Claude Code** and **OpenAI Codex**, designed to
 | `.claude/agents` (copy of `.agents/subagents`) | Synced copy so Claude sees every subagent natively |
 | `.claude/device-setup/` | Portable Claude **user** prefs (theme/model/behaviour) — `settings.example.json`, `install.py`. Not auto-loaded; applied per machine |
 | `.codex/` | Portable Codex **device** setup — `config.example.toml`, `install.py`, optional pet. Not auto-loaded; applied per machine |
-| `.agents/skills/` | **The** skill files (core + Flutter/Dart), read by both tools. Review/workflow skills also carry an `agents/openai.yaml` so Codex surfaces them as `$`-commands |
+| `.agents/skills/` | **The** skill files (core + Flutter/Dart), read by both tools. Every skill carries an `agents/openai.yaml` (`make sync` generates missing ones) so Codex surfaces it as a `$`-command |
 | `.agents/subagents/` | Subagent definitions with Claude frontmatter (BA, TL, Developer, DevOps, Security, QA, UX, Flutter, Backend API) |
 | `.agents/flutter-dependencies.md` | Default Flutter package choices (bloc, go_router, dio) |
 | `.agents/tools/` | Python helpers — project map, project detection, hook scripts, template integrity check |
@@ -109,7 +109,7 @@ Format/analyze no-ops safely outside a Dart/Flutter project. Codex requires a tr
 | `security-review` | Auth, secrets, privacy |
 | `code-quality-review` | SOLID/OOP + DRY + KISS in one pass |
 | `performance-review` | Rendering, async, memory |
-| `figma-design-to-code` | UI from a Figma URL/node via MCP — exact values, token mapping, screenshot compare loop |
+| `figma-design-to-code` | UI from a Figma URL/node via MCP — exact values, cached token mapping, `pixel_diff.py`-gated compare loop |
 | `test-driven-development` | Behavior-first implementation |
 | `skill-maintenance` | Refresh/update skills from upstream |
 
