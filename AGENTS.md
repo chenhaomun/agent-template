@@ -15,14 +15,14 @@ Shared agent rules for Codex and Claude Code. Core rules are language-agnostic; 
 
 - Read nearby code before editing; follow existing architecture, naming, patterns, and test conventions.
 - Check `.agents/project-map.md` before broad search; if missing or stale, preview `<python> .agents/tools/generate_project_map.py`, then update via `apply_patch`.
-- Use relevant `.agents/skills/<skill>/SKILL.md`; project conventions beat generic examples.
+- Use relevant `.agents/skills/<skill>/SKILL.md`; project conventions beat generic examples. Rarely used skills are deferred under `.agents/skill-packs/` — enable per that folder's README when a task needs one.
 - Use `grill-requirements` when acceptance criteria, scope, target flow/state, or contradictions may cause rework.
-- Keep changes scoped. Preserve user changes. Never reset unrelated work or modify generated/vendored files.
+- Keep changes scoped. Preserve user changes. Never reset unrelated work.
 - Follow SOLID/DRY/KISS. Ask before adding packages, tools, or global dependencies. Ask before architecture, state-management, or generator changes.
 - Keep secrets out. Stop suspicious or unexpectedly long commands; report the command and elapsed time.
 - Add/update tests when requested, when following TDD, or when matching project practice. Run narrow verification.
 - Tiered review: small = self-check; medium single-owner = `production-code-review` + max one specialist skill; large/risky/multi-agent = full review.
-- Default `$caveman lite`; expand only for safety warnings, blockers, or explicit user request.
+- Default `caveman lite` responses (Codex: `$caveman`, Claude: `/caveman`); expand only for safety warnings, blockers, or explicit user request.
 - Default to low reasoning effort for small, well-scoped edits. Raise effort for risky, multi-step, architectural, or ambiguous work (Codex: `/reasoning high` or `model_reasoning_effort`).
 
 ## Flutter
@@ -35,6 +35,11 @@ Shared agent rules for Codex and Claude Code. Core rules are language-agnostic; 
 - Cover loading, success, empty, error, disabled, and permission states. Keep errors actionable.
 - Use configured flavors and `--dart-define-from-file`.
 - Native/FFI/binary downloads require explicit user approval and hash/offline fallback review.
+
+## Design-to-Code (Figma)
+
+- Any UI built from a Figma design (MCP/connector, URL, or node ID) must follow `.agents/skills/figma-design-to-code/SKILL.md`. Not optional; applies to subagents too.
+- Non-negotiables: extract exact values per section node via the Figma MCP (design context + variable defs) — never estimate from screenshots or fetch one whole-screen dump; map variables to project theme tokens; export assets instead of redrawing; reuse existing components; finish with a rendered-UI vs Figma-screenshot compare loop until a pass is clean or every deviation is reported with a reason.
 
 ## Contracts
 

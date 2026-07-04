@@ -40,17 +40,25 @@ def main() -> int:
     if not dart:
         return 0  # not a Dart environment; nothing to enforce
 
-    failed = False
-    for path in extract_file_paths(payload):
-        if path.suffix != ".dart" or not path.exists():
-            continue
-        if find_pubspec(path.resolve().parent) is None:
-            continue
+    dart_files = [
+        path
+        for path in extract_file_paths(payload)
+        if path.suffix == ".dart"
+        and path.exists()
+        and find_pubspec(path.resolve().parent) is not None
+    ]
+    if not dart_files:
+        return 0
 
-        target = str(path)
-        subprocess.run([dart, "format", target], capture_output=True, text=True)
+    # One format invocation for the whole batch; analyze stays per-file so
+    # findings attach to the file that produced them.
+    subprocess.run(
+        [dart, "format", *(str(p) for p in dart_files)], capture_output=True, text=True
+    )
+    failed = False
+    for path in dart_files:
         result = subprocess.run(
-            [dart, "analyze", target], capture_output=True, text=True
+            [dart, "analyze", str(path)], capture_output=True, text=True
         )
         if result.returncode == 0:
             continue

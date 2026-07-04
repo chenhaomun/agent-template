@@ -90,7 +90,7 @@ Claude Code and Codex enforce quality with deterministic project hooks. Claude c
 |---|---|---|
 | PostToolUse | `hook_format_analyze.py` | Auto-formats + analyzes each edited `.dart` file; surfaces analyzer issues to the agent |
 | PreToolUse | `hook_guard_generated.py` | Blocks edits to generated/vendored files (`*.g.dart`, `build/`, …) |
-| SessionStart | `check_project_map.py` | Flags missing mapped folders and newly detected unmapped areas |
+| SessionStart | `session_start.py` | One spawn: refreshes `.claude/` + `.codex/agents` adapters (`sync_shared`), then flags stale project-map entries (`check_project_map`) |
 
 Format/analyze no-ops safely outside a Dart/Flutter project. Codex requires a trusted project and one-time review of new or changed hooks through `/hooks`; untrusted hooks are skipped. `AGENTS.md` remains the fallback contract when either client cannot run hooks.
 
@@ -107,14 +107,13 @@ Format/analyze no-ops safely outside a Dart/Flutter project. Codex requires a tr
 | `subagent-task-brief` | `/taskbrief`, split requirements for subagents |
 | `architecture-review` | Boundaries, layers, contracts |
 | `security-review` | Auth, secrets, privacy |
-| `solid-oop-review` | Class design, coupling |
-| `dry-review` | Duplicated rules or mappings |
-| `kiss-review` | Over-engineering |
+| `code-quality-review` | SOLID/OOP + DRY + KISS in one pass |
 | `performance-review` | Rendering, async, memory |
+| `figma-design-to-code` | UI from a Figma URL/node via MCP — exact values, token mapping, screenshot compare loop |
 | `test-driven-development` | Behavior-first implementation |
 | `skill-maintenance` | Refresh/update skills from upstream |
 
-Plus the bundled **Flutter/Dart** skills (11 `flutter-*` + 10 `dart-*`): widgets, tests, routing, l10n, responsive layout, JSON serialization, HTTP, coverage, mocks, static analysis, FFI, pattern matching. All tracked in `skills-lock.json` and refreshed by `skill-maintenance`.
+Plus the bundled **Flutter/Dart** skills: everyday ones (tests, mocks, layout fixes, responsive layout, architecture, JSON, HTTP, static analysis, runtime errors) stay always-loaded; rare/setup ones (FFI, CLI, coverage, l10n, routing setup, pattern matching, package conflicts, integration tests, widget previews) are deferred under `.agents/skill-packs/flutter-dart/` to keep per-session context lean. All tracked in `skills-lock.json` and refreshed by `skill-maintenance`.
 
 ## Subagents Reference
 

@@ -39,13 +39,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.agents/tools/sync_shared.py\"",
-            "commandWindows": "python \"$CLAUDE_PROJECT_DIR/.agents/tools/sync_shared.py\""
-          },
-          {
-            "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.agents/tools/check_project_map.py\"",
-            "commandWindows": "python \"$CLAUDE_PROJECT_DIR/.agents/tools/check_project_map.py\""
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.agents/tools/session_start.py\"",
+            "commandWindows": "python \"$CLAUDE_PROJECT_DIR/.agents/tools/session_start.py\""
           }
         ]
       }

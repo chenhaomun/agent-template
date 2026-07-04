@@ -1,11 +1,6 @@
 ---
 name: caveman-compress
-description: >
-  Compress natural language Codex memory/instruction files (AGENTS.md, .agents/*.md,
-  todos, preferences) into caveman format to save input tokens. Preserves technical
-  substance, code, URLs, and structure. Local deterministic compressor; no network.
-  Compressed version overwrites the original file. Human-readable backup saved as FILE.original.md.
-  Trigger: /caveman-compress FILEPATH or "compress memory file"
+description: Compress a memory/instruction file (AGENTS.md, .agents/*.md, todos) into caveman format in place; backup saved as FILE.original.md. Local deterministic script, no network. Use for /caveman-compress FILEPATH or "compress memory file".
 ---
 
 # Caveman Compress

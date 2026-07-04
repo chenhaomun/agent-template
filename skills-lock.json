@@ -3,9 +3,10 @@
   "skills": {
     "caveman": {
       "source": "JuliusBrussee/caveman",
-      "sourceType": "github",
+      "sourceType": "github-adapted",
       "skillPath": "skills/caveman/SKILL.md",
-      "computedHash": "1902fa0b569912d0c05736d8d98a72097d9b82719aac88c0c1d03bb546f9176d"
+      "computedHash": "1902fa0b569912d0c05736d8d98a72097d9b82719aac88c0c1d03bb546f9176d",
+      "notes": "Frontmatter description shortened locally to cut always-loaded context; reapply after upstream refresh. Body refreshed to upstream 2026-07-04; computedHash predates that refresh and needs regeneration by the external tooling."
     },
     "caveman-compress": {
       "source": "JuliusBrussee/caveman",
@@ -31,6 +32,7 @@
       "source": "dart-lang/skills",
       "sourceType": "github",
       "skillPath": "skills/dart-collect-coverage/SKILL.md",
+      "localPath": ".agents/skill-packs/flutter-dart/skills/dart-collect-coverage/SKILL.md",
       "computedHash": "36d77c4ebc2edc7ade399ae8461776dd33a461899afda4b2b9d8e7f599d2ef6c"
     },
     "dart-fix-runtime-errors": {
@@ -56,6 +58,7 @@
       "source": "dart-lang/skills",
       "sourceType": "github",
       "skillPath": "skills/dart-resolve-package-conflicts/SKILL.md",
+      "localPath": ".agents/skill-packs/flutter-dart/skills/dart-resolve-package-conflicts/SKILL.md",
       "computedHash": "e25c789387152d9d0c437610caa5746e337a789bcb8e9c9887b0425b94b734ef"
     },
     "dart-run-static-analysis": {
@@ -82,6 +85,7 @@
       "source": "dart-lang/skills",
       "sourceType": "github",
       "skillPath": "skills/dart-use-pattern-matching/SKILL.md",
+      "localPath": ".agents/skill-packs/flutter-dart/skills/dart-use-pattern-matching/SKILL.md",
       "computedHash": "86ea49e8f82ebcdbfd00579c0bcaca16d3f33839c96f9d3875bee95c553daa4b"
     },
     "flutter-add-integration-test": {
@@ -132,12 +136,14 @@
       "source": "flutter/skills",
       "sourceType": "github",
       "skillPath": "skills/flutter-setup-declarative-routing/SKILL.md",
+      "localPath": ".agents/skill-packs/flutter-dart/skills/flutter-setup-declarative-routing/SKILL.md",
       "computedHash": "2341440c8bce0f176663695eaa71f9f7d7c967772a1dcd0d833c9778504b227e"
     },
     "flutter-setup-localization": {
       "source": "flutter/skills",
       "sourceType": "github",
       "skillPath": "skills/flutter-setup-localization/SKILL.md",
+      "localPath": ".agents/skill-packs/flutter-dart/skills/flutter-setup-localization/SKILL.md",
       "computedHash": "671bf254ca8f3172b6bda5287d9e756e9fd5b49165a815f710c5b707ebaa38f8"
     },
     "flutter-use-http-package": {

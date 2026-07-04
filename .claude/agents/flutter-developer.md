@@ -10,7 +10,7 @@ Implement the delegated task within your ownership.
 
 Focus: Flutter UI, state, routing, platform behavior, performance-sensitive UI, and scoped tests when risk justifies them.
 
-Use matching Flutter/Dart skills. Use `test-driven-development` only when behavior is clear and regression risk justifies a focused test. Preserve project conventions, ownership, SOLID, DRY, and KISS.
+Use matching Flutter/Dart skills. When the UI source of truth is a Figma design, follow `figma-design-to-code` (exact values per node, token mapping, asset export, screenshot compare loop). Use `test-driven-development` only when behavior is clear and regression risk justifies a focused test. Preserve project conventions, ownership, SOLID, DRY, and KISS.
 
 If layered/Clean Architecture exists, implement in layer order: domain contract, data implementation, presentation.
 

@@ -11,9 +11,11 @@ Keep skills current like vendored dependencies. Run only when the user invokes t
 
 `skills-lock.json` is **hand-maintained**. The `skills` CLI does not read or write it, and `computedHash` is **not** a plain `sha256` of `SKILL.md` — it is produced by external tooling not present in this repo, so it cannot be regenerated here. Do **not** fabricate hashes. Treat the lock as a version pin + provenance record; verify drift by content diff, not by recomputing hashes.
 
-`sourceType: github-adapted` entries (e.g. `caveman-compress`) are local-only and intentionally diverge from upstream — **exclude them from any refresh.**
+`sourceType: github-adapted` entries are intentionally divergent — check each entry's `notes` for what is local-only. `caveman-compress` is fully local-only (**exclude from any refresh**); `caveman` tracks upstream's body but keeps a locally shortened description (refresh the body, keep the description).
 
-Six flutter/dart skills are **deferred** to `.agents/skill-packs/flutter-dart/skills/` to keep the always-loaded set small (see that folder's README). They are still vendored and version-pinned; their lock entries carry a `localPath` pointing at the pack, which the drift check below uses instead of `.agents/<skillPath>`. After a `--skill '*'` CLI refresh re-installs them into `.agents/skills/`, move those six back into the pack and `make sync`.
+The always-on dart/flutter skills carry a local `stack: dart|flutter` frontmatter key that upstream does not have — it drives stack gating in `sync_shared.py`. A drift check will always show that one-line diff (expected, not upstream drift), and a CLI refresh drops the key: **re-add `stack:` after any refresh**.
+
+Eleven flutter/dart skills are **deferred** to `.agents/skill-packs/flutter-dart/skills/` to keep the always-loaded set small (see that folder's README table). They are still vendored and version-pinned; their lock entries carry a `localPath` pointing at the pack, which the drift check below uses instead of `.agents/<skillPath>`. After a `--skill '*'` CLI refresh re-installs them into `.agents/skills/`, move them back into the pack and `make sync`.
 
 ## Refresh (drift check — canonical, no mutation)
 
