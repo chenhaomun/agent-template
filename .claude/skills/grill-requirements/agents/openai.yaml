@@ -1,0 +1,3 @@
+display_name: Grill Requirements
+short_description: Ask blocking clarification questions before planning when requirements are unclear or likely to cause rework.
+default_prompt: Use grill-requirements on this task before planning.

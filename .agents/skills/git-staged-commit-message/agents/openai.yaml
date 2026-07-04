@@ -1,0 +1,3 @@
+display_name: Staged Commit Message
+short_description: Generate a commit message from staged git changes and copy it to the clipboard.
+default_prompt: Use git-staged-commit-message on the currently staged changes.

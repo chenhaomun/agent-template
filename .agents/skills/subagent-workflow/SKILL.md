@@ -11,19 +11,15 @@ BA: business scope. TL: architecture/refactor/ownership/risk. Developer: impleme
 
 ## Model Choice
 
-Use these default overrides:
+Pick by capability tier, mapped to whatever the current harness offers (Claude: `haiku`/`sonnet`/`opus` shorthands; Codex: low/medium/high reasoning effort):
 
-| Role | Model |
+| Tier | Roles |
 |---|---|
-| BA | `claude-haiku-4-5` |
-| TL | `claude-opus-4-8` |
-| Developer | `claude-sonnet-4-6` |
-| DevOps | `claude-sonnet-4-6` |
-| Security | `claude-sonnet-4-6` |
-| UX | `claude-haiku-4-5` |
-| QA | `claude-sonnet-4-6` |
+| Fast/cheap | BA, UX |
+| Standard | Developer, DevOps, Security, QA |
+| Strongest | TL |
 
-Use stronger model only when complexity clearly needs it. If unavailable, use nearest capable model and record fallback in report.
+Escalate a tier only when complexity clearly needs it. If a tier is unavailable, use the nearest capable model and record the fallback in the report.
 
 ## Permissions
 
@@ -74,9 +70,8 @@ Generic slice order: data/model contracts → service/repository layer → busin
 | `grill-requirements` | unclear scope, missing acceptance, likely rework |
 | `test-driven-development` | clear behavior changes with meaningful regression risk |
 | `architecture-review` | boundaries, contracts, ownership, integration risk |
-| `solid-oop-review` | class/refactor design, responsibility, coupling |
-| `dry-review` | duplicated rules, mappings, setup, or drift-prone copy/paste |
-| `kiss-review` | over-engineering, avoidable indirection, unnecessary abstraction |
+| `code-quality-review` | class design/coupling, duplication drift, over-engineering (SOLID+DRY+KISS) |
+| `figma-design-to-code` | any UI implemented from a Figma design |
 | `security-review` | auth, privacy, permissions, secrets, network, dependency risk |
 | `performance-review` | rendering, async work, memory, data processing, scaling |
 

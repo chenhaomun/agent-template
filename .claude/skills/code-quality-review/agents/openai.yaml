@@ -1,0 +1,3 @@
+display_name: Code Quality Review
+short_description: One-pass SOLID/OOP, DRY, and KISS review — design, duplication drift, over-engineering.
+default_prompt: Use code-quality-review on this diff.
