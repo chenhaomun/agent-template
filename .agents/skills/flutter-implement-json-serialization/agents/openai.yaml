@@ -1,0 +1,3 @@
+display_name: "Flutter Implement Json Serialization"
+short_description: "Create model classes with fromJson/toJson using `dart:convert` for manual JSON mapping."
+default_prompt: "Use flutter-implement-json-serialization for this task."

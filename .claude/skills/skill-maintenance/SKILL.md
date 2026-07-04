@@ -13,7 +13,7 @@ Keep skills current like vendored dependencies. Run only when the user invokes t
 
 `sourceType: github-adapted` entries are intentionally divergent — check each entry's `notes` for what is local-only. `caveman-compress` is fully local-only (**exclude from any refresh**); `caveman` tracks upstream's body but keeps a locally shortened description (refresh the body, keep the description).
 
-The always-on dart/flutter skills carry a local `stack: dart|flutter` frontmatter key that upstream does not have — it drives stack gating in `sync_shared.py`. A drift check will always show that one-line diff (expected, not upstream drift), and a CLI refresh drops the key: **re-add `stack:` after any refresh**.
+The always-on dart/flutter skills carry local frontmatter upstream does not have: a `stack: dart|flutter` key (drives stack gating in `sync_shared.py`) and, where the lock entry's `notes` say so, a locally shortened `description:` (cuts always-loaded context). A drift check will always show those frontmatter diffs (expected, not upstream drift), and a CLI refresh drops them: **re-apply `stack:` and shortened descriptions after any refresh** — diff bodies only when judging upstream changes.
 
 Eleven flutter/dart skills are **deferred** to `.agents/skill-packs/flutter-dart/skills/` to keep the always-loaded set small (see that folder's README table). They are still vendored and version-pinned; their lock entries carry a `localPath` pointing at the pack, which the drift check below uses instead of `.agents/<skillPath>`. After a `--skill '*'` CLI refresh re-installs them into `.agents/skills/`, move them back into the pack and `make sync`.
 

@@ -1,7 +1,7 @@
 ---
 name: flutter-apply-architecture-best-practices
 stack: flutter
-description: Architects a Flutter application using the recommended layered approach (UI, Logic, Data). Use when structuring a new project or refactoring for scalability.
+description: Structure a Flutter app into recommended layers (UI, logic, data). Use for new projects or scalability refactoring.
 metadata:
   model: models/gemini-3.1-pro-preview
   last_modified: Tue, 21 Apr 2026 20:11:20 GMT

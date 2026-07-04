@@ -86,6 +86,59 @@ def check_subagents(errors: list[str]) -> int:
     return len(files)
 
 
+def check_skills(errors: list[str]) -> int:
+    """Validate active and pack skill frontmatter plus Codex adapters.
+
+    A SKILL.md with a missing/mismatched name or missing description silently
+    fails to load (Claude) or mis-surfaces (Codex), so fail loudly here.
+    """
+    count = 0
+    active = ROOT / ".agents" / "skills"
+    for skill_dir in sorted(p for p in active.iterdir() if p.is_dir()):
+        md = skill_dir / "SKILL.md"
+        rel = f".agents/skills/{skill_dir.name}"
+        if not md.is_file():
+            errors.append(f"{rel}: missing SKILL.md")
+            continue
+        count += 1
+        front, _ = parse_frontmatter(md.read_text(encoding="utf-8", errors="ignore"))
+        if front.get("name") != skill_dir.name:
+            errors.append(f"{rel}: frontmatter name {front.get('name')!r} != directory name")
+        if not front.get("description"):
+            errors.append(f"{rel}: frontmatter missing 'description:'")
+        if not (skill_dir / "agents" / "openai.yaml").is_file():
+            errors.append(f"{rel}: missing agents/openai.yaml (run make sync)")
+    for md in sorted((ROOT / ".agents" / "skill-packs").glob("*/skills/*/SKILL.md")):
+        count += 1
+        rel = md.parent.relative_to(ROOT).as_posix()
+        front, _ = parse_frontmatter(md.read_text(encoding="utf-8", errors="ignore"))
+        if front.get("name") != md.parent.name:
+            errors.append(f"{rel}: frontmatter name {front.get('name')!r} != directory name")
+        if not front.get("description"):
+            errors.append(f"{rel}: frontmatter missing 'description:'")
+    return count
+
+
+def check_skills_lock(errors: list[str]) -> None:
+    """Lock entries must point at real files; pack skills must be pinned."""
+    lock_path = ROOT / "skills-lock.json"
+    try:
+        lock = json.loads(lock_path.read_text(encoding="utf-8"))["skills"]
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        errors.append(f"skills-lock.json is invalid: {error}")
+        return
+    pinned_local: set[str] = set()
+    for name, entry in lock.items():
+        local = entry.get("localPath", ".agents/" + entry.get("skillPath", ""))
+        pinned_local.add(local)
+        if not (ROOT / local).is_file():
+            errors.append(f"skills-lock.json: {name} points at missing file {local}")
+    for md in (ROOT / ".agents" / "skill-packs").glob("*/skills/*/SKILL.md"):
+        rel = md.relative_to(ROOT).as_posix()
+        if rel not in pinned_local:
+            errors.append(f"{rel}: pack skill has no skills-lock.json entry with matching localPath")
+
+
 def parse_agent_toml(text: str) -> dict[str, object]:
     if tomllib is not None:
         return tomllib.loads(text)
@@ -171,6 +224,8 @@ def main() -> int:
     errors: list[str] = []
     check_shared_directories(errors)
     count = check_subagents(errors)
+    skill_count = check_skills(errors)
+    check_skills_lock(errors)
     check_codex(errors, count)
     check_claude(errors)
     check_makefile(errors)
@@ -181,7 +236,10 @@ def main() -> int:
             print(f"- {err}")
         return 1
 
-    print(f"OK template integrity: shared directories resolve, {count} Claude/Codex agents valid")
+    print(
+        f"OK template integrity: shared directories resolve, "
+        f"{count} Claude/Codex agents and {skill_count} skills valid"
+    )
     return 0
 
 

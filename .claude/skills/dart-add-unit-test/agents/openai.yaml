@@ -1,0 +1,3 @@
+display_name: "Dart Add Unit Test"
+short_description: "Write unit tests with `package:test`."
+default_prompt: "Use dart-add-unit-test for this task."

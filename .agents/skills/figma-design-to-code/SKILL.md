@@ -32,11 +32,11 @@ Figma MCP tool names vary by server version: design context may be `get_design_c
 - [ ] **Reference screenshot.** `get_screenshot` for each target frame. This is the ground truth for the final compare, not a data source.
 - [ ] **Structure.** `get_metadata` for the node tree. Enumerate logical sections and their node IDs. Plan one extraction pass per section.
 - [ ] **Extract per section.** For each section node, `get_design_context` and record exact values: layout mode/direction, padding (top/right/bottom/left), item gap, per-child sizing (fixed/hug/fill), width/height, fills, strokes (color + weight), per-corner radius, effects (shadow color/blur/spread/offset), typography (family, weight, size, line-height, letter-spacing, case, color), opacity, z-order.
-- [ ] **Tokens.** `get_variable_defs` for the frame. Build a mapping table: Figma variable → project theme token → raw fallback. Resolve every color/spacing/text style through this table.
+- [ ] **Tokens.** `get_variable_defs` for the frame. Build a mapping table: Figma variable → project theme token → raw fallback. Resolve every color/spacing/text style through this table. Cache it at `reports/figma/<file-key>-tokens.md`; later screens from the same Figma file reuse the cache instead of re-fetching variable defs (re-fetch only on a missing or suspect entry).
 - [ ] **Assets.** Export every icon/image/illustration the sections need into project asset conventions. Record the mapping.
 - [ ] **Spec before code.** Assemble the recorded values into a per-section fidelity spec. Any value still missing: re-fetch that specific node — do not guess, do not proceed without it.
 - [ ] **Implement** from the spec, smallest components first. Use theme tokens and existing components per the mapping tables. Respect the design's constraints/responsive rules; don't bake in absolute frame offsets outside genuine Stack/overlay cases.
-- [ ] **Compare loop.** Run the app at the design frame's dimensions and screenshot it. Compare side-by-side against the Figma reference in this order: structure → spacing → sizing → typography → color → radius/borders/shadows → assets. Fix every deviation, re-render, repeat. A pass with fixes is never the last pass; finish with one clean pass.
+- [ ] **Compare loop.** Run the app at the design frame's dimensions and screenshot it. First measure: `<python> .agents/tools/pixel_diff.py <figma-ref>.png <render>.png` prints overall and per-region mismatch percentages — investigate every hot region. Then compare side-by-side in this order: structure → spacing → sizing → typography → color → radius/borders/shadows → assets. Fix every deviation, re-render, repeat. A pass with fixes is never the last pass; finish with one clean pass.
 - [ ] **States.** After visual parity: cover loading, empty, error, disabled, and permission states per `AGENTS.md` (the design usually shows only the success state).
 
 ## Flutter Mapping
@@ -76,6 +76,6 @@ For other stacks the same table applies conceptually (auto layout → flex, gap 
 ## Acceptance
 
 - Every fidelity-spec value traces to an extracted design-context/variable value.
-- Final compare pass at design dimensions is clean.
+- Final compare pass at design dimensions is clean: `pixel_diff.py` overall mismatch ≤ 5% (default threshold), and no single region is disproportionately hot without an explanation. When screenshots cannot be captured (no runnable app/emulator), state that explicitly — do not claim visual parity untested.
 - Remaining deviations (e.g. platform font metrics) are listed with reasons — never silently shipped.
-- Report: sections implemented, token mappings used, assets exported, compare passes run, flagged conflicts with the existing design system.
+- Report: sections implemented, token mappings used (and cache path), assets exported, final pixel_diff numbers, flagged conflicts with the existing design system.

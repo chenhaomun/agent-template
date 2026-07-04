@@ -1,0 +1,3 @@
+display_name: "Flutter Use Http Package"
+short_description: "Call REST APIs (GET/POST/PUT/DELETE) with the `http` package."
+default_prompt: "Use flutter-use-http-package for this task."
