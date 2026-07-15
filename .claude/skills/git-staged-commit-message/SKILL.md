@@ -35,23 +35,7 @@ If staged diff is large, inspect `--name-status`, `--stat`, then sample the stag
 
 ## Output
 
-Return one ready-to-use commit message:
-
-```text
-<ticket> - <summary>
-
-- <point A>
-- <point B>
-```
-
-Or without ticket:
-
-```text
-<summary>
-
-- <point A>
-- <point B>
-```
+Return one ready-to-use commit message in the `AGENTS.md § Git` format (ticket or no-ticket variant).
 
 If staged changes are mixed/unrelated, say so and provide either:
 - one best broad message, or

@@ -1,13 +1,14 @@
 ---
 name: subagent-task-brief
-description: Turn messy requirements into a subagent-ready task brief. Use for /subagent-task, /taskbrief, or splitting work into Task/Requirements/Verify.
+description: Turn requirements into a subagent-ready Task/Requirements/Verify brief.
 ---
 
 Create a concise subagent task brief from raw requirements.
 
 Rules:
 - Keep business requirements separate from technical direction.
-- Auto-use `grill-requirements` first when requirements are broad, contradictory, missing acceptance criteria, missing target flow/state, or likely to cause rework.
+- Auto-use `grill-requirements` first when requirements risk rework (trigger conditions: AGENTS.md Work Rules).
+- Include the handoff fields required by `subagent-workflow`.
 - Make `Task` one clear outcome.
 - Make `Requirements` business/product-focused bullets.
 - Make `Verify` include useful commands and manual checks.

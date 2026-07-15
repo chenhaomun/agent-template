@@ -1,6 +1,6 @@
 ---
 name: test-driven-development
-description: Use TDD for clear behavior changes (even unprompted): bug fixes, validation, business logic, parser/mapper/service/repository behavior, state transitions provable by a focused failing test.
+description: Use focused failing tests for clear behavior changes: bugs, validation, business logic, mappers, services, or state.
 ---
 
 # Test Driven Development

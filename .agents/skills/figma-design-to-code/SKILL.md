@@ -1,6 +1,6 @@
 ---
 name: figma-design-to-code
-description: Implement UI from Figma with high visual fidelity via the Figma MCP/connector. Use whenever a Figma URL, node ID, frame, or design handoff is the source of truth for UI work. Enforces exact-value extraction per node (design context + variables), token mapping, asset export, and a render-vs-design screenshot compare loop.
+description: Implement Figma-sourced UI via MCP using exact values, tokens/assets, and screenshot comparison.
 ---
 
 # Figma Design-to-Code (High Fidelity)

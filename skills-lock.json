@@ -161,6 +161,13 @@
       "skillPath": "skills/flutter-use-http-package/SKILL.md",
       "computedHash": "17efcf4da9933afaf9c1d41940bd6b92f1ae73dcae4bf6c59cfe24f7e487ee9f",
       "notes": "Local frontmatter adaptation (stack key + shortened description); body tracks upstream. Reapply frontmatter after any refresh."
+    },
+    "graphify": {
+      "source": "safishamsi/graphify",
+      "sourceType": "github-adapted",
+      "skillPath": "graphify/skill.md",
+      "localPath": ".agents/skills/graphify/SKILL.md",
+      "notes": "Heavily condensed local adaptation (~2KB vs ~39KB upstream + references/ sidecar, which is deliberately not vendored). Do NOT diff-refresh or CLI-install the body; on upstream change, re-condense by hand. Requires the graphifyy pip package at runtime. computedHash absent: external tooling required; regenerate when available. Pinned against upstream v0.9.12 (2026-07-11)."
     }
   }
 }
