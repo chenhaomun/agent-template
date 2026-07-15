@@ -1,110 +1,35 @@
 ---
 name: subagent-workflow
-description: Subagent workflow rules. Use to route subagents (BA/TL/dev/QA), choose models, write reports, manage multi-agent work.
+description: Route planner/executor/reviewer roles and model tiers for non-trivial work.
 ---
 
-Use only for medium, large, risky, or unclear work. Use `grill-requirements` first when requirements are unclear, missing acceptance criteria, missing target flow/state, contradictory, or likely to cause rework.
+Use for medium/large/risky/unclear work. Grill unclear requirements first.
 
-## Routing
+## Route once
 
-BA: business scope. TL: architecture/refactor/ownership/risk. Developer: implementation, API, data, tests. DevOps: CI/build/release/env/deploy. Security: privacy/auth/permissions/secrets/payments. UX: accessibility/copy/states. QA: functional verify/manual QA/regression/risk.
+Use capability tiers, not vendor names. The live runtime decides the mapping (typically Claude: haiku/sonnet/opus; Codex: low/medium/high effort). If per-agent overrides are unavailable, use the closest available tier and say so.
 
-## Model Choice
+| Task | Planner | Executor | Acceptance |
+|---|---|---|---|
+| Small, clear, ≤2 files | current/low | direct | self-check |
+| Medium, bounded | standard; strong for architecture/ambiguity | economy for a frozen mechanical slice, otherwise standard | main reviews diff; add fresh review for behavior/contracts |
+| Large/risky/multi-owner | strongest | standard; economy only for proven repetition | TL review + independent QA |
 
-Pick by capability tier, mapped to whatever the current harness offers (Claude: `haiku`/`sonnet`/`opus` shorthands; Codex: low/medium/high reasoning effort):
+The planner owns scope, decisions, slice order, and checkable acceptance criteria. After one pattern is proven, hand each slice to the cheapest capable executor. Escalate economy→standard after one capability failure; standard→strongest after two, including failure evidence. Missing information is clarification, not model failure.
 
-| Tier | Roles |
-|---|---|
-| Fast/cheap | BA, UX |
-| Standard | Developer, DevOps, Security, QA |
-| Strongest | TL |
-
-Escalate a tier only when complexity clearly needs it. If a tier is unavailable, use the nearest capable model and record the fallback in the report.
+Roles: BA—business scope; TL—plan/architecture/review; developer—implementation/tests; DevOps—CI/release; security—auth/privacy; UX—states/a11y; QA—acceptance/regression.
 
 ## Permissions
 
-- Read-only by default: BA, TL, QA, security, UX.
-- Write-capable only with explicit ownership: Developer, DevOps.
-- QA must not add test files unless the user asks for tests.
-- Developers must not edit outside ownership without reporting why.
-- Developers may add/update scoped tests when behavior is clear and regression risk justifies TDD.
+- BA, TL, QA, security, and UX are read-only. Developer/DevOps write only inside assigned ownership.
+- QA never creates or edits test files; automated-test authoring belongs to developers. QA may run existing suites as a check.
 
-## Execution
+## Handoff
 
-- Use one stable kebab-case `task-slug` for `reports/subagents/<task-slug>/` during the whole task.
-- Flow: choose tier first. Medium single-owner may use TL -> developer -> quick TL review. Large/risky uses BA -> TL -> developer -> developer self-check -> TL review -> developer revision -> QA.
-- TL review: spec compliance first, code quality/architecture second.
-- Repeat TL loop until accepted; stop after 3 rounds.
-- Each subagent starts with goal, scope, max 3 steps, verification.
-- Parallelize only independent, non-overlapping work.
+Every delegation contains: goal/why (≤3 sentences), owned files or read-only scope, ≤3 steps, numbered acceptance criteria, verification, and return format. Return only verdict, decisive `file:line`/test evidence, changed paths, and open items (≤20 lines). Put longer evidence in `reports/subagents/<task-slug>/` only for large work or output that cannot fit.
 
-## Production Bar
+Parallelize independent ownership only. A developer reads nearby code, keeps the diff scoped, handles relevant states, runs narrow checks, and removes debug/dead/generated churn. TL reviews the actual diff, requirement fit first. Stop after three revision rounds.
 
-Developer cannot report `done` unless behavior matches requirements, diff is scoped, project conventions hold, relevant states are handled, verification ran or blocker is stated, and no debug/dead/TODO/generated-file churn remains.
+Use at most one specialist review skill for medium work; use all directly relevant skills for large/risky work. TDD is for focused behavior risk. Security/data migrations/public APIs require fresh review. Figma work always follows `figma-design-to-code`.
 
-For large/risky or multi-agent work, TL runs final review before acceptance: accumulated changes, unresolved assumptions, verification, and relevant review-skill findings.
-
-Gates: `USER_DECISION` ask; `CLARIFICATION` route BA/TL; `REVIEW_CHANGES` revise; `PRODUCTION_GAP` reject; `BLOCKED` report; `ACCEPTED` continue.
-
-## Task Breakdown
-
-For larger work, TL creates task rows with task, dependency, owner, requirement, verification. Prefer vertical slices; parallelize only non-overlapping ownership.
-
-Generic slice order: data/model contracts → service/repository layer → business logic → presentation/UI → tests.
-
-## Quality Tiers
-
-| Tier | Use |
-|---|---|
-| Trivial | No subagent, no TDD/review skill |
-| Small | Direct work + quick self-check |
-| Medium single-owner | One developer, `production-code-review` only, max one specialist skill |
-| Medium behavior risk | Add TDD only when focused test fits existing project |
-| Large/risky/multi-agent | Full TL/dev/TL/QA loop and relevant specialist skills |
-
-## Review Skills
-
-| Skill | Use for |
-|---|---|
-| `production-code-review` | medium+ review |
-| `grill-requirements` | unclear scope, missing acceptance, likely rework |
-| `test-driven-development` | clear behavior changes with meaningful regression risk |
-| `architecture-review` | boundaries, contracts, ownership, integration risk |
-| `code-quality-review` | class design/coupling, duplication drift, over-engineering (SOLID+DRY+KISS) |
-| `figma-design-to-code` | any UI implemented from a Figma design |
-| `security-review` | auth, privacy, permissions, secrets, network, dependency risk |
-| `performance-review` | rendering, async work, memory, data processing, scaling |
-
-Developer owns one bounded module or concern, reads nearby code/tests, states intended files before editing, and runs narrow verification after each slice. TL reviews actual diff, not reports only. Integrate after tier-matched review passes.
-
-## Harness Tools
-
-Use `.agents/tools/` at checkpoints, not every turn. Use the available Python command for the local OS (`python`, `python3`, or bundled runtime).
-
-| Checkpoint | Tool |
-|---|---|
-| Task start, project type unclear | `<python> .agents/tools/detect_project.py` |
-| Project map missing/empty/stale | Preview with `<python> .agents/tools/generate_project_map.py`; update via `apply_patch` |
-| Before broad search or after map edits | `<python> .agents/tools/check_project_map.py` |
-
-Keep output short. No install/network/destructive action without approval.
-
-## Reports
-
-Write reports under `reports/subagents/<task-slug>/`.
-
-- `timeline.md`: time/order, role, action, decision, outcome.
-- `<role>.md`; append `## Run N - <short reason>` for repeats.
-- Table-based, under 80 lines.
-- Omit files read unless essential evidence.
-- Use `$caveman lite`.
-
-Report fields: run heading, `Field/Report`, `Decision/Reason/Outcome`, `Step/Critical thinking/Outcome`.
-
-## QA Without Tests
-
-If tests do not exist or are not requested, QA uses static checks, app/manual scenarios, state checks, and nearby regression checks.
-
-## Compact Timing
-
-Compact before context gets heavy, before more than 2 subagents, after TL/dev review loops, and before QA. Update `timeline.md` first.
+No install, network, destructive action, or scope expansion without authority. Use project scripts and `.agents/tools/` only at relevant checkpoints.

@@ -12,6 +12,10 @@ Use this map before broad searches. Start with mapped folders and nearby tests.
   - folders: .agents/tools, .agents/tests
   - terms: hooks, integrity, freshness, enforcement
   - notes: deterministic tests for agent tooling
+- agent-ops
+  - folders: .agents/ops
+  - terms: harness diagnosis, Windows shell, make fallback
+  - notes: deferred troubleshooting; routing lives in the subagent workflow skill
 
 ## Rules
 

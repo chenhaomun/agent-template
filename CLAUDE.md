@@ -1,18 +1,16 @@
 @AGENTS.md
 
-Claude-only additions follow (shared rules are imported above).
+Claude-only additions; shared rules are imported above.
 
 ## Memory
 
-- Read memory files only if they exist; never fabricate memory from missing paths. Surface a remembered preference only when relevant.
-- Write durable preferences to `~/.claude/projects/<project>/memory/` (create if absent).
+- Read memory only when relevant. Store Claude-only preferences there; shared rules and facts belong in `.agents/` or `AGENTS.md`.
 
 ## Working Style
 
-- Prefer extended thinking before complex, multi-step, or risky tasks; surface assumptions and risks before irreversible changes.
-- Prefer built-in tools (Read, Edit, Write, Glob, Grep, Bash) over shell one-liners for file ops.
-- Track non-trivial multi-step work with `TaskCreate`/`TaskUpdate` so progress survives compaction.
+- Prefer extended thinking for complex/risky planning and built-in file tools for edits.
+- Track non-trivial work so it survives compaction. For harness errors, read `.agents/ops/diagnosis.md`.
 
 ## Skills & Subagents
 
-`.claude/skills` and `.claude/agents` are copies of `.agents/skills` and `.agents/subagents`, refreshed by `make sync` (and at SessionStart). Edit only under `.agents/`, never the copies; `make check-template` fails on drift. Skills invoke as `/<name>`; subagents are Agent-tool targets with tool access declared in their frontmatter (read-only reviewers get no Write/Edit).
+`.claude/skills` and `.claude/agents` are generated from `.agents/`. Edit sources only; run `make sync` and `make check-template`.

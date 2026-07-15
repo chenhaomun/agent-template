@@ -1,6 +1,6 @@
 ---
 name: code-quality-review
-description: Review code quality in one pass — SOLID/OOP design, DRY/duplication drift, and KISS/over-engineering. Use for class design, coupling, copy/paste drift, needless abstraction, or complexity beyond the requirement.
+description: Review SOLID/DRY/KISS, coupling, duplication, needless abstraction, and excess complexity.
 ---
 
 # Code Quality Review (SOLID + DRY + KISS)

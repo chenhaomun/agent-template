@@ -1,54 +1,45 @@
 # AGENTS.md
 
-Shared agent rules for Codex and Claude Code. Core rules are language-agnostic; Flutter/Dart is the primary stack (see `## Flutter`). For other stacks, add a section here.
+Shared rules for Codex and Claude Code; Flutter/Dart is the primary stack.
 
 ## Commands / Verify
 
-- Prefer project scripts over raw commands. Use `make verify` as the canonical gate (integrity + map + analysis + tests + format); `make help` lists targets. Non-Flutter stacks: check `package.json` scripts or `scripts/`.
+- Prefer project scripts. Use `make verify`; if `make` is unavailable, use `.agents/ops/diagnosis.md` § Make fallback. For other stacks, check `package.json` or `scripts/`.
 - Do not hand-edit generated/vendored files (`*.g.dart`, `*.freezed.dart`, `build/`, `.dart_tool/`, etc.); edit the source and re-run the generator.
 - Cap large command output at 4,000 chars (pipe through `head` or limit explicitly).
-- Final response: short and precise. Lead with the outcome, then only changes made, verification run, and any blocker/API/env impact. No preamble, no restating the request, no step-by-step recap. Prose or a short list — not both. Expand only when asked or when safety requires it.
+- Final response: outcome, changes, verification, and blockers/API/env impact only. Expand for safety or when asked.
 
 > Hooks in `.claude/settings.json` and `.codex/hooks.json` enforce these via shared `.agents/tools/` scripts; follow the rules even when hooks are unavailable.
 
 ## Work Rules
 
-- Read nearby code before editing; follow existing architecture, naming, patterns, and test conventions.
+- Read nearby code first; follow existing architecture, naming, and tests.
 - Check `.agents/project-map.md` before broad search; if missing or stale, preview `<python> .agents/tools/generate_project_map.py`, then update via `apply_patch`.
-- Use relevant `.agents/skills/<skill>/SKILL.md`; project conventions beat generic examples. Rarely used skills are deferred under `.agents/skill-packs/` — enable per that folder's README when a task needs one.
-- Use `grill-requirements` when acceptance criteria, scope, target flow/state, or contradictions may cause rework.
+- Use relevant `.agents/skills/<skill>/SKILL.md`; project conventions win. Deferred skills live in `.agents/skill-packs/`.
+- Use `grill-requirements` when requirements are unclear or broad, or when acceptance criteria, scope, target flow/state, or contradictions may cause rework.
 - Keep changes scoped. Preserve user changes. Never reset unrelated work.
-- Follow SOLID/DRY/KISS. Ask before adding packages, tools, or global dependencies. Ask before architecture, state-management, or generator changes.
-- Keep secrets out. Stop suspicious or unexpectedly long commands; report the command and elapsed time.
-- Add/update tests when requested, when following TDD, or when matching project practice. Run narrow verification.
-- Tiered review: small = self-check; medium single-owner = `production-code-review` + max one specialist skill; large/risky/multi-agent = full review.
+- Prefer simple, scoped design. Ask before dependencies, architecture, state-management, or generator changes.
+- Keep secrets out. Stop and report suspicious or unexpectedly long commands.
+- Add/update tests when requested, required by TDD, or expected by project practice; verify narrowly first.
 - Default `caveman lite` responses (Codex: `$caveman`, Claude: `/caveman`); expand only for safety warnings, blockers, or explicit user request.
-- Default to low reasoning effort for small, well-scoped edits. Raise effort for risky, multi-step, architectural, or ambiguous work (Codex: `/reasoning high` or `model_reasoning_effort`).
 
 ## Flutter
 
 - Verify with `flutter analyze`, `flutter test`, `flutter run --dart-define-from-file=.env.dev.json`, `flutter build <target> --dart-define-from-file=.env.prod.json`.
-- Prefer Dart/Flutter MCP for analyzer, symbols, fixes, format, tests, pub.dev, dependencies, and running-app/widget inspection.
-- Check `analysis_options.yaml` and `.agents/flutter-dependencies.md`.
-- Prefer composition, immutable widgets, `const`, pure/fast `build()`, lazy lists, and off-UI-thread expensive work.
-- Keep null safety; avoid `!` unless guaranteed. Use project logging, theme/assets/tokens, l10n, responsive/a11y, platform parity, permissions, and fallbacks.
-- Cover loading, success, empty, error, disabled, and permission states. Keep errors actionable.
+- Check `analysis_options.yaml` and `.agents/flutter-dependencies.md`; prefer Dart/Flutter tooling.
+- Prefer composition, immutable/`const` widgets, fast `build()`, lazy lists, and off-UI-thread expensive work.
+- Preserve null safety, project logging/theme/l10n, responsiveness/a11y, platform parity, permissions, and loading/success/empty/error/disabled states.
 - Use configured flavors and `--dart-define-from-file`.
 - Native/FFI/binary downloads require explicit user approval and hash/offline fallback review.
 
 ## Design-to-Code (Figma)
 
 - Any UI built from a Figma design (MCP/connector, URL, or node ID) must follow `.agents/skills/figma-design-to-code/SKILL.md`. Not optional; applies to subagents too.
-- Non-negotiables: extract exact values per section node via the Figma MCP (design context + variable defs) — never estimate from screenshots or fetch one whole-screen dump; map variables to project theme tokens; export assets instead of redrawing; reuse existing components; finish with a rendered-UI vs Figma-screenshot compare loop until a pass is clean or every deviation is reported with a reason.
-
-## Contracts
-
-- Do not silently change public APIs. Update consumers, mocks/fixtures, migrations, and verification together.
-- Keep PRs single-goal.
+- Non-negotiables (details in the skill): exact values per node via the Figma MCP — never estimate from screenshots; map variables to theme tokens; export assets, don't redraw; reuse existing components; finish with the `pixel_diff.py`-gated compare loop until clean or every deviation has a reason.
 
 ## Subagents
 
-For medium/large/risky/unclear work, use `.agents/skills/subagent-workflow`. Skip for trivial edits.
+For medium/large/risky/unclear work, use `.agents/skills/subagent-workflow`. It chooses planner strength by complexity, then the cheapest capable executor. Skip for small work. Do not silently change public APIs; update consumers and verification together.
 
 ## Git
 

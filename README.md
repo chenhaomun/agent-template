@@ -20,9 +20,10 @@ Shared agent configuration for **Claude Code** and **OpenAI Codex**, designed to
 | `.agents/subagents/` | Subagent definitions with Claude frontmatter (BA, TL, Developer, DevOps, Security, QA, UX, Flutter, Backend API) |
 | `.agents/flutter-dependencies.md` | Default Flutter package choices (bloc, go_router, dio) |
 | `.agents/tools/` | Python helpers — project map, project detection, hook scripts, template integrity check |
+| `.agents/ops/` | Deferred harness troubleshooting; routing stays in the workflow skill |
 | `.agents/project-map.md` | Folder map for fast code navigation |
 | `skills-lock.json` | Dependency lock for all skill versions (core + Flutter/Dart) |
-| `.gitignore` | Ignores `reports/`, `.DS_Store`, `.env.*.json` |
+| `.gitignore` | Ignores `reports/`, `graphify-out/`, Python caches, `.DS_Store`, `.env.*.json` |
 
 ## How to Use This Template
 
@@ -77,7 +78,7 @@ Edit only under `.agents/`; never touch the copies or the generated `.toml`. `ma
 ## Default Behaviour
 
 - Replies default to **`$caveman lite`** mode (terse, no filler). Say "normal mode" to turn it off.
-- Medium/large/risky work routes through the subagent workflow (see `.agents/skills/subagent-workflow/SKILL.md`).
+- Medium/large/risky work uses `.agents/skills/subagent-workflow/SKILL.md`: complexity selects planner strength, then the cheapest capable executor receives a frozen slice.
 - Commit messages are generated from staged changes using `.agents/skills/git-staged-commit-message/SKILL.md`.
 
 ## Verification & Hooks
@@ -110,6 +111,7 @@ Format/analyze no-ops safely outside a Dart/Flutter project. Codex requires a tr
 | `code-quality-review` | SOLID/OOP + DRY + KISS in one pass |
 | `performance-review` | Rendering, async, memory |
 | `figma-design-to-code` | UI from a Figma URL/node via MCP — exact values, cached token mapping, `pixel_diff.py`-gated compare loop |
+| `graphify` | Repo knowledge graph via the `graphifyy` CLI (`pip install graphifyy` required) — graph-first codebase queries |
 | `test-driven-development` | Behavior-first implementation |
 | `skill-maintenance` | Refresh/update skills from upstream |
 
