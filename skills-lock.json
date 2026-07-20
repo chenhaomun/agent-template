@@ -167,7 +167,7 @@
       "sourceType": "github-adapted",
       "skillPath": "graphify/skill.md",
       "localPath": ".agents/skills/graphify/SKILL.md",
-      "notes": "Heavily condensed local adaptation (~2KB vs ~39KB upstream + references/ sidecar, which is deliberately not vendored). Do NOT diff-refresh or CLI-install the body; on upstream change, re-condense by hand. Requires the graphifyy pip package at runtime. computedHash absent: external tooling required; regenerate when available. Pinned against upstream v0.9.12 (2026-07-11)."
+      "notes": "Heavily condensed local adaptation (~2KB vs ~39KB upstream + references/ sidecar, which is deliberately not vendored). Do NOT diff-refresh or CLI-install the body; on upstream change, re-condense by hand. Requires the graphifyy pip package at runtime. computedHash absent: external tooling required; regenerate when available. Pinned against upstream v0.9.12 (2026-07-11); changelog reviewed through v0.9.22 (2026-07-21) — no documented-surface changes, no re-condense needed."
     }
   }
 }
