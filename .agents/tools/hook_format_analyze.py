@@ -50,25 +50,22 @@ def main() -> int:
     if not dart_files:
         return 0
 
-    # One format invocation for the whole batch; analyze stays per-file so
-    # findings attach to the file that produced them.
-    subprocess.run(
-        [dart, "format", *(str(p) for p in dart_files)], capture_output=True, text=True
-    )
-    failed = False
-    for path in dart_files:
-        result = subprocess.run(
-            [dart, "analyze", str(path)], capture_output=True, text=True
-        )
-        if result.returncode == 0:
-            continue
+    # One invocation each for format and analyze over the whole batch. `dart
+    # analyze` accepts many paths and prints the offending file:line per issue,
+    # so a single call keeps file attribution while paying one analyzer
+    # cold-start instead of one per file (the slow path on large repos), and a
+    # single combined output means the cap is a real total, not N x OUTPUT_CAP.
+    paths = [str(p) for p in dart_files]
+    subprocess.run([dart, "format", *paths], capture_output=True, text=True)
+    result = subprocess.run([dart, "analyze", *paths], capture_output=True, text=True)
+    if result.returncode == 0:
+        return 0
 
-        out = (result.stdout or result.stderr or "").strip()
-        if len(out) > OUTPUT_CAP:
-            out = out[:OUTPUT_CAP] + "\n... (truncated)"
-        sys.stderr.write(f"dart analyze found issues in {path.name}:\n{out}\n")
-        failed = True
-    return 2 if failed else 0
+    out = (result.stdout or result.stderr or "").strip()
+    if len(out) > OUTPUT_CAP:
+        out = out[:OUTPUT_CAP] + "\n... (truncated)"
+    sys.stderr.write(f"dart analyze found issues:\n{out}\n")
+    return 2
 
 
 if __name__ == "__main__":

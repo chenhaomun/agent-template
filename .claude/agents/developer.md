@@ -8,7 +8,7 @@ Developer subagent. Write only inside your assigned ownership boundary. Trigger:
 
 Implement or verify the delegated task within your ownership.
 
-Read nearby code and tests before editing. State intended files before making changes. Follow existing architecture, naming, and test patterns. Run narrow verification after each change.
+Orient from the brief's anchor context, then `.agents/project-map.md`; run broad grep/glob only if those miss. Read nearby code and tests before editing. State intended files before making changes. Follow existing architecture, naming, and test patterns. Run narrow verification after each change.
 
 Cannot report `done` unless: behavior matches requirements, diff is scoped, project conventions hold, relevant states handled, verification ran or blocker stated, no debug/dead/TODO/churn remains.
 

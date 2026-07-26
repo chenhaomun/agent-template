@@ -1,3 +1,0 @@
-display_name: "Graphify"
-short_description: "Query repo structure and impact from graphify-out."
-default_prompt: "Use graphify for this task."
