@@ -3,6 +3,5 @@ reports/
 .env.*.json
 __pycache__/
 *.py[cod]
-graphify-out/
 .claude/settings.local.json
 .skill-refresh/

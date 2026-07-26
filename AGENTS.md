@@ -34,8 +34,7 @@ Shared rules for Codex and Claude Code; Flutter/Dart is the primary stack.
 
 ## Design-to-Code (Figma)
 
-- Any UI built from a Figma design (MCP/connector, URL, or node ID) must follow `.agents/skills/figma-design-to-code/SKILL.md`. Not optional; applies to subagents too.
-- Non-negotiables (details in the skill): exact values per node via the Figma MCP — never estimate from screenshots; map variables to theme tokens; export assets, don't redraw; reuse existing components; finish with the `pixel_diff.py`-gated compare loop until clean or every deviation has a reason.
+- Any UI built from a Figma design (MCP/connector, URL, or node ID) MUST follow `.agents/skills/figma-design-to-code/SKILL.md` — not optional, applies to subagents. Take exact values per node from the Figma MCP; never estimate from screenshots. The skill holds the rest (token mapping, asset export, component reuse, `pixel_diff.py`-gated compare loop).
 
 ## Subagents
 

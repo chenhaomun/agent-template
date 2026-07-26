@@ -79,6 +79,17 @@ def mirror(src: Path, dst: Path, exclude_top: set[str] = frozenset()) -> bool:
     return changed
 
 
+# Claude capability tier (subagent frontmatter `model:`) -> Codex model + effort.
+# The source of truth stays the vendor-neutral tier; this table is the only place
+# the concrete Codex model strings live, so a model rename is a one-line change.
+# Mirrors the Claude tiers: opus=strongest (planning), sonnet=standard, haiku=economy.
+CODEX_TIER: dict[str, tuple[str, str]] = {
+    "opus": ("gpt-5.6-sol", "high"),
+    "sonnet": ("gpt-5.6-terra", "medium"),
+    "haiku": ("gpt-5.6-luna", "low"),
+}
+
+
 def toml_basic(value: str) -> str:
     return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
@@ -102,12 +113,23 @@ def toml_body(value: str) -> str:
     return f'"{escaped}"'
 
 
-def render_codex_toml(name: str, description: str, body: str) -> str:
-    return (
-        f"name = {toml_basic(name)}\n"
-        f"description = {toml_basic(description)}\n"
-        f"developer_instructions = {toml_body(body)}\n"
-    )
+def render_codex_toml(
+    name: str,
+    description: str,
+    body: str,
+    model: str | None = None,
+    effort: str | None = None,
+) -> str:
+    lines = [
+        f"name = {toml_basic(name)}",
+        f"description = {toml_basic(description)}",
+    ]
+    if model:
+        lines.append(f"model = {toml_basic(model)}")
+    if effort:
+        lines.append(f"model_reasoning_effort = {toml_basic(effort)}")
+    lines.append(f"developer_instructions = {toml_body(body)}")
+    return "\n".join(lines) + "\n"
 
 
 def generate_codex_agents(actions: list[str]) -> None:
@@ -122,9 +144,12 @@ def generate_codex_agents(actions: list[str]) -> None:
         if not name or not description:
             actions.append(f"skip {md.name}: missing name/description")
             continue
+        # Map the vendor-neutral Claude tier to a Codex model + effort; unknown
+        # or absent tiers emit nothing and inherit the session default.
+        model, effort = CODEX_TIER.get(front.get("model", ""), (None, None))
         out = CODEX_AGENTS / f"{name}.toml"
         wanted.add(out.name)
-        content = render_codex_toml(name, description, body)
+        content = render_codex_toml(name, description, body, model, effort)
         if not out.exists() or out.read_text(encoding="utf-8") != content:
             out.write_text(content, encoding="utf-8")
             actions.append(f"generated .codex/agents/{out.name}")

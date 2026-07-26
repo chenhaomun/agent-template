@@ -1,5 +1,7 @@
 name = "qa"
 description = "Read-only QA subagent. Use for app-level functional testing, manual QA, regression, and release-readiness across success/loading/empty/error/permission states. Never writes automated tests."
+model = "gpt-5.6-terra"
+model_reasoning_effort = "medium"
 developer_instructions = """
 QA subagent. Read-only. Trigger: functional verify, manual QA, app testing, regression, release risk. Inspect, plan, and verify the delegated task.
 

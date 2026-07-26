@@ -13,7 +13,8 @@
       "sourceType": "github-adapted",
       "skillPath": "skills/caveman-compress/SKILL.md",
       "computedHash": "314ea6d11daf92430f451ec8eb1045d54b7d0d156eca32307f6bece2ee195703",
-      "notes": "Project-adapted local-only deterministic compressor. Upstream refresh overwrites this; reapply local-only changes before commit."
+      "notes": "Project-adapted local-only deterministic compressor. Upstream refresh overwrites this; reapply local-only changes before commit.",
+      "localPath": ".agents/skill-packs/maintenance/skills/caveman-compress/SKILL.md"
     },
     "dart-add-unit-test": {
       "source": "dart-lang/skills",
@@ -162,12 +163,11 @@
       "computedHash": "17efcf4da9933afaf9c1d41940bd6b92f1ae73dcae4bf6c59cfe24f7e487ee9f",
       "notes": "Local frontmatter adaptation (stack key + shortened description); body tracks upstream. Reapply frontmatter after any refresh."
     },
-    "graphify": {
-      "source": "safishamsi/graphify",
-      "sourceType": "github-adapted",
-      "skillPath": "graphify/skill.md",
-      "localPath": ".agents/skills/graphify/SKILL.md",
-      "notes": "Heavily condensed local adaptation (~2KB vs ~39KB upstream + references/ sidecar, which is deliberately not vendored). Do NOT diff-refresh or CLI-install the body; on upstream change, re-condense by hand. Requires the graphifyy pip package at runtime. computedHash absent: external tooling required; regenerate when available. Pinned against upstream v0.9.12 (2026-07-11); changelog reviewed through v0.9.22 (2026-07-21) — no documented-surface changes, no re-condense needed."
+    "skill-maintenance": {
+      "sourceType": "local",
+      "skillPath": "skills/skill-maintenance/SKILL.md",
+      "localPath": ".agents/skill-packs/maintenance/skills/skill-maintenance/SKILL.md",
+      "notes": "Locally authored; deferred to maintenance skill-pack to trim always-on listing. No upstream computedHash (do not fabricate)."
     }
   }
 }

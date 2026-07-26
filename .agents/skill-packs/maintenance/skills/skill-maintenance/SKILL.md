@@ -11,7 +11,7 @@ Keep skills current like vendored dependencies. Run only when the user invokes t
 
 `skills-lock.json` is **hand-maintained**. The `skills` CLI does not read or write it, and `computedHash` is **not** a plain `sha256` of `SKILL.md` — it is produced by external tooling not present in this repo, so it cannot be regenerated here. Do **not** fabricate hashes. Treat the lock as a version pin + provenance record; verify drift by content diff, not by recomputing hashes.
 
-`sourceType: github-adapted` entries are intentionally divergent — check each entry's `notes` for what is local-only. `caveman-compress` is fully local-only (**exclude from any refresh**); `caveman` tracks upstream's body but keeps a locally shortened description (refresh the body, keep the description); `graphify` is a hand-condensed adaptation (**never diff-refresh or CLI-install it** — on upstream change, re-condense manually per its lock notes).
+`sourceType: github-adapted` entries are intentionally divergent — check each entry's `notes` for what is local-only. `caveman-compress` is fully local-only (**exclude from any refresh**); `caveman` tracks upstream's body but keeps a locally shortened description (refresh the body, keep the description).
 
 The always-on dart/flutter skills carry local frontmatter upstream does not have: a `stack: dart|flutter` key (drives stack gating in `sync_shared.py`) and, where the lock entry's `notes` say so, a locally shortened `description:` (cuts always-loaded context). A drift check will always show those frontmatter diffs (expected, not upstream drift), and a CLI refresh drops them: **re-apply `stack:` and shortened descriptions after any refresh** — diff bodies only when judging upstream changes.
 

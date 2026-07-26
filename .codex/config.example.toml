@@ -1,5 +1,9 @@
 personality = "pragmatic"
-model = "gpt-5.5"
+# Main session default (mirrors the Sonnet main loop on the Claude side).
+# Per-agent overrides in .codex/agents/*.toml escalate: team-lead -> gpt-5.6-sol,
+# standard executors -> gpt-5.6-terra, economy/reviewers -> gpt-5.6-luna.
+# Flip to gpt-5.6-sol if you want the main session on the flagship.
+model = "gpt-5.6-terra"
 model_reasoning_effort = "low"
 
 [windows]

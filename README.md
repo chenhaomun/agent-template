@@ -17,13 +17,13 @@ Shared agent configuration for **Claude Code** and **OpenAI Codex**, designed to
 | `.claude/device-setup/` | Portable Claude **user** prefs (theme/model/behaviour) — `settings.example.json`, `install.py`. Not auto-loaded; applied per machine |
 | `.codex/` | Portable Codex **device** setup — `config.example.toml`, `install.py`, optional pet. Not auto-loaded; applied per machine |
 | `.agents/skills/` | **The** skill files (core + Flutter/Dart), read by both tools. Every skill carries an `agents/openai.yaml` (`make sync` generates missing ones) so Codex surfaces it as a `$`-command |
-| `.agents/subagents/` | Subagent definitions with Claude frontmatter (BA, TL, Developer, DevOps, Security, QA, UX, Flutter, Backend API) |
+| `.agents/subagents/` | Subagent definitions with Claude frontmatter (BA, TL, Developer, Flutter, Backend API, Economy-Executor, QA) |
 | `.agents/flutter-dependencies.md` | Default Flutter package choices (bloc, go_router, dio) |
 | `.agents/tools/` | Python helpers — project map, project detection, hook scripts, template integrity check |
 | `.agents/ops/` | Deferred harness troubleshooting; routing stays in the workflow skill |
 | `.agents/project-map.md` | Folder map for fast code navigation |
 | `skills-lock.json` | Dependency lock for all skill versions (core + Flutter/Dart) |
-| `.gitignore` | Ignores `reports/`, `graphify-out/`, Python caches, `.DS_Store`, `.env.*.json` |
+| `.gitignore` | Ignores `reports/`, Python caches, `.DS_Store`, `.env.*.json` |
 
 ## How to Use This Template
 
@@ -100,7 +100,6 @@ Format/analyze no-ops safely outside a Dart/Flutter project. Codex requires a tr
 | Skill | Trigger |
 |---|---|
 | `caveman` | `/caveman`, "less tokens", "be brief" |
-| `caveman-compress` | Deterministic local text compression (scripted) |
 | `grill-requirements` | Unclear scope, missing acceptance criteria |
 | `production-code-review` | Medium+ review; `$caveman lite` output |
 | `git-staged-commit-message` | "commit message", "commit this" |
@@ -111,11 +110,11 @@ Format/analyze no-ops safely outside a Dart/Flutter project. Codex requires a tr
 | `code-quality-review` | SOLID/OOP + DRY + KISS in one pass |
 | `performance-review` | Rendering, async, memory |
 | `figma-design-to-code` | UI from a Figma URL/node via MCP — exact values, cached token mapping, `pixel_diff.py`-gated compare loop |
-| `graphify` | Repo knowledge graph via the `graphifyy` CLI (`pip install graphifyy` required) — graph-first codebase queries |
 | `test-driven-development` | Behavior-first implementation |
-| `skill-maintenance` | Refresh/update skills from upstream |
+| `resolving-merge-conflicts` | Resolve git merge/rebase conflicts safely — preserve both intents, regenerate generated files, verify |
+| `find-skills` | Scan the project's stack and gaps, then recommend skills to add/enable |
 
-Plus the bundled **Flutter/Dart** skills: everyday ones (tests, mocks, layout fixes, responsive layout, architecture, JSON, HTTP, static analysis, runtime errors) stay always-loaded; rare/setup ones (FFI, CLI, coverage, l10n, routing setup, pattern matching, package conflicts, integration tests, widget previews) are deferred under `.agents/skill-packs/flutter-dart/` to keep per-session context lean. All tracked in `skills-lock.json` and refreshed by `skill-maintenance`.
+Plus the bundled **Flutter/Dart** skills: everyday ones (tests, mocks, layout fixes, responsive layout, architecture, JSON, HTTP, static analysis, runtime errors) stay always-loaded; rare/setup ones (FFI, CLI, coverage, l10n, routing setup, pattern matching, package conflicts, integration tests, widget previews) are deferred under `.agents/skill-packs/flutter-dart/` to keep per-session context lean; the meta skills `caveman-compress` and `skill-maintenance` are likewise deferred under `.agents/skill-packs/maintenance/`. All are tracked in `skills-lock.json` and refreshed on demand via `skill-maintenance`.
 
 ## Subagents Reference
 
@@ -123,13 +122,13 @@ Plus the bundled **Flutter/Dart** skills: everyday ones (tests, mocks, layout fi
 |---|---|
 | `business-analyst` | Requirements, scope, user flows |
 | `team-lead` | Architecture, task breakdown, final review |
-| `developer` | Implementation, API, data layer, tests |
-| `devops-release-engineer` | CI/CD, build, deploy, env |
-| `security-privacy-reviewer` | Auth, secrets, privacy audit |
-| `qa` | Functional verify, regression, release readiness |
-| `ux-product-reviewer` | UX, accessibility, copy, states |
+| `developer` | Implementation, API, data layer, tests (generalist / non-Flutter) |
 | `flutter-developer` | Flutter UI/state/routing/platform implementation |
 | `backend-api-developer` | API/DTO/migration/contract implementation |
+| `economy-executor` | Frozen mechanical slices only (cheapest tier) |
+| `qa` | Functional verify, regression, release readiness |
+
+Security/privacy, UX/a11y, and CI/release no longer have dedicated subagents — the owning developer or `team-lead` runs the matching review skill (e.g. `security-review`, `production-code-review`) instead.
 
 ## Claude Code-Specific Features
 
