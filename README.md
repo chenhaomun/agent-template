@@ -114,7 +114,7 @@ Format/analyze no-ops safely outside a Dart/Flutter project. Codex requires a tr
 | `resolving-merge-conflicts` | Resolve git merge/rebase conflicts safely — preserve both intents, regenerate generated files, verify |
 | `find-skills` | Scan the project's stack and gaps, then recommend skills to add/enable |
 
-Plus the bundled **Flutter/Dart** skills: everyday ones (tests, mocks, layout fixes, responsive layout, architecture, JSON, HTTP, static analysis, runtime errors) stay always-loaded; rare/setup ones (FFI, CLI, coverage, l10n, routing setup, pattern matching, package conflicts, integration tests, widget previews) are deferred under `.agents/skill-packs/flutter-dart/` to keep per-session context lean; the meta skills `caveman-compress` and `skill-maintenance` are likewise deferred under `.agents/skill-packs/maintenance/`. All are tracked in `skills-lock.json` and refreshed on demand via `skill-maintenance`.
+Plus the bundled **Flutter/Dart** skills: everyday ones (tests, mocks, layout fixes, responsive layout, architecture, JSON, HTTP, static analysis, runtime errors) stay always-loaded; rare/setup ones (FFI, CLI, coverage, l10n, routing setup, pattern matching, package conflicts, integration tests, widget previews) are deferred under `.agents/skill-packs/flutter-dart/` to keep per-session context lean. The meta skills `caveman-compress` and `skill-maintenance` stay active because they are the maintenance entrypoints. All are tracked in `skills-lock.json` and refreshed on demand via `skill-maintenance`.
 
 ## Subagents Reference
 

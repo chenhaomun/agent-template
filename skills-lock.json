@@ -13,8 +13,7 @@
       "sourceType": "github-adapted",
       "skillPath": "skills/caveman-compress/SKILL.md",
       "computedHash": "314ea6d11daf92430f451ec8eb1045d54b7d0d156eca32307f6bece2ee195703",
-      "notes": "Project-adapted local-only deterministic compressor. Upstream refresh overwrites this; reapply local-only changes before commit.",
-      "localPath": ".agents/skill-packs/maintenance/skills/caveman-compress/SKILL.md"
+      "notes": "Project-adapted local-only deterministic compressor. Upstream refresh overwrites this; reapply local-only changes before commit."
     },
     "dart-add-unit-test": {
       "source": "dart-lang/skills",
@@ -166,8 +165,7 @@
     "skill-maintenance": {
       "sourceType": "local",
       "skillPath": "skills/skill-maintenance/SKILL.md",
-      "localPath": ".agents/skill-packs/maintenance/skills/skill-maintenance/SKILL.md",
-      "notes": "Locally authored; deferred to maintenance skill-pack to trim always-on listing. No upstream computedHash (do not fabricate)."
+      "notes": "Locally authored active maintenance entrypoint. No upstream computedHash (do not fabricate)."
     }
   }
 }

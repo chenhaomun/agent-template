@@ -1,0 +1,3 @@
+display_name: Skill Maintenance
+short_description: Refresh and review project-local Codex skills.
+default_prompt: Run skill maintenance for this template.
