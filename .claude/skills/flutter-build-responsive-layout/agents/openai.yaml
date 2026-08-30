@@ -1,3 +1,0 @@
-display_name: "Flutter Build Responsive Layout"
-short_description: "Adapt layouts across screen sizes with `LayoutBuilder`, `MediaQuery`, `Expanded`/`Flexible`."
-default_prompt: "Use flutter-build-responsive-layout for this task."

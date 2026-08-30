@@ -22,6 +22,7 @@ from pathlib import Path
 
 from _template_lib import LINKS, ROOT, gated_skill_names, parse_frontmatter, relevant
 from detect_project import detect
+from sync_shared import CODEX_TIER, GENERATED_HEADER, render_codex_toml
 
 try:
     import tomllib
@@ -60,9 +61,11 @@ def check_shared_directories(errors: list[str]) -> None:
         if not link_path.is_dir():
             errors.append(f"{link} is missing")
             continue
-        # The copy is the gated mirror, so compare against the same gated source.
+        # Copies may also contain project-owned entries; canonical entries must match.
         exclude = gated_skill_names(target, detected) if expected_target == ".agents/skills" else frozenset()
-        if directory_snapshot(link_path) != directory_snapshot(target, exclude):
+        actual = directory_snapshot(link_path)
+        expected = directory_snapshot(target, exclude)
+        if any(actual.get(relative) != digest for relative, digest in expected.items()):
             errors.append(f"{link} copy has drifted from {expected_target}")
 
 
@@ -87,7 +90,7 @@ def check_subagents(errors: list[str]) -> int:
 
 
 def check_skills(errors: list[str]) -> int:
-    """Validate active and pack skill frontmatter plus Codex adapters.
+    """Validate active skill frontmatter plus Codex adapters.
 
     A SKILL.md with a missing/mismatched name or missing description silently
     fails to load (Claude) or mis-surfaces (Codex), so fail loudly here.
@@ -98,7 +101,8 @@ def check_skills(errors: list[str]) -> int:
         md = skill_dir / "SKILL.md"
         rel = f".agents/skills/{skill_dir.name}"
         if not md.is_file():
-            errors.append(f"{rel}: missing SKILL.md")
+            if any(path.is_file() for path in skill_dir.rglob("*")):
+                errors.append(f"{rel}: missing SKILL.md")
             continue
         count += 1
         front, _ = parse_frontmatter(md.read_text(encoding="utf-8", errors="ignore"))
@@ -108,35 +112,21 @@ def check_skills(errors: list[str]) -> int:
             errors.append(f"{rel}: frontmatter missing 'description:'")
         if not (skill_dir / "agents" / "openai.yaml").is_file():
             errors.append(f"{rel}: missing agents/openai.yaml (run make sync)")
-    for md in sorted((ROOT / ".agents" / "skill-packs").glob("*/skills/*/SKILL.md")):
-        count += 1
-        rel = md.parent.relative_to(ROOT).as_posix()
-        front, _ = parse_frontmatter(md.read_text(encoding="utf-8", errors="ignore"))
-        if front.get("name") != md.parent.name:
-            errors.append(f"{rel}: frontmatter name {front.get('name')!r} != directory name")
-        if not front.get("description"):
-            errors.append(f"{rel}: frontmatter missing 'description:'")
     return count
 
 
 def check_skills_lock(errors: list[str]) -> None:
-    """Lock entries must point at real files; pack skills must be pinned."""
+    """Lock entries must point at real files."""
     lock_path = ROOT / "skills-lock.json"
     try:
         lock = json.loads(lock_path.read_text(encoding="utf-8"))["skills"]
     except (OSError, ValueError, KeyError, TypeError) as error:
         errors.append(f"skills-lock.json is invalid: {error}")
         return
-    pinned_local: set[str] = set()
     for name, entry in lock.items():
         local = entry.get("localPath", ".agents/" + entry.get("skillPath", ""))
-        pinned_local.add(local)
         if not (ROOT / local).is_file():
             errors.append(f"skills-lock.json: {name} points at missing file {local}")
-    for md in (ROOT / ".agents" / "skill-packs").glob("*/skills/*/SKILL.md"):
-        rel = md.relative_to(ROOT).as_posix()
-        if rel not in pinned_local:
-            errors.append(f"{rel}: pack skill has no skills-lock.json entry with matching localPath")
 
 
 def parse_agent_toml(text: str) -> dict[str, object]:
@@ -180,9 +170,13 @@ def check_codex(errors: list[str], expected_agents: int) -> None:
     codex_agents = sorted((ROOT / ".codex" / "agents").glob("*.toml"))
     shared_names = {path.stem for path in (ROOT / ".agents" / "subagents").glob("*.md")}
     codex_names: set[str] = set()
+    generated_count = 0
     for path in codex_agents:
         try:
             text = path.read_text(encoding="utf-8")
+            if not text.startswith(GENERATED_HEADER):
+                continue
+            generated_count += 1
             data = parse_agent_toml(text)
         except (OSError, ValueError) as error:
             errors.append(f"{path.name}: invalid TOML: {error}")
@@ -192,8 +186,15 @@ def check_codex(errors: list[str], expected_agents: int) -> None:
                 errors.append(f"{path.name}: missing '{field}'")
         if isinstance(data.get("name"), str):
             codex_names.add(data["name"])
-    if codex_names != shared_names or len(codex_agents) != expected_agents:
+    if codex_names != shared_names or generated_count != expected_agents:
         errors.append(".codex/agents does not match .agents/subagents")
+    for source in sorted((ROOT / ".agents" / "subagents").glob("*.md")):
+        front, body = parse_frontmatter(source.read_text(encoding="utf-8"))
+        model, effort = CODEX_TIER.get(front.get("model", ""), (None, None))
+        expected = render_codex_toml(front["name"], front["description"], body, model, effort)
+        adapter = ROOT / ".codex" / "agents" / f"{front['name']}.toml"
+        if adapter.is_file() and adapter.read_text(encoding="utf-8") != expected:
+            errors.append(f"{adapter.name} has drifted from .agents/subagents/{source.name}")
 
 
 def check_claude(errors: list[str]) -> None:
@@ -210,12 +211,12 @@ def check_claude(errors: list[str]) -> None:
 
 def check_makefile(errors: list[str]) -> None:
     try:
-        makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
+        makefile = (ROOT / ".agents" / "Makefile").read_text(encoding="utf-8")
     except OSError as error:
-        errors.append(f"Makefile is missing: {error}")
+        errors.append(f".agents/Makefile is missing: {error}")
         return
     verify_line = next((line for line in makefile.splitlines() if line.startswith("verify:")), "")
-    for target in ("check-template", "check-map", "analyze", "test", "format-check", "tool-tests"):
+    for target in ("check-template", "check-context", "analyze", "test", "format-check", "tool-tests"):
         if target not in verify_line:
             errors.append(f"Makefile verify target missing dependency: {target}")
 

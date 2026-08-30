@@ -1,3 +1,0 @@
-display_name: Security Review
-short_description: Check auth, secrets, privacy, permissions, networking, and dependency risk.
-default_prompt: Use security-review on this change.

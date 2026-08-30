@@ -1,10 +1,10 @@
 personality = "pragmatic"
-# Main session default (mirrors the Sonnet main loop on the Claude side).
+# Main session uses flagship Codex with its documented 1.05M context window.
 # Per-agent overrides in .codex/agents/*.toml escalate: team-lead -> gpt-5.6-sol,
 # standard executors -> gpt-5.6-terra, economy/reviewers -> gpt-5.6-luna.
-# Flip to gpt-5.6-sol if you want the main session on the flagship.
-model = "gpt-5.6-terra"
+model = "gpt-5.6-sol"
 model_reasoning_effort = "low"
+model_context_window = 1050000
 
 [windows]
 sandbox = "elevated"

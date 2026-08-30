@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
-"""Generate the agent adapters from the single source under `.agents/`.
+"""Generate tool adapters from canonical sources under `.agents/`.
 
 Subagents and skills are authored once under `.agents/`; the per-tool adapters
 are derived here, so nothing is hand-maintained twice:
 
-- `.claude/skills`  <- copy of `.agents/skills`     (Claude loads skills here)
-- `.claude/agents`  <- copy of `.agents/subagents`  (Claude loads subagents here)
+- `.claude/skills`  -> `.agents/skills`
+- `.claude/agents`  -> `.agents/subagents`
 - `.codex/agents/*.toml` <- generated from `.agents/subagents/*.md` frontmatter
 
-Copies exist because Claude needs real directories at those paths; on Windows
-(`core.symlinks=false`) git checks symlinks out as dead text files. The Codex
-TOML is just the `.md` name/description plus its body, re-encoded.
+Committed relative symlinks remove duplicate content. When Git cannot create
+symlinks (commonly Windows), this tool replaces the dead placeholder with a
+stack-gated copy. Codex TOML re-encodes each canonical subagent definition.
 
-Idempotent. A correctly-resolving symlink is left untouched. Run via
-`make sync`; also runs at SessionStart so adapters self-heal. Pair with
-`check_template.py`, which fails if any adapter has drifted from its source.
+Idempotent. A correctly-resolving symlink is left untouched. Run with
+`make -f .agents/Makefile sync`; `check_template.py` reports adapter drift.
 """
 
 from __future__ import annotations
@@ -36,7 +35,7 @@ def is_good_symlink(link: Path, target: Path) -> bool:
 
 
 def mirror(src: Path, dst: Path, exclude_top: set[str] = frozenset()) -> bool:
-    """Copy src tree into dst, removing stale entries. Return True if changed.
+    """Copy canonical entries into dst without deleting project-owned files.
 
     Top-level entries named in `exclude_top` are skipped (and pruned from dst
     if already present), which is how stack-gated skills stay out of the copy.
@@ -44,14 +43,12 @@ def mirror(src: Path, dst: Path, exclude_top: set[str] = frozenset()) -> bool:
     changed = False
     dst.mkdir(parents=True, exist_ok=True)
 
-    wanted: set[Path] = set()
     for path in src.rglob("*"):
         if not relevant(path):
             continue
         rel = path.relative_to(src)
         if rel.parts[0] in exclude_top:
             continue
-        wanted.add(rel)
         out = dst / rel
         if path.is_dir():
             if not out.is_dir():
@@ -60,20 +57,6 @@ def mirror(src: Path, dst: Path, exclude_top: set[str] = frozenset()) -> bool:
         elif not out.exists() or not filecmp.cmp(path, out, shallow=False):
             out.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(path, out)
-            changed = True
-
-    # Remove anything in dst that no longer exists in src (deepest first).
-    for path in sorted(dst.rglob("*"), key=lambda p: len(p.parts), reverse=True):
-        if not relevant(path):
-            continue
-        if path.relative_to(dst) in wanted:
-            continue
-        if path.is_dir():
-            if not any(path.iterdir()):
-                path.rmdir()
-                changed = True
-        else:
-            path.unlink()
             changed = True
 
     return changed
@@ -88,6 +71,7 @@ CODEX_TIER: dict[str, tuple[str, str]] = {
     "sonnet": ("gpt-5.6-terra", "medium"),
     "haiku": ("gpt-5.6-luna", "low"),
 }
+GENERATED_HEADER = "# Generated from .agents/subagents; edit the source Markdown."
 
 
 def toml_basic(value: str) -> str:
@@ -121,6 +105,7 @@ def render_codex_toml(
     effort: str | None = None,
 ) -> str:
     lines = [
+        GENERATED_HEADER,
         f"name = {toml_basic(name)}",
         f"description = {toml_basic(description)}",
     ]
@@ -154,7 +139,7 @@ def generate_codex_agents(actions: list[str]) -> None:
             out.write_text(content, encoding="utf-8")
             actions.append(f"generated .codex/agents/{out.name}")
     for toml in CODEX_AGENTS.glob("*.toml"):
-        if toml.name not in wanted:
+        if toml.name not in wanted and toml.read_text(encoding="utf-8").startswith(GENERATED_HEADER):
             toml.unlink()
             actions.append(f"removed stale .codex/agents/{toml.name}")
 

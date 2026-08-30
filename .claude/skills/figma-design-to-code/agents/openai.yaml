@@ -1,3 +1,0 @@
-display_name: Figma Design-to-Code
-short_description: Implement exact Figma UI with tokens, assets, and screenshot comparison.
-default_prompt: Use figma-design-to-code to implement this Figma design.

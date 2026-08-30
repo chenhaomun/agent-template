@@ -1,3 +1,0 @@
-display_name: "Dart Generate Test Mocks"
-short_description: "Generate `mockito` mocks with `build_runner` for external dependencies (APIs, databases) in unit tests."
-default_prompt: "Use dart-generate-test-mocks for this task."
