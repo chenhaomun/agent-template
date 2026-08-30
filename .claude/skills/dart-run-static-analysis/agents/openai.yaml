@@ -1,3 +1,0 @@
-display_name: "Dart Run Static Analysis"
-short_description: "Run `dart analyze` and `dart fix --apply` to surface and auto-fix lint issues before committing."
-default_prompt: "Use dart-run-static-analysis for this task."

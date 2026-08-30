@@ -25,4 +25,4 @@ The installer backs up `~/.codex/config.toml` before writing.
 
 ## Agents
 
-`.codex/agents/*.toml` are **generated** from `.agents/subagents/*.md` by `.agents/tools/sync_shared.py` (run via `make sync`, or automatically at SessionStart). Edit the subagent `.md` under `.agents/subagents/`, never the `.toml` — a hand edit is overwritten on the next sync, and `make check-template` fails if they drift.
+`.codex/agents/*.toml` are generated from `.agents/subagents/*.md` by `.agents/tools/sync_shared.py`. Run `make -f .agents/Makefile sync` after subagent changes. Edit the source Markdown, never generated TOML; `check-template` reports drift.

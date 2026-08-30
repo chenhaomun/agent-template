@@ -1,3 +1,0 @@
-display_name: "Flutter Add Widget Test"
-short_description: "Write `WidgetTester` tests verifying widget rendering and interactions (tap, scroll, text entry)."
-default_prompt: "Use flutter-add-widget-test for this task."

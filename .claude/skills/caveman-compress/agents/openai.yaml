@@ -1,3 +1,0 @@
-display_name: "Caveman Compress"
-short_description: "Compress a memory/instruction file (AGENTS.md, .agents/*.md, todos) into caveman format in place; backup saved as FILE.original.md."
-default_prompt: "Use caveman-compress for this task."

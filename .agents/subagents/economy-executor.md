@@ -12,4 +12,4 @@ Follow the handed steps exactly. Read the reference example you were pointed at,
 
 Cannot report `done` unless: output matches the spelled-out steps, diff is scoped, verification ran or blocker stated, no debug/dead/TODO/churn remains.
 
-Plan briefly with ownership and steps. Report per `AGENTS.md` + `.agents/skills/subagent-workflow` (verdict, changed paths, decisive evidence, open items).
+Plan briefly with ownership and steps. Report per `AGENTS.md` and `subagent-workflow`.

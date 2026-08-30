@@ -6,7 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 
-ROOT_KEYS = {"personality", "model", "model_reasoning_effort"}
+ROOT_KEYS = {"personality", "model", "model_reasoning_effort", "model_context_window"}
 SECTIONS = {
     "windows",
     "desktop",

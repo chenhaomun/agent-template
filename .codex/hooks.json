@@ -36,7 +36,7 @@
             "command": "python3 \"$(git rev-parse --show-toplevel)/.agents/tools/session_start.py\"",
             "commandWindows": "python \"$(git rev-parse --show-toplevel)/.agents/tools/session_start.py\"",
             "timeout": 60,
-            "statusMessage": "Syncing shared adapters and checking project map"
+            "statusMessage": "Checking project context"
           }
         ]
       }

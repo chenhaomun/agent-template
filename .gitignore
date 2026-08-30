@@ -1,7 +1,18 @@
+# Generated output and installer backups
 reports/
-.DS_Store
-.env.*.json
+.skill-refresh/
+*.bak-*
+
+# Secrets and machine-local settings
+.env
+.env.*
+!.env.example
+!.env.*.example
+.claude/settings.local.json
+.codex/config.toml
+
+# Tool and OS caches
 __pycache__/
 *.py[cod]
-.claude/settings.local.json
-.skill-refresh/
+.pytest_cache/
+.DS_Store

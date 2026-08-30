@@ -1,3 +1,0 @@
-display_name: Subagent Task Brief
-short_description: Turn requirements into a subagent-ready brief.
-default_prompt: /subagent-task <paste raw requirement>

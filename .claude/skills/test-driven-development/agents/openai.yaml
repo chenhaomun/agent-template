@@ -1,3 +1,0 @@
-display_name: "Test Driven Development"
-short_description: "Use focused failing tests for behavior changes."
-default_prompt: "Use test-driven-development for this task."

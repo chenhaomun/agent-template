@@ -1,3 +1,0 @@
-display_name: Code Quality Review
-short_description: Review SOLID, DRY, KISS, coupling, and excess complexity.
-default_prompt: Use code-quality-review on this diff.

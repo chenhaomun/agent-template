@@ -1,3 +1,3 @@
 display_name: Subagent Workflow
-short_description: Route planner, executor, reviewer, and model tiers.
+short_description: Route planner, executor, and reviewer roles for non-trivial work.
 default_prompt: Use subagents for this task.

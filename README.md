@@ -1,157 +1,123 @@
 # Agent Template
 
-Shared agent configuration for **Claude Code** and **OpenAI Codex**, designed to work simultaneously from the same project. **Flutter/Dart is the primary stack**; the core rules and workflow are language-agnostic. The single source of every skill and subagent lives in `.agents/`; Claude reads synced copies under `.claude/` — so both tools always have an identical set, on every OS including Windows.
+Lean shared configuration for Claude Code and OpenAI Codex. Flutter/Dart support is included, while project-specific rules and existing files remain intact.
 
-## What's Included
+## Structure
 
-| File / Folder | Purpose |
-|---|---|
-| `AGENTS.md` | Single source of shared rules. Codex reads it directly |
-| `CLAUDE.md` | Claude Code entry point — imports `AGENTS.md` via `@AGENTS.md`, adds Claude-only rules |
-| `.claude/settings.json` | Claude Code project settings (model, permissions, **hooks**) |
-| `.codex/hooks.json` | Codex project hooks using the shared enforcement scripts |
-| `.codex/agents/` | Codex agent definitions — **generated** from `.agents/subagents/*.md` by `make sync` |
-| `Makefile` | Canonical verify entrypoints — `make verify` / `make help` |
-| `.claude/skills` (copy of `.agents/skills`) | Synced copy so Claude sees every skill as `/<skill-name>` |
-| `.claude/agents` (copy of `.agents/subagents`) | Synced copy so Claude sees every subagent natively |
-| `.claude/device-setup/` | Portable Claude **user** prefs (theme/model/behaviour) — `settings.example.json`, `install.py`. Not auto-loaded; applied per machine |
-| `.codex/` | Portable Codex **device** setup — `config.example.toml`, `install.py`, optional pet. Not auto-loaded; applied per machine |
-| `.agents/skills/` | **The** skill files (core + Flutter/Dart), read by both tools. Every skill carries an `agents/openai.yaml` (`make sync` generates missing ones) so Codex surfaces it as a `$`-command |
-| `.agents/subagents/` | Subagent definitions with Claude frontmatter (BA, TL, Developer, Flutter, Backend API, Economy-Executor, QA) |
-| `.agents/flutter-dependencies.md` | Default Flutter package choices (bloc, go_router, dio) |
-| `.agents/tools/` | Python helpers — project map, project detection, hook scripts, template integrity check |
-| `.agents/ops/` | Deferred harness troubleshooting; routing stays in the workflow skill |
-| `.agents/project-map.md` | Folder map for fast code navigation |
-| `skills-lock.json` | Dependency lock for all skill versions (core + Flutter/Dart) |
-| `.gitignore` | Ignores `reports/`, Python caches, `.DS_Store`, `.env.*.json` |
+- `AGENTS.md`: shared runtime rules.
+- `CLAUDE.md`: imports shared rules and adds Claude-only behavior.
+- `.agents/project-context.md`: project purpose, architecture, ownership, commands, and generated structure.
+- `.agents/skills/`: canonical skills.
+- `.agents/subagents/`: canonical planner, developer, economy, and QA roles.
+- `.agents/tools/`: safe installer, adapter sync, hooks, context checks, and integrity checks.
+- `.agents/tests/`: deterministic tooling tests.
+- `.agents/Makefile`: portable verification targets without owning a project's root Makefile.
+- `.claude/skills` and `.claude/agents`: relative symlinks to canonical sources.
+- `.codex/agents/`: generated TOML adapters.
+- `skills-lock.json`: upstream skill provenance.
 
-## How to Use This Template
+Rare setup skills are not vendored. Install them only when a project needs them.
 
-### 1. Copy to your project
+## Install into an existing project
 
-Copy these files into your project root:
-
-```
-AGENTS.md
-CLAUDE.md
-Makefile
-.claude/
-.codex/
-.agents/
-skills-lock.json
-```
-
-Copy `.claude/` and `.agents/` **together**. `.claude/skills` and `.claude/agents` are real directory copies of `.agents/skills` and `.agents/subagents`, kept current by `sync_shared.py` (runs at SessionStart and via `make sync`). This works on every OS — no symlinks, no Developer Mode. After your first checkout, run `make sync` (or just start a session) to refresh them.
-
-### 2. Stacks
-
-**Flutter/Dart is the primary stack** — wired in by default (`## Flutter` rules in `AGENTS.md`, `flutter-*`/`dart-*` skills, `flutter-developer`/`backend-api-developer` subagents). For a Flutter project you're ready to go.
-
-**TypeScript, Python, and other stacks are secondary** — the core rules, review skills, and subagent workflow are language-agnostic and work for them out of the box. When a secondary stack needs its own conventions, add a section to `AGENTS.md` (e.g. `## TypeScript`, `## Python`) and drop any stack-specific skills under `.agents/skills/your-skill/SKILL.md`, then run `make sync` — both tools pick them up (Codex directly, Claude via the synced copy).
-
-**Update the project map** on first use:
+Do not broadly copy this repository over another project. Preview the managed installation:
 
 ```sh
-python .agents/tools/generate_project_map.py
+python .agents/tools/install_template.py /path/to/project
+python .agents/tools/install_template.py /path/to/project --write
 ```
 
-Then edit `.agents/project-map.md` to reflect actual ownership boundaries.
+The installer:
 
-### 3. Agents read different files
+- appends or refreshes marked template blocks in existing `AGENTS.md` and `CLAUDE.md`;
+- preserves existing instructions outside those blocks;
+- merges only missing template hooks into Claude/Codex JSON settings;
+- leaves an existing `Makefile` untouched;
+- backs up changed instruction and settings files;
+- records installed hashes so unchanged template-owned files can be upgraded safely;
+- aborts when a user-modified owned file or same-name unowned path would be overwritten;
+- creates relative Claude adapter symlinks on Unix/macOS.
 
-| Agent | Entry point | Shared rules via |
-|---|---|---|
-| Claude Code | `CLAUDE.md` | `@AGENTS.md` import (auto-inlined by Claude Code) |
-| OpenAI Codex | `AGENTS.md` | read directly |
+Use `--copy-adapters` on filesystems without symlink support. Windows selects copy mode automatically.
 
-Shared rules live in `AGENTS.md` only; `CLAUDE.md` imports them via `@AGENTS.md` and adds the Claude-only delta. (The files can't be merged: Claude Code reads only `CLAUDE.md`, Codex only `AGENTS.md`.)
+Template rules cannot outrank system instructions. Codex also lets instructions closer to the working directory override root guidance. The managed root block is placed after existing root text for consistent repository-wide defaults without hiding project rules.
 
-**Skills and subagents have a single source** in `.agents/skills/` and `.agents/subagents/`. Everything else is a derived adapter, rebuilt by `make sync` (and at SessionStart):
+## New projects
 
-| Source (`.agents/`) | Claude adapter | Codex adapter |
-|---|---|---|
-| `skills/<name>/SKILL.md` | `.claude/skills/` (copy) | read in place + `agents/openai.yaml` |
-| `subagents/<name>.md` | `.claude/agents/` (copy) | `.codex/agents/<name>.toml` (generated) |
+This repository itself uses:
 
-Edit only under `.agents/`; never touch the copies or the generated `.toml`. `make check-template` fails if any adapter drifts, so a forgotten sync never ships silently.
+```sh
+make sync
+make context
+make verify
+```
 
-## Default Behaviour
+For another project, keep its existing build commands and Makefile. The installer intentionally does not replace them. Run portable checks directly or call them from the project's workflow:
 
-- Replies default to **`$caveman lite`** mode (terse, no filler). Say "normal mode" to turn it off.
-- Medium/large/risky work uses `.agents/skills/subagent-workflow/SKILL.md`: complexity selects planner strength, then the cheapest capable executor receives a frozen slice.
-- Commit messages are generated from staged changes using `.agents/skills/git-staged-commit-message/SKILL.md`.
+```sh
+make -f .agents/Makefile sync
+make -f .agents/Makefile verify
+```
 
-## Verification & Hooks
+## Project context
 
-Run `make verify` as the canonical gate. It checks template integrity and project-map freshness, runs shared tool tests, then analyzes/tests/format-checks Dart or Flutter when `pubspec.yaml` exists. `make help` lists all targets. Both agents prefer these over raw commands.
+Agents read `.agents/project-context.md` before broad searches. Curated purpose, architecture, ownership, and command sections stay hand-maintained. Only the marked structural block is generated:
 
-Claude Code and Codex enforce quality with deterministic project hooks. Claude configuration lives in `.claude/settings.json`; Codex configuration lives in `.codex/hooks.json`. Both call the same scripts:
+```sh
+python .agents/tools/generate_project_context.py
+python .agents/tools/generate_project_context.py --write
+```
 
-| Hook | Script | Effect |
-|---|---|---|
-| PostToolUse | `hook_format_analyze.py` | Auto-formats + analyzes each edited `.dart` file; surfaces analyzer issues to the agent |
-| PreToolUse | `hook_guard_generated.py` | Blocks edits to generated/vendored files (`*.g.dart`, `build/`, …) |
-| SessionStart | `session_start.py` | One spawn: refreshes `.claude/` + `.codex/agents` adapters (`sync_shared`), then flags stale project-map entries (`check_project_map`) |
+`check_project_context.py` fails when detected folders and the generated block differ. Session start checks freshness but never writes, avoiding unexpected dirty worktrees.
 
-Format/analyze no-ops safely outside a Dart/Flutter project. Codex requires a trusted project and one-time review of new or changed hooks through `/hooks`; untrusted hooks are skipped. `AGENTS.md` remains the fallback contract when either client cannot run hooks.
+## Shared skills and subagents
 
-## Skills Reference
+Edit only `.agents/skills/` and `.agents/subagents/`. Run `make sync` after changes.
 
-| Skill | Trigger |
-|---|---|
-| `caveman` | `/caveman`, "less tokens", "be brief" |
-| `grill-requirements` | Unclear scope, missing acceptance criteria |
-| `production-code-review` | Medium+ review; `$caveman lite` output |
-| `git-staged-commit-message` | "commit message", "commit this" |
-| `subagent-workflow` | Multi-agent orchestration |
-| `subagent-task-brief` | `/taskbrief`, split requirements for subagents |
-| `architecture-review` | Boundaries, layers, contracts |
-| `security-review` | Auth, secrets, privacy |
-| `code-quality-review` | SOLID/OOP + DRY + KISS in one pass |
-| `performance-review` | Rendering, async, memory |
-| `figma-design-to-code` | UI from a Figma URL/node via MCP — exact values, cached token mapping, `pixel_diff.py`-gated compare loop |
-| `test-driven-development` | Behavior-first implementation |
-| `resolving-merge-conflicts` | Resolve git merge/rebase conflicts safely — preserve both intents, regenerate generated files, verify |
-| `find-skills` | Scan the project's stack and gaps, then recommend skills to add/enable |
+Active roles:
 
-Plus the bundled **Flutter/Dart** skills: everyday ones (tests, mocks, layout fixes, responsive layout, architecture, JSON, HTTP, static analysis, runtime errors) stay always-loaded; rare/setup ones (FFI, CLI, coverage, l10n, routing setup, pattern matching, package conflicts, integration tests, widget previews) are deferred under `.agents/skill-packs/flutter-dart/` to keep per-session context lean. The meta skills `caveman-compress` and `skill-maintenance` stay active because they are the maintenance entrypoints. All are tracked in `skills-lock.json` and refreshed on demand via `skill-maintenance`.
+- `team-lead`: read-only planning, architecture, and final review.
+- `developer`: Flutter, backend/API, application, data, platform, and tests.
+- `economy-executor`: frozen mechanical work only.
+- `qa`: read-only functional and regression verification.
 
-## Subagents Reference
+`subagent-workflow` contains routing and the complete delegation brief format. Requirements clarification uses `grill-requirements`; separate BA/backend/Flutter prompt files are unnecessary.
 
-| Subagent | Role |
-|---|---|
-| `business-analyst` | Requirements, scope, user flows |
-| `team-lead` | Architecture, task breakdown, final review |
-| `developer` | Implementation, API, data layer, tests (generalist / non-Flutter) |
-| `flutter-developer` | Flutter UI/state/routing/platform implementation |
-| `backend-api-developer` | API/DTO/migration/contract implementation |
-| `economy-executor` | Frozen mechanical slices only (cheapest tier) |
-| `qa` | Functional verify, regression, release readiness |
+## UI from screenshots
 
-Security/privacy, UX/a11y, and CI/release no longer have dedicated subagents — the owning developer or `team-lead` runs the matching review skill (e.g. `security-review`, `production-code-review`) instead.
+Provide screenshot file paths in the task. Agents inspect the referenced files, reuse project tokens/components/assets, implement responsive and interaction states, and compare the result with those screenshots. No fixed folder or Figma-specific workflow is required.
 
-## Claude Code-Specific Features
+## Comments
 
-- **Skills & subagents**: every skill in `.agents/skills/` is invocable as `/<skill-name>` (via the `.claude/skills` copy); every subagent in `.agents/subagents/` is available to the Agent tool (via the `.claude/agents` copy). No per-skill command files needed
-- **Settings**: Edit `.claude/settings.json` to configure model, permissions, and MCP servers
-- **Memory**: Claude Code reads `~/.claude/CLAUDE.md` for user-level preferences; project memory goes in `CLAUDE.md`
-- **Device setup**: `.claude/device-setup/` carries portable *user* prefs (theme, model, behaviour, custom themes) across machines — the Claude counterpart to `.codex/`. Configure one device, then:
+Obvious code needs no comment or doc comment. Keep comments short and use them only for non-obvious rationale, contracts, invariants, or hazards.
 
-  ```sh
-  python .claude/device-setup/install.py --capture   # snapshot this device's prefs into the template
-  python .claude/device-setup/install.py --write      # apply them on another machine
-  ```
+## Codex context
 
-  Merges only an allowlist of safe keys into `~/.claude/settings.json` (backed up first); never touches auth, env, permissions, or MCP paths. See `.claude/device-setup/README.md`.
+`.codex/config.example.toml` selects `gpt-5.6-sol` and sets:
 
-## Codex-Specific Features
+```toml
+model_context_window = 1050000
+```
 
-- **Skill commands**: Review/workflow skills include an `agents/openai.yaml` (`display_name`, `short_description`, `default_prompt`) so Codex surfaces them as `$`-commands. Add one to any skill you want Codex to expose.
-- **Device setup**: `.codex/` holds portable, safe Codex preferences (model/personality, desktop theme, commit template, optional pet). It is **not** auto-loaded. On a new machine, preview then apply:
+Apply device preferences with a preview first:
 
-  ```sh
-  python .codex/install.py --dry-run
-  python .codex/install.py --write --install-pet
-  ```
+```sh
+python .codex/install.py --dry-run
+python .codex/install.py --write
+```
 
-  The installer backs up `~/.codex/config.toml` before writing. It never syncs auth, sessions, logs, or local runtime paths. See `.codex/README.md`.
+The device installer merges allowlisted keys and backs up existing `~/.codex/config.toml`; it does not copy auth, sessions, trust, or local provider paths.
+
+## Agent memory
+
+Required behavior stays in checked-in instructions. Auto-memory is optional recall and must not become the only copy of a rule or project fact.
+
+Codex local memory is off by default and controlled through `/memories` or user config. Claude Code auto-memory is per repository and managed through `/memory`. Neither generated memory store should contain secrets.
+
+## Security
+
+See `SECURITY.md` for filesystem boundaries, destructive-action safeguards, safe installation, and secret handling.
+
+## Skill maintenance
+
+Run `skill-maintenance` only when requested. It compares vendored bodies with pinned upstream repositories, preserves local frontmatter, and never invents unavailable hashes. Restart active agents if changed skill metadata does not refresh.
