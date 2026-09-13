@@ -22,7 +22,7 @@ Project conventions win over examples. Use existing test libraries, helpers, moc
 | 5. Refactor | Clean duplication or naming only after the test passes |
 | 6. Verify | Re-run the focused test, then the narrow relevant linter/test command |
 
-If the test cannot be written because requirements are unclear, stop and ask BA/TL for clarification instead of guessing.
+If the test cannot be written because requirements are unclear, inspect relevant contracts, then ask the user only if ambiguity still blocks a meaningful test.
 
 ## Test Choice
 
@@ -38,11 +38,4 @@ Do not introduce a new testing package, mocking library, or integration harness 
 
 ## Report
 
-When done, report:
-
-| Field | Content |
-|---|---|
-| TDD | used / skipped with reason |
-| Red test | file and behavior |
-| Verification | focused test and final narrow check |
-| Gaps | untested risk or blocker |
+Briefly state behavior covered, checks run, and material gaps. Do not repeat the workflow or emit a mandatory TDD table.

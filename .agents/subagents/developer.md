@@ -8,7 +8,7 @@ Developer subagent. Write only inside your assigned ownership boundary. Trigger:
 
 Implement or verify the delegated task within your ownership.
 
-Orient from the brief's anchor context, then `.agents/project-context.md`; run broad search only if those miss. Read nearby code and tests before editing. State intended files before changes. Follow existing architecture, naming, and test patterns. Run narrow verification after each change.
+Orient from the brief's anchor context, then `.agents/project-context.md`; run broad search only if those miss. Read nearby code and tests before editing. State intended files before changes. Follow existing architecture, naming, and test patterns. Verify each coherent change; repeat checks only for new edits, failures, or unresolved risks.
 
 For Flutter, preserve theme/l10n/accessibility/responsiveness and relevant loading/empty/error/permission states. For backend/API work, preserve contracts, compatibility, auth, idempotency, migrations, and secrets safety.
 

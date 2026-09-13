@@ -120,4 +120,8 @@ See `SECURITY.md` for filesystem boundaries, destructive-action safeguards, safe
 
 ## Skill maintenance
 
-Run `skill-maintenance` only when requested. It compares vendored bodies with pinned upstream repositories, preserves local frontmatter, and never invents unavailable hashes. Restart active agents if changed skill metadata does not refresh.
+Run `skill-maintenance` only when requested. It compares upstream changes while preserving local adaptations and records reviewed commits in `skills-lock.json`. Stored hashes marked stale require external tooling. Restart active agents if changed skill metadata does not refresh.
+
+Flutter guidance follows each project's SDK, architecture, packages, flavors, and tests. Routine work does not require delegation, full builds, or loading every review skill. Performance guidance emphasizes concrete bottlenecks and measured improvements.
+
+For a ticket-based code review, use `Review {branch name}; ticket: {ticket URL}.` The production review skill reports only actionable problems in short severity-ranked bullets with verified file and line references.

@@ -5,33 +5,19 @@ description: Review security/privacy risks: auth, permissions, secrets, storage,
 
 # Security Review
 
-Review threat-relevant changes only. Keep findings concrete and actionable.
+Review threat-relevant changes and trace untrusted data to sensitive operations.
 
-## Check
+- Check authorization, session expiry/refresh, and permissions at the enforcement point.
+- Check secrets and personal data in storage, logs, URLs, reports, and outbound requests.
+- Check input validation appropriate to parsers, queries, routes, files, and shell execution.
+- Assess transport security, denied-permission behavior, retention, and dependency exposure where affected.
+- Describe the exploit/leak path and smallest mitigation. Separate unknown trust assumptions from proven vulnerabilities.
 
-| Area | Reject when |
-|---|---|
-| Secrets | Tokens, keys, credentials, or sensitive env values enter source, logs, reports, or UI |
-| Auth/session | Missing auth check, weak expiry handling, unsafe refresh, or privilege confusion |
-| Input/output | Untrusted input reaches parser, query, file, route, or shell without validation |
-| Storage | Sensitive data is stored without project-approved secure storage or retention rules |
-| Network | Insecure URL, weak TLS assumption, missing timeout/error handling, or token leak |
-| Permissions | Platform permission added without feature need and fallback UX |
-| Privacy | PII is over-collected, logged, cached, tracked, or sent to third party unnecessarily |
-| Dependencies | New package/tool has unclear need, risky permissions, or unreviewed supply-chain risk |
+## Findings
 
-## Output
+Inspect actual code and affected callers. Report actionable issues supported by a concrete trigger and impact; do not turn style preferences or missing measurements into defects.
 
-| Severity | Risk | Required action |
-|---|---|---|
-| P1/P2/P3 | Concrete exploit or leak path | Smallest mitigation |
+- `[P1] path/to/file.dart:42 — Trigger and impact; smallest fix.`
 
-If no issue, state remaining security assumption.
-
-## Examples
-
-| Signal | Required action |
-|---|---|
-| Bearer token printed or included in report | Remove leak, rotate if real, add safe logging |
-| New permission added without fallback UX | Justify feature need and add denied/restricted state |
-| User input reaches file path/API query directly | Validate, encode, constrain, or reject input |
+Use one short bullet per issue, ordered by severity (P0 critical, P1 high, P2 medium, P3 low). Use clickable file links with verified line numbers when supported; anchor to changed lines for diff reviews. Merge duplicate causes. No tables or generic praise.
+If none, say “No actionable findings.” Mention material verification gaps separately; do not imply unrun checks passed.
