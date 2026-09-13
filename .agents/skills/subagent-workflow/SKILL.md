@@ -5,16 +5,16 @@ description: Route planner, executor, and reviewer roles for non-trivial work.
 
 # Subagent Workflow
 
-Use for medium, large, risky, or unclear work. Small clear work stays with the current agent.
+Use when independent work or specialist review justifies delegation overhead. Keep small or cohesive work with the current agent.
 
 ## Route
 
-- Medium: current agent plans; `developer` executes bounded behavior; main agent reviews.
-- Large/risky: `team-lead` produces a read-only plan for user approval; `developer` owns implementation slices; `qa` verifies behavior.
+- Delegate bounded independent implementation to `developer` when it reduces latency or context load; avoid duplicating its investigation.
+- For significant architecture or risk, use `team-lead` for bounded planning/review and `qa` for relevant functional checks. Seek approval only for unresolved scope or actions not already authorized.
 - Repetitive frozen work: `economy-executor` only after a stronger agent proves the pattern. Escalate on the first decision or unexpected failure.
 - Resolve business ambiguity with `grill-requirements` before delegation.
 
-Use the strongest tier only for bounded planning/review. Prefer the cheapest capable executor after scope and pattern are fixed. Parallelize independent ownership only.
+Choose capability by difficulty and failure cost, not price alone. Parallelize independent ownership only; use compact briefs and reuse results. The main agent owns integration and final verification.
 
 ## Brief
 

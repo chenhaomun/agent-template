@@ -6,77 +6,99 @@
       "sourceType": "github-adapted",
       "skillPath": "skills/caveman/SKILL.md",
       "computedHash": "1902fa0b569912d0c05736d8d98a72097d9b82719aac88c0c1d03bb546f9176d",
-      "notes": "Short local description; body refreshed 2026-08-29 except the removed caveman-compress exemption. computedHash is stale and requires external tooling."
+      "notes": "Short local description; adapted upstream clarity guidance, retaining normal prose for saved artifacts and removed caveman-compress exemption. computedHash is stale and requires external tooling.",
+      "lastReviewedCommit": "15581d14007fd01fb3f132016741962f34936ca2",
+      "lastReviewedAt": "2026-09-12"
     },
     "dart-add-unit-test": {
       "source": "dart-lang/skills",
-      "sourceType": "github",
+      "sourceType": "github-adapted",
       "skillPath": "skills/dart-add-unit-test/SKILL.md",
       "computedHash": "326a2b6cb57bcb4f40203e063a1060e9549a8cea0ece1a5c9a0d39a2f2b85bc8",
-      "notes": "Local stack key and shortened description; body tracks upstream."
+      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials. computedHash is stale and requires external tooling.",
+      "lastReviewedCommit": "26b2dcc5654cbbc3b2ec56ea94719469bc8bae9e",
+      "lastReviewedAt": "2026-09-12"
     },
     "dart-fix-runtime-errors": {
       "source": "dart-lang/skills",
       "sourceType": "github",
       "skillPath": "skills/dart-fix-runtime-errors/SKILL.md",
       "computedHash": "7b13cb0df76693d8c798432a1f86325b093a35e9687f231a012763fcad54fb2c",
-      "notes": "Local stack key and shortened description; body tracks upstream."
+      "notes": "Local stack key and shortened description; body tracks upstream.",
+      "lastReviewedCommit": "26b2dcc5654cbbc3b2ec56ea94719469bc8bae9e",
+      "lastReviewedAt": "2026-09-12"
     },
     "dart-generate-test-mocks": {
       "source": "dart-lang/skills",
-      "sourceType": "github",
+      "sourceType": "github-adapted",
       "skillPath": "skills/dart-generate-test-mocks/SKILL.md",
       "computedHash": "7bf12a98d63e96ed51ba077a24426be1b11a9fc508f7dfca60fc6e118c3fc923",
-      "notes": "Local stack key and shortened description; body tracks upstream."
+      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials. computedHash is stale and requires external tooling.",
+      "lastReviewedCommit": "26b2dcc5654cbbc3b2ec56ea94719469bc8bae9e",
+      "lastReviewedAt": "2026-09-12"
     },
     "dart-run-static-analysis": {
       "source": "dart-lang/skills",
-      "sourceType": "github",
+      "sourceType": "github-adapted",
       "skillPath": "skills/dart-run-static-analysis/SKILL.md",
       "computedHash": "e64ea092e216ecdc9b4a8b49b06d0b9a0b49f680c1116ada1d247b2de3fa6fe1",
-      "notes": "Local stack key and shortened description; body tracks upstream."
+      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials. computedHash is stale and requires external tooling.",
+      "lastReviewedCommit": "26b2dcc5654cbbc3b2ec56ea94719469bc8bae9e",
+      "lastReviewedAt": "2026-09-12"
     },
     "flutter-add-widget-test": {
       "source": "flutter/skills",
-      "sourceType": "github",
+      "sourceType": "github-adapted",
       "skillPath": "skills/flutter-add-widget-test/SKILL.md",
       "computedHash": "c4f263c59cfe331ef42dba2aa81e25142aa4f7284518907c6b847e04502676b0",
-      "notes": "Local stack key and shortened description; body tracks upstream."
+      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials. computedHash is stale and requires external tooling.",
+      "lastReviewedCommit": "1412474f27461ca594355921e483e547aacd6b5a",
+      "lastReviewedAt": "2026-09-12"
     },
     "flutter-apply-architecture-best-practices": {
       "source": "flutter/skills",
-      "sourceType": "github",
+      "sourceType": "github-adapted",
       "skillPath": "skills/flutter-apply-architecture-best-practices/SKILL.md",
       "computedHash": "2b1b63214d6b153c50aacd4bbcb76ce91dece449de9e06f477f8aad3163d667f",
-      "notes": "Local stack key and shortened description; body tracks upstream."
+      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials. computedHash is stale and requires external tooling.",
+      "lastReviewedCommit": "1412474f27461ca594355921e483e547aacd6b5a",
+      "lastReviewedAt": "2026-09-12"
     },
     "flutter-build-responsive-layout": {
       "source": "flutter/skills",
-      "sourceType": "github",
+      "sourceType": "github-adapted",
       "skillPath": "skills/flutter-build-responsive-layout/SKILL.md",
       "computedHash": "f762ea2ee83d4f1f35d9093b41d2520dd024ab80c9539d4860b9ae7f2a4dc6a0",
-      "notes": "Local stack key and shortened description; body tracks upstream."
+      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials. computedHash is stale and requires external tooling.",
+      "lastReviewedCommit": "1412474f27461ca594355921e483e547aacd6b5a",
+      "lastReviewedAt": "2026-09-12"
     },
     "flutter-fix-layout-issues": {
       "source": "flutter/skills",
       "sourceType": "github",
       "skillPath": "skills/flutter-fix-layout-issues/SKILL.md",
       "computedHash": "1aaba922c951159118f9b141788f7bb7b8167bdc0bd5c6f0738ebb90c29b9532",
-      "notes": "Local stack key and shortened description; body tracks upstream."
+      "notes": "Local stack key and shortened description; body tracks upstream.",
+      "lastReviewedCommit": "1412474f27461ca594355921e483e547aacd6b5a",
+      "lastReviewedAt": "2026-09-12"
     },
     "flutter-implement-json-serialization": {
       "source": "flutter/skills",
-      "sourceType": "github",
+      "sourceType": "github-adapted",
       "skillPath": "skills/flutter-implement-json-serialization/SKILL.md",
       "computedHash": "0eed26f25308d78c6a9036ec936db93342f064d64f2cbac5e0e8648ba6b9db3f",
-      "notes": "Local stack key and shortened description; body tracks upstream."
+      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials. computedHash is stale and requires external tooling.",
+      "lastReviewedCommit": "1412474f27461ca594355921e483e547aacd6b5a",
+      "lastReviewedAt": "2026-09-12"
     },
     "flutter-use-http-package": {
       "source": "flutter/skills",
-      "sourceType": "github",
+      "sourceType": "github-adapted",
       "skillPath": "skills/flutter-use-http-package/SKILL.md",
       "computedHash": "17efcf4da9933afaf9c1d41940bd6b92f1ae73dcae4bf6c59cfe24f7e487ee9f",
-      "notes": "Local stack key and shortened description; body tracks upstream."
+      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials. computedHash is stale and requires external tooling.",
+      "lastReviewedCommit": "1412474f27461ca594355921e483e547aacd6b5a",
+      "lastReviewedAt": "2026-09-12"
     },
     "skill-maintenance": {
       "sourceType": "local",

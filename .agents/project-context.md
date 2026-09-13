@@ -13,6 +13,8 @@ Reusable agent-configuration template for projects that use Claude and Codex.
 
 ## Ownership
 
+Flutter skills follow project-specific SDK, architecture, and tooling. Local adaptations and reviewed upstream revisions are recorded in `skills-lock.json`.
+
 - Source: `.agents/skills/` and `.agents/subagents/`.
 - Adapters: `.claude/` and `.codex/`.
 - Enforcement and maintenance: `.agents/tools/` with tests in `.agents/tests/`.

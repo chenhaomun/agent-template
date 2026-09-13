@@ -5,32 +5,22 @@ description: Review performance risks: rendering, async, data processing, cachin
 
 # Performance Review
 
-Focus on user-visible slowness, unnecessary work, and scaling risks.
+Identify user-visible latency, frame work, memory growth, and scaling risks. Name the trigger, data scale, or measurement; distinguish suspected bottlenecks from measured regressions.
 
-## Check
+- Rendering: IO, repeated sorting/parsing in build, broad rebuild/listener scope, eager large lists, and unnecessary intrinsic layout.
+- Images/lists: oversized image decoding, missing pagination, unstable item identity, or nested scrolling that defeats lazy construction.
+- Async: repeated requests, stale results, unbounded concurrency, and startup blocking the first usable screen. Async IO alone does not require an isolate.
+- Ownership: leaked controllers/subscriptions/listeners, unbounded caches, and retained large objects. Address invalidation and ownership in cache fixes.
+- Compute: use isolates only when CPU cost justifies startup/copy overhead; check target support, especially web.
+- Validate speedup claims with a repeatable profile-mode scenario on a representative target. Compare relevant frame time, latency, allocation, or request count; debug timing is not production evidence.
 
-| Area | Reject when |
-|---|---|
-| Rendering/UI | Expensive work happens in render path, or unnecessary re-renders occur |
-| Lists/data | Large collections use eager/synchronous loading where lazy/paginated is needed |
-| Async/IO | Network, disk, parsing, or heavy compute blocks UI or lacks timeout/cancel/error path |
-| State churn | State updates are too broad, repeated, or triggered unnecessarily |
-| Memory | Controllers, streams, subscriptions, caches, or listeners can leak or grow unbounded |
-| Data processing | Repeated mapping/filtering/sorting/parsing should be cached, paged, streamed, or offloaded |
-| Startup | Feature adds synchronous startup work or blocks first usable screen |
+Prefer the smallest measurable fix. Do not add caching, isolates, or repaint boundaries without a plausible bottleneck and tradeoff assessment.
 
-## Output
+## Findings
 
-| Severity | Performance risk | Required action |
-|---|---|---|
-| P1/P2/P3 | Concrete slow path | Smallest measurable fix or verification |
+Inspect actual code and affected callers. Report actionable issues supported by a concrete trigger and impact; do not turn style preferences or missing measurements into defects.
 
-Do not optimize prematurely; reject only plausible production risks.
+- `[P1] path/to/file.dart:42 — Trigger and impact; smallest fix.`
 
-## Examples
-
-| Signal | Required action |
-|---|---|
-| Sorting/filtering large collection in render path | Precompute, memoize, move to state layer, or lazy page |
-| Network call starts on every state update | Start once in lifecycle/state owner |
-| Stream/subscription not disposed | Dispose or bind lifecycle to existing owner |
+Use one short bullet per issue, ordered by severity (P0 critical, P1 high, P2 medium, P3 low). Use clickable file links with verified line numbers when supported; anchor to changed lines for diff reviews. Merge duplicate causes. No tables or generic praise.
+If none, say “No actionable findings.” Mention material verification gaps separately; do not imply unrun checks passed.
