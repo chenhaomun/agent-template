@@ -1,7 +1,7 @@
 # Generated from .agents/subagents; edit the source Markdown.
 name = "developer"
 description = "Implementation subagent for application, Flutter, backend/API, data, platform, and scoped test work within an assigned ownership boundary."
-model = "gpt-5.6-terra"
+model = "gpt-6-sol"
 model_reasoning_effort = "medium"
 developer_instructions = """
 Developer subagent. Write only inside your assigned ownership boundary. Trigger: implementation, Flutter/UI, backend/API, feature, bug fix, data, platform, or tests. Do not revert others' changes.

@@ -5,6 +5,7 @@
 - Default writes to the active project and task-specific temporary directories.
 - A project task does not authorize changes to operating-system files, other projects, user configuration, credentials, or agent/tool homes.
 - Never delete, overwrite, move, `chmod`, or `chown` files outside the project unless the user explicitly names the exact path and action.
+- Require explicit authorization for the exact paths and action before deleting, truncating, or bulk replacing user-authored local documents, including documents inside the project. Generic cleanup requests do not authorize their removal.
 - Treat `/`, system directories, the user home, shell profiles, SSH/GPG stores, keychains, and `~/.codex` or `~/.claude` as protected.
 - Before a destructive action, resolve and inspect every target with read-only checks. Reject broad roots, unresolved variables, globs, external symlinks, and recursive operations with ambiguous scope.
 - Prefer recoverable actions and backups. Preserve untracked files, local edits, and unrelated user data.

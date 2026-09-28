@@ -14,6 +14,7 @@ Start with the feature's nearby code, state-management approach, dependency wiri
 ## Design Guidance
 
 - Keep widgets focused on rendering, input, and short-lived UI behavior. Put reusable business decisions and external I/O behind the boundaries the project already uses.
+- Favor SOLID principles, object-oriented design, high cohesion, and low coupling for new boundaries. Represent distinct states explicitly instead of coordinating behavior with private boolean flags.
 - Create a new layer, repository, use case, controller, or provider only when it has a clear owner, reuse case, or testability benefit. Do not impose MVVM, `ChangeNotifier`, dependency injection, or a directory layout.
 - Model asynchronous states explicitly where the UI can observe them: loading, data, empty, error, and disabled or permission-limited states when relevant.
 - Keep state immutable where practical. Avoid side effects in `build`, repeated requests on rebuild, and UI updates after a widget or controller is disposed.

@@ -89,6 +89,20 @@ class InstallTemplateTest(unittest.TestCase):
             with self.assertRaisesRegex(self.installer.InstallConflict, "must not be the template source"):
                 self.installer.install(source, source, write=False, copy_adapters=False)
 
+    def test_rejects_symlinked_instruction_document(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source, target = self._source(root / "source"), self._target(root)
+            document = target / "local-document.md"
+            document.write_text("keep this document\n", encoding="utf-8")
+            (target / "AGENTS.md").symlink_to(document)
+
+            with self.assertRaisesRegex(self.installer.InstallConflict, "symlink in target path: AGENTS.md"):
+                self.installer.install(source, target, write=True, copy_adapters=False)
+
+            self.assertEqual(document.read_text(encoding="utf-8"), "keep this document\n")
+            self.assertFalse((target / ".agents").exists())
+
     def test_preserves_unknown_content_and_backs_up_mutated_files(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

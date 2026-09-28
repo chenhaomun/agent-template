@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Safely apply this agent template to another repository.
 
-Preview is the default.  ``--write`` only adds canonical entries that are
-absent, appends managed instruction blocks, and adds missing template hooks.
-It never removes target files or replaces an unowned path.
+Preview is the default. ``--write`` upgrades manifest-owned files, merges
+instruction blocks and hooks, and removes stale files only when unchanged.
+It never replaces an unowned path.
 """
 
 from __future__ import annotations
@@ -82,6 +82,11 @@ def safe_target(root: Path, relative: str) -> Path:
     target = root / relative
     if not target.resolve(strict=False).is_relative_to(root):
         raise InstallConflict(f"target path escapes project: {relative}")
+    current = target
+    while current != root:
+        if current.is_symlink():
+            raise InstallConflict(f"symlink in target path: {relative}")
+        current = current.parent
     return target
 
 
@@ -283,7 +288,7 @@ def install(source_root: Path, target_root: Path, *, write: bool, copy_adapters:
         raise InstallConflict("target must not be the template source directory")
     if not target_root.is_dir():
         raise InstallConflict(f"target directory does not exist: {target_root}")
-    manifest_path = target_root / MANIFEST_RELATIVE
+    manifest_path = safe_target(target_root, MANIFEST_RELATIVE)
     manifest = load_manifest(manifest_path)
     source_files = template_files(source_root)
     canonical_updates = plan_canonical_files(source_files, target_root, manifest)
@@ -297,7 +302,7 @@ def install(source_root: Path, target_root: Path, *, write: bool, copy_adapters:
     instruction_updates: dict[Path, str] = {}
     for name, source in INSTRUCTION_FILES.items():
         source = source_root / source.relative_to(SOURCE_ROOT)
-        target = target_root / name
+        target = safe_target(target_root, name)
         before = target.read_text(encoding="utf-8") if target.exists() else ""
         after = replace_block(before, name.lower(), managed_block(name.lower(), source))
         if after != before:
@@ -311,7 +316,7 @@ def install(source_root: Path, target_root: Path, *, write: bool, copy_adapters:
         raise InstallConflict("invalid manifest hooks")
     for relative, source in HOOK_FILES.items():
         source = source_root / source.relative_to(SOURCE_ROOT)
-        target = target_root / relative
+        target = safe_target(target_root, relative)
         before = load_object(target) if target.exists() else {}
         previous = old_hooks.get(relative, [])
         if not isinstance(previous, list) or not all(isinstance(entry, dict) for entry in previous):

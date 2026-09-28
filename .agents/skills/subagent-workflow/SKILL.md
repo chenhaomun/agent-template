@@ -5,7 +5,7 @@ description: Route planner, executor, and reviewer roles for non-trivial work.
 
 # Subagent Workflow
 
-Use when independent work or specialist review justifies delegation overhead. Keep small or cohesive work with the current agent.
+Use when the user requests delegation. Keep small or cohesive work with the current agent.
 
 ## Route
 
