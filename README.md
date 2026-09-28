@@ -81,7 +81,7 @@ Active roles:
 - `economy-executor`: frozen mechanical work only.
 - `qa`: read-only functional and regression verification.
 
-`subagent-workflow` contains routing and the complete delegation brief format. Requirements clarification uses `grill-requirements`; separate BA/backend/Flutter prompt files are unnecessary.
+Subagents are optional and used when requested. `subagent-workflow` contains routing and a compact delegation brief. Requirements clarification uses `grill-requirements`.
 
 ## UI from screenshots
 
@@ -93,7 +93,7 @@ Obvious code needs no comment or doc comment. Keep comments short and use them o
 
 ## Codex context
 
-`.codex/config.example.toml` selects `gpt-5.6-sol` and sets:
+`.codex/config.example.toml` selects `gpt-6-sol` and sets:
 
 ```toml
 model_context_window = 1050000

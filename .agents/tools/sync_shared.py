@@ -41,15 +41,24 @@ def mirror(src: Path, dst: Path, exclude_top: set[str] = frozenset()) -> bool:
     if already present), which is how stack-gated skills stay out of the copy.
     """
     changed = False
+    if src.is_symlink() or dst.is_symlink():
+        raise RuntimeError(f"refusing symlinked adapter path: {dst}")
     dst.mkdir(parents=True, exist_ok=True)
 
     for path in src.rglob("*"):
         if not relevant(path):
             continue
+        if path.is_symlink():
+            raise RuntimeError(f"refusing symlinked source: {path}")
         rel = path.relative_to(src)
         if rel.parts[0] in exclude_top:
             continue
         out = dst / rel
+        current = out
+        while current != dst:
+            if current.is_symlink():
+                raise RuntimeError(f"refusing symlinked adapter target: {out}")
+            current = current.parent
         if path.is_dir():
             if not out.is_dir():
                 out.mkdir(parents=True, exist_ok=True)
@@ -67,9 +76,9 @@ def mirror(src: Path, dst: Path, exclude_top: set[str] = frozenset()) -> bool:
 # the concrete Codex model strings live, so a model rename is a one-line change.
 # Mirrors the Claude tiers: opus=strongest (planning), sonnet=standard, haiku=economy.
 CODEX_TIER: dict[str, tuple[str, str]] = {
-    "opus": ("gpt-5.6-sol", "high"),
-    "sonnet": ("gpt-5.6-terra", "medium"),
-    "haiku": ("gpt-5.6-luna", "low"),
+    "opus": ("gpt-6-astra", "high"),
+    "sonnet": ("gpt-6-sol", "medium"),
+    "haiku": ("gpt-6-luna", "low"),
 }
 GENERATED_HEADER = "# Generated from .agents/subagents; edit the source Markdown."
 
@@ -121,6 +130,8 @@ def generate_codex_agents(actions: list[str]) -> None:
     """Regenerate .codex/agents/*.toml from .agents/subagents/*.md."""
     if not SUBAGENTS.is_dir():
         return
+    if CODEX_AGENTS.is_symlink():
+        raise RuntimeError(f"refusing symlinked Codex agents directory: {CODEX_AGENTS}")
     CODEX_AGENTS.mkdir(parents=True, exist_ok=True)
     wanted: set[str] = set()
     for md in sorted(SUBAGENTS.glob("*.md")):
@@ -133,6 +144,8 @@ def generate_codex_agents(actions: list[str]) -> None:
         # or absent tiers emit nothing and inherit the session default.
         model, effort = CODEX_TIER.get(front.get("model", ""), (None, None))
         out = CODEX_AGENTS / f"{name}.toml"
+        if out.is_symlink():
+            raise RuntimeError(f"refusing symlinked Codex agent: {out}")
         wanted.add(out.name)
         content = render_codex_toml(name, description, body, model, effort)
         if not out.exists() or out.read_text(encoding="utf-8") != content:

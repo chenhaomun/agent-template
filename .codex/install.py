@@ -151,10 +151,11 @@ def copy_pet(repo_root: Path, codex_home: Path, force: bool) -> str:
     dst = codex_home / "pets" / "codehound"
     if not src.exists():
         return "skip pet: .codex/pets/codehound missing"
-    if dst.exists() and not force:
+    if (dst.exists() or dst.is_symlink()) and not force:
         return "skip pet: already installed; pass --force-pet to overwrite"
-    if dst.exists():
-        shutil.rmtree(dst)
+    if dst.exists() or dst.is_symlink():
+        stamp = datetime.now().strftime("%Y%m%d%H%M%S%f")
+        dst.rename(dst.with_name(f"{dst.name}.bak-{stamp}"))
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copytree(src, dst)
     return f"install pet: {dst}"
@@ -165,7 +166,7 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true", help="preview changes without writing")
     parser.add_argument("--write", action="store_true", help="write changes to ~/.codex/config.toml")
     parser.add_argument("--install-pet", action="store_true", help="install .codex/pets/codehound")
-    parser.add_argument("--force-pet", action="store_true", help="overwrite existing Codehound pet")
+    parser.add_argument("--force-pet", action="store_true", help="back up and replace existing Codehound pet")
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parents[1]

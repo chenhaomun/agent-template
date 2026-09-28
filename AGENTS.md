@@ -14,28 +14,30 @@ Shared Claude Code and Codex rules. Flutter/Dart is primary, but project convent
 ## Work Rules
 
 - Read nearby code first; follow existing architecture, naming, and tests.
-- Read `.agents/project-context.md` before broad search. Update its generated block when structure or verification entrypoints change; update curated notes when architecture or ownership changes.
+- Read `.agents/project-context.md` when work requires a broad search or changes project structure, verification entrypoints, architecture, or ownership. Update the affected context then.
 - Load only skills needed for the current decision; avoid loading every review skill for routine changes.
-- Use `grill-requirements` when requirements are unclear or broad, or when acceptance criteria, scope, target flow/state, or contradictions may cause rework.
+- Use `grill-requirements` when unclear scope, states, or acceptance criteria could cause rework.
 - Keep changes scoped. Preserve user changes. Never reset unrelated work.
-- Prefer simple, scoped design. Ask before introducing dependencies or changing architecture, state management, or generators unless already authorized. Routine implementation within existing patterns needs no extra approval.
+- Follow existing design. Ask before new dependencies, architecture, state management, or generators unless authorized.
 - Keep secrets out. Stop and report suspicious or unexpectedly long commands.
 - Add/update tests when requested, required by TDD, or expected by project practice; verify narrowly first.
-- Write concise, clear prose; omit repeated plans, checklists, and tool output. Keep rationale, verification, and limitations. Use `caveman` only when requested.
-- Batch independent reads and search targeted paths first. Reuse verified context; expand exploration or testing only for changed scope, failures, or unresolved risk.
-- Review findings: short bullets, severity first, with verified `file:line`, concrete impact, and smallest fix. Prioritize actionable defects; separate unverified concerns and test gaps. No findings tables or invented issues.
-- Do not comment obvious code. Use short comments or doc comments only for non-obvious rationale, contracts, invariants, or hazards.
+- Write concise results with rationale, verification, and limits. Use `caveman` only when requested.
+- Batch targeted reads; expand checks only for changed scope, failures, or unresolved risk.
+- Review findings: severity-first actionable bullets with verified `file:line`, impact, and smallest fix; separate unverified concerns and test gaps.
+- Comment only non-obvious rationale, contracts, invariants, or hazards.
 
 ## Filesystem Safety
 
 - Default writes to the active project and task-specific temporary directories. A project task does not authorize changes to system files, other projects, user configuration, credentials, or agent/tool homes.
 - Never delete, overwrite, move, `chmod`, or `chown` files outside the project unless the user explicitly names the exact path and action.
+- Do not delete, truncate, or bulk replace user-authored local documents, even inside the project, without explicit authorization for the exact paths and action. Preserve unknown files during cleanup.
 - Before destructive actions, resolve exact targets with read-only checks. Reject broad roots, unresolved variables, globs, external symlinks, and ambiguous recursive operations; prefer recoverable actions and backups.
 - Preserve untracked files, local edits, and unrelated user data. Use elevated permissions only for an exact user-authorized target; stop and ask when scope or recovery is unclear.
 
 ## Flutter
 
-- Discover the package/workspace, SDK constraints, scripts, analyzer rules, and existing state, routing, networking, serialization, and test patterns. Use configured SDK wrappers and flavors; never assume env filenames or add missing flavor setup.
+- For new architecture, favor SOLID principles, object-oriented design, high cohesion, and low coupling within project conventions. Model distinct states explicitly instead of coordinating behavior with private boolean flags; add abstractions only when they clarify ownership or behavior.
+- Check the package, SDK, scripts, and affected state, routing, networking, serialization, and test patterns. Use configured SDK wrappers and flavors; do not invent environment setup.
 - Start with affected tests and analysis; format touched Dart files. Run broader checks for shared contracts or cross-feature changes. Launch/build only when runtime, platform, or release risk needs it, or the user asks. Report checks not run; never claim runtime validation from static checks.
 - Prefer composition, immutable state, and pure, cheap `build()` methods. Keep IO and repeated transformations out of build; limit rebuild scope and lazily build large collections.
 - Dispose owned controllers/subscriptions; handle stale async results and check mounted/context validity after async gaps. Preserve meaningful error handling and relevant loading/empty/error/disabled states.
@@ -54,7 +56,7 @@ Shared Claude Code and Codex rules. Flutter/Dart is primary, but project convent
 
 ## Subagents
 
-Use `.agents/skills/subagent-workflow` when independent work or specialist review reduces risk or elapsed time enough to justify extra context. Keep cohesive work local. Do not silently change public APIs; update consumers and verification together.
+Use subagents only when the user explicitly requests delegation. Then use `.agents/skills/subagent-workflow` for roles and scoped ownership. Keep integration and final verification with the main agent.
 
 ## Git
 

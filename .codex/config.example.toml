@@ -1,8 +1,6 @@
 personality = "pragmatic"
-# Main session uses flagship Codex with its documented 1.05M context window.
-# Per-agent overrides in .codex/agents/*.toml escalate: team-lead -> gpt-5.6-sol,
-# standard executors -> gpt-5.6-terra, economy/reviewers -> gpt-5.6-luna.
-model = "gpt-5.6-sol"
+# Per-agent models are generated from Claude capability tiers in sync_shared.py.
+model = "gpt-6-sol"
 model_reasoning_effort = "low"
 model_context_window = 1050000
 

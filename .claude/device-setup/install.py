@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import argparse
+import filecmp
 import json
+import re
 import shutil
 from datetime import datetime
 from pathlib import Path
@@ -60,19 +62,35 @@ def filtered(example: dict) -> tuple[dict, list[str]]:
     return keep, dropped
 
 
-def copy_custom_themes(src_dir: Path, theme: str | None, dst_dir: Path) -> list[str]:
-    """Copy a custom:<slug> theme file into ~/.claude/themes/ if present."""
+def theme_file(directory: Path, theme: str) -> Path:
+    slug = theme.split(":", 1)[1]
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", slug):
+        raise SystemExit(f"error: invalid custom theme name: {theme}")
+    return directory / f"{slug}.json"
+
+
+def copy_custom_themes(src_dir: Path, theme: str | None, dst_dir: Path, *, write: bool = False) -> list[str]:
+    """Preview or copy a custom theme without following symlinks."""
     actions: list[str] = []
     if not theme or not theme.startswith("custom:"):
         return actions
-    slug = theme.split(":", 1)[1]
-    src = src_dir / f"{slug}.json"
+    src = theme_file(src_dir, theme)
+    dst = theme_file(dst_dir, theme)
+    if src_dir.is_symlink() or src.is_symlink() or dst_dir.is_symlink() or dst.is_symlink():
+        raise SystemExit(f"error: symlinked custom theme path: {theme}")
     if not src.exists():
         actions.append(f"warn: theme '{theme}' set but {src} is missing")
         return actions
-    dst = dst_dir / f"{slug}.json"
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(src, dst)
+    if dst.exists() and not dst.is_file():
+        raise SystemExit(f"error: custom theme target is not a file: {dst}")
+    if dst.exists() and filecmp.cmp(src, dst, shallow=False):
+        return actions
+    if write:
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        if dst.exists():
+            stamp = datetime.now().strftime("%Y%m%d%H%M%S%f")
+            shutil.copy2(dst, dst.with_name(f"{dst.name}.bak-{stamp}"))
+        shutil.copy2(src, dst)
     actions.append(f"install theme: {dst}")
     return actions
 
@@ -113,7 +131,7 @@ def cmd_apply(args, here: Path, target: Path, themes_dst: Path) -> int:
     write_json(target, merged)
     print("settings written")
     # Re-run theme copy for real on write.
-    for a in copy_custom_themes(here / "themes", keep.get("theme"), themes_dst):
+    for a in copy_custom_themes(here / "themes", keep.get("theme"), themes_dst, write=True):
         print(f"- {a}")
     return 0
 
@@ -133,10 +151,11 @@ def cmd_capture(here: Path, target: Path, themes_src: Path) -> int:
     # If a custom theme is active, copy its file into the template for portability.
     theme = keep.get("theme")
     if theme and theme.startswith("custom:"):
-        slug = theme.split(":", 1)[1]
-        src = themes_src / f"{slug}.json"
+        src = theme_file(themes_src, theme)
         if src.exists():
-            dst = here / "themes" / f"{slug}.json"
+            dst = theme_file(here / "themes", theme)
+            if src.is_symlink() or dst.is_symlink():
+                raise SystemExit(f"error: symlinked custom theme path: {theme}")
             dst.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(src, dst)
             print(f"- captured theme: {dst}")
