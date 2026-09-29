@@ -6,7 +6,7 @@
       "sourceType": "github-adapted",
       "skillPath": "skills/caveman/SKILL.md",
       "computedHash": "1902fa0b569912d0c05736d8d98a72097d9b82719aac88c0c1d03bb546f9176d",
-      "notes": "Short local description; adapted upstream clarity guidance, retaining normal prose for saved artifacts and removed caveman-compress exemption. Adopted upstream reply-language precedence for explicit user/project instructions. computedHash is stale and requires external tooling.",
+      "notes": "Short local description; adapted upstream clarity guidance, retaining normal prose for saved artifacts and removed caveman-compress exemption. Adopted upstream reply-language precedence for explicit user/project instructions. Template enables caveman by default with persistent off/normal-mode opt-out. computedHash is stale and requires external tooling.",
       "lastReviewedCommit": "2fd153c67988e980fb0b2455c90832159a6a5a25",
       "lastReviewedAt": "2026-09-28"
     },

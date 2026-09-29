@@ -1,0 +1,4 @@
+interface:
+  display_name: "Flutter Integration Tests"
+  short_description: "Cover Flutter features, regressions, and refactors"
+  default_prompt: "Use $flutter-add-integration-test to cover the affected app journey and run the focused tests."

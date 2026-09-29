@@ -32,9 +32,10 @@ If the test cannot be written because requirements are unclear, inspect relevant
 | Service/state events and state transitions | Unit test using existing project pattern |
 | Repository behavior with dependency | Unit test with existing mock/fake style |
 | Component rendering or interaction | Component/widget test |
-| Full navigation/user flow | Integration/E2E test only when existing or requested |
+| Flutter feature, regression fix, or architecture change affecting an app flow | Use `flutter-add-integration-test` by default; retain focused unit/widget tests |
+| Other full navigation/user flow | Integration/E2E test when existing or requested |
 
-Do not introduce a new testing package, mocking library, or integration harness without approval.
+Follow `AGENTS.md` for authorized minimal Flutter SDK integration-test setup. Other new testing packages, mocking libraries, or harnesses require approval.
 
 ## Report
 

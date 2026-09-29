@@ -7,7 +7,7 @@ Shared Claude Code and Codex rules. Flutter/Dart is primary, but project convent
 - Prefer project scripts. Run template checks with `make -f .agents/Makefile verify`; use root `make verify` only when the project defines it.
 - Do not hand-edit generated/vendored files (`*.g.dart`, `*.freezed.dart`, `build/`, `.dart_tool/`, etc.); edit the source and re-run the generator.
 - Cap large command output at 4,000 chars (pipe through `head` or limit explicitly).
-- Final response: outcome, changes, verification, and blockers/API/env impact only. Expand for safety or when asked.
+- Final response: concise outcome, changes, rationale, verification, and material limits/blockers/API/env impact. Expand for safety or when asked.
 
 > Hooks in `.claude/settings.json` and `.codex/hooks.json` enforce these via shared `.agents/tools/` scripts; follow the rules even when hooks are unavailable.
 
@@ -18,13 +18,15 @@ Shared Claude Code and Codex rules. Flutter/Dart is primary, but project convent
 - Load only skills needed for the current decision; avoid loading every review skill for routine changes.
 - Use `grill-requirements` when unclear scope, states, or acceptance criteria could cause rework.
 - Keep changes scoped. Preserve user changes. Never reset unrelated work.
+- When simplifying instructions, preserve every requirement; remove a rule only when an equivalent remains active, and identify where it lives.
+- Keep reusable template content free of private project data; follow the template privacy rules in `SECURITY.md`.
 - Follow existing design. Ask before new dependencies, architecture, state management, or generators unless authorized.
 - Keep secrets out. Stop and report suspicious or unexpectedly long commands.
 - Add/update tests when requested, required by TDD, or expected by project practice; verify narrowly first.
-- Write concise results with rationale, verification, and limits. Use `caveman` only when requested.
-- Batch targeted reads; expand checks only for changed scope, failures, or unresolved risk.
+- Use `caveman` by default for chat responses; honor `off`/`normal mode` until re-enabled. Keep saved artifacts in normal prose and preserve required detail, response IDs, and verification notes.
+- Batch independent targeted reads; reuse evidence already gathered. Expand checks only for changed scope, failures, or unresolved risk.
 - Review findings: severity-first actionable bullets with verified `file:line`, impact, and smallest fix; separate unverified concerns and test gaps.
-- Comment only non-obvious rationale, contracts, invariants, or hazards.
+- Add comments/doc comments only where complex code needs explanation of non-obvious rationale, contracts, invariants, or hazards. Use plain language, at most two lines per comment.
 
 ## Filesystem Safety
 
@@ -38,7 +40,8 @@ Shared Claude Code and Codex rules. Flutter/Dart is primary, but project convent
 
 - For new architecture, favor SOLID principles, object-oriented design, high cohesion, and low coupling within project conventions. Model distinct states explicitly instead of coordinating behavior with private boolean flags; add abstractions only when they clarify ownership or behavior.
 - Check the package, SDK, scripts, and affected state, routing, networking, serialization, and test patterns. Use configured SDK wrappers and flavors; do not invent environment setup.
-- Start with affected tests and analysis; format touched Dart files. Run broader checks for shared contracts or cross-feature changes. Launch/build only when runtime, platform, or release risk needs it, or the user asks. Report checks not run; never claim runtime validation from static checks.
+- For Flutter features, regression fixes, and architecture changes, use `flutter-add-integration-test` by default to add/update coverage of affected app flows. Reuse sufficient existing coverage; explain when no executable flow is affected. Minimal Flutter SDK test setup is authorized; new third-party harnesses still require approval.
+- Start with affected tests and analysis; format touched Dart files. Run broader checks for shared contracts or cross-feature changes. Launch/build for affected integration tests, runtime/platform/release risk, or on request. Report checks not run; never claim runtime validation from static checks.
 - Prefer composition, immutable state, and pure, cheap `build()` methods. Keep IO and repeated transformations out of build; limit rebuild scope and lazily build large collections.
 - Dispose owned controllers/subscriptions; handle stale async results and check mounted/context validity after async gaps. Preserve meaningful error handling and relevant loading/empty/error/disabled states.
 - Bound caches and network work. Profile plausible slow paths in profile mode on a representative target before claiming improvements; use isolates only when CPU cost outweighs overhead and the target supports them.

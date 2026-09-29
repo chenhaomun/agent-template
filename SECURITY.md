@@ -11,6 +11,13 @@
 - Prefer recoverable actions and backups. Preserve untracked files, local edits, and unrelated user data.
 - Use elevated permissions only for an exact user-authorized target; never to bypass an unexpected protection failure. Stop and ask when the target or recovery path is unclear.
 
+## Template Privacy
+
+- This repository is a general template. Use fictional examples or placeholders; never retain private ticket IDs/URLs, workspace identifiers, company/team/person names, screenshots, or source excerpts in reusable rules, skills, examples, or fixtures.
+- Reading a supplied reference does not authorize copying its private details into the template. Extract only the reusable structure and behavior.
+- Resolve project-specific assignees, tags, destinations, and references from the active request or private target-project configuration. Keep real drafts and generated artifacts in that target project or a user-selected private location, not this template repository.
+- Before delivery, inspect changed content for private details, including links and metadata. If found, sanitize them without copying them into tracked audit notes or tests.
+
 ## Security Scope
 
 Security issues include:
