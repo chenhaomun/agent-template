@@ -19,6 +19,9 @@ Flutter skills follow project-specific SDK, architecture, and tooling. Local ada
 - Adapters: `.claude/` and `.codex/`.
 - Enforcement and maintenance: `.agents/tools/` with tests in `.agents/tests/`.
 - Security policy: `SECURITY.md`.
+- Story drafting/approved ClickUp creation: `draft-user-stories`; scoped HTML infographics: `visual-explainer`. Both are project-local skills.
+- Review skills share the concise output contract in `.agents/skills/production-code-review/references/findings.md`.
+- Flutter app-flow test authoring: `flutter-add-integration-test`; default triggers and setup authorization live in `AGENTS.md`.
 
 ## Commands
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Draft User Stories"
+  short_description: "Draft stories, then create approved ClickUp tickets"
+  default_prompt: "Use $draft-user-stories to turn this FRS, epic, and screenshots into Markdown drafts for approval."

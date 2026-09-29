@@ -1,0 +1,4 @@
+interface:
+  display_name: "Visual Explainer"
+  short_description: "Explain features and flows with concise HTML visuals"
+  default_prompt: "Use $visual-explainer to explain this feature as a focused HTML infographic."

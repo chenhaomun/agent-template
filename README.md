@@ -83,13 +83,24 @@ Active roles:
 
 Subagents are optional and used when requested. `subagent-workflow` contains routing and a compact delegation brief. Requirements clarification uses `grill-requirements`.
 
+Chat responses use `caveman` by default; say `normal mode` or `off` to opt out. Saved documents, tickets, code comments, and other artifacts retain normal prose.
+
+Flutter features, regression fixes, and architecture changes use `flutter-add-integration-test` by default for affected app flows. Reuse sufficient coverage; explain when no executable flow is affected. Minimal Flutter SDK test setup is authorized, while third-party harnesses still need approval. Report device/environment blockers without claiming tests passed.
+
 ## UI from screenshots
 
 Provide screenshot file paths in the task. Agents inspect the referenced files, reuse project tokens/components/assets, implement responsive and interaction states, and compare the result with those screenshots. No fixed folder or Figma-specific workflow is required.
 
 ## Comments
 
-Obvious code needs no comment or doc comment. Keep comments short and use them only for non-obvious rationale, contracts, invariants, or hazards.
+Follow the comment rule in `AGENTS.md`: explain complex code only when needed, in plain language, with at most two lines per comment/doc comment.
+
+## Story drafts and visual explanations
+
+- `draft-user-stories`: supply FRS, epic tickets, API references, and screenshot paths to get Markdown drafts. Approve creation with the desired tags and assignee from the active request or private project configuration. Open Questions stay in local drafts and never enter tickets.
+- `visual-explainer`: request an HTML explanation of a feature, bug, architecture, screen, or flow. Output uses diagrams, callouts, and short labels, limited to the requested scope.
+
+Examples: `Use draft-user-stories with this FRS and epic; draft only.` or `Use visual-explainer to show this screen's buttons and navigation.`
 
 ## Codex context
 
