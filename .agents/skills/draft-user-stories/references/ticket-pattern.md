@@ -2,7 +2,7 @@
 
 - Title: `FE - Apps - [Feature] - Action`; adapt the prefix to the supplied project convention.
 - Body: a short user story and testable behavior bullets. Include API when backend effort is required; otherwise omit it by default. No Screenshots/Flow section.
-- Resolve destination, epic relationship, required fields, tags, and assignee from the active request or private target-project configuration. No real project details belong in this reference.
+- Use explicit instructions or private project configuration first; infer missing metadata from the epic, comments, and related conventions. Show inferred values as proposed for review. No real project details belong in this reference.
 
 Use this shape, replacing placeholders with evidence and removing drafting notes before creation:
 
@@ -10,8 +10,8 @@ Use this shape, replacing placeholders with evidence and removing drafting notes
 # FE - Apps - [Feature] - Action
 
 - Epic: [Supplied epic reference]
-- Tags: Pending user input
-- Assignee: [Requested member or team]
+- Tags: [Specified tags or inferred tags marked proposed]
+- Assignee: [Specified member/team or inferred identity marked proposed]
 - Priority: Normal
 
 ## User Story
@@ -25,7 +25,7 @@ As a customer, I can [action] so I can [outcome].
 
 ```
 
-Remove the API section when no backend work or requested API documentation is needed. Keep missing decisions in the generated README, not in story files. Never include destination lists or draft versions.
+Remove the API section when no backend work or requested API documentation is needed. Preserve inspected codebase conventions for behavior the requirements leave unspecified. Keep only unresolved material decisions in README; do not ask routine metadata or existing-behavior questions. Never include destination lists or draft versions.
 
 Deliver the folder under Downloads using the sanitized epic ticket name. Generate a short `README.md` alongside the stories:
 
