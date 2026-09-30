@@ -2,6 +2,7 @@
 
 - Title: `FE - Apps - [Feature] - Action`; adapt the prefix to the supplied project convention.
 - Body: a short user story and testable behavior bullets. Include API when backend effort is required; otherwise omit it by default. No Screenshots/Flow section.
+- Creation fields: **Task Type = User Story**, **Target Platform(s) = Mobile App**. Link the standalone story to the epic through **Related tasks**, never as a subtask. Keep these operational fields out of the story body.
 - Use explicit instructions or private project configuration first; infer missing metadata from the epic, comments, and related conventions. Show inferred values as proposed for review. No real project details belong in this reference.
 
 Use this shape, replacing placeholders with evidence and removing drafting notes before creation:
