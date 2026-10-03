@@ -1,3 +1,4 @@
-display_name: "Dart Run Static Analysis"
-short_description: "Analyze Dart code and resolve relevant diagnostics without changing lint policy."
-default_prompt: "Use dart-run-static-analysis for this task."
+interface:
+  display_name: "Dart Run Static Analysis"
+  short_description: "Analyze Dart code and resolve relevant diagnostics without changing lint policy."
+  default_prompt: "Use dart-run-static-analysis for this task."

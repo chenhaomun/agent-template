@@ -1,33 +1,27 @@
 # Portable template checks. Existing project Makefiles may call these targets
 # or run this file directly with: make -f .agents/Makefile verify
 
-PYTHON ?= $(shell python3 -c "" >/dev/null 2>&1 && echo python3 || echo python)
+PYTHON ?= python
 export PYTHONDONTWRITEBYTECODE := 1
 
 .PHONY: help verify analyze test format format-check tool-tests context check-context check-template sync install-preview
 
 help: ## List template targets
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(lastword $(MAKEFILE_LIST)) | \
-		awk 'BEGIN {FS = ":.*?## "} {printf "  %-16s %s\n", $$1, $$2}'
+	@$(PYTHON) .agents/tools/run_checks.py --help
 
 verify: check-template check-context analyze test format-check tool-tests ## Run template and project checks
 
 analyze: ## Run Dart/Flutter static analysis when applicable
-	@if [ -f pubspec.yaml ]; then \
-		if grep -q 'sdk: flutter' pubspec.yaml; then flutter analyze; else dart analyze; fi; \
-	else echo "SKIP analyze: no pubspec.yaml"; fi
+	$(PYTHON) .agents/tools/run_checks.py analyze
 
 test: ## Run Dart/Flutter tests when applicable
-	@if [ -f pubspec.yaml ]; then \
-		if grep -q 'sdk: flutter' pubspec.yaml; then flutter test; else dart test; fi; \
-	else echo "SKIP Dart/Flutter tests: no pubspec.yaml"; fi
+	$(PYTHON) .agents/tools/run_checks.py test
 
 format: ## Apply Dart formatting
-	@if [ -f pubspec.yaml ]; then dart format .; else echo "SKIP format: no pubspec.yaml"; fi
+	$(PYTHON) .agents/tools/run_checks.py format
 
 format-check: ## Check Dart formatting
-	@if [ -f pubspec.yaml ]; then dart format --output=none --set-exit-if-changed .; \
-	else echo "SKIP format check: no pubspec.yaml"; fi
+	$(PYTHON) .agents/tools/run_checks.py format-check
 
 tool-tests: ## Test agent tooling
 	$(PYTHON) -m unittest discover -s .agents/tests -p 'test_*.py'

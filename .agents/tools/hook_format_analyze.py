@@ -1,24 +1,19 @@
 #!/usr/bin/env python3
 """PostToolUse: auto-format and analyze edited Dart files.
 
-Reads a Claude Code or Codex hook payload from stdin. For edited `.dart` files
-inside a Dart/Flutter project, runs `dart format` then `dart analyze` on each
-file. If the analyzer reports issues, prints them to stderr and exits 2.
-
-Deterministic and cheap: the agent never has to run/parse these itself.
-Safe no-op when `dart` is unavailable, the file is not Dart, or there is no
-surrounding `pubspec.yaml` (non-Flutter projects).
+Resolve the project's Dart SDK, format edited files, then analyze each file.
+Non-Dart edits are ignored; missing SDKs and failed checks are reported.
 """
 
 from __future__ import annotations
 
 import json
-import shutil
 import subprocess
 import sys
 from pathlib import Path
 
 from hook_payload import extract_file_paths
+from run_checks import sdk_command
 
 OUTPUT_CAP = 4000  # keep analyzer output within the AGENTS.md cap
 
@@ -36,36 +31,30 @@ def main() -> int:
     except Exception:
         return 0
 
-    dart = shutil.which("dart")
-    if not dart:
-        return 0  # not a Dart environment; nothing to enforce
-
-    dart_files = [
-        path
-        for path in extract_file_paths(payload)
-        if path.suffix == ".dart"
-        and path.exists()
-        and find_pubspec(path.resolve().parent) is not None
-    ]
-    if not dart_files:
-        return 0
-
-    # One invocation each for format and analyze over the whole batch. `dart
-    # analyze` accepts many paths and prints the offending file:line per issue,
-    # so a single call keeps file attribution while paying one analyzer
-    # cold-start instead of one per file (the slow path on large repos), and a
-    # single combined output means the cap is a real total, not N x OUTPUT_CAP.
-    paths = [str(p) for p in dart_files]
-    subprocess.run([dart, "format", *paths], capture_output=True, text=True)
-    result = subprocess.run([dart, "analyze", *paths], capture_output=True, text=True)
-    if result.returncode == 0:
-        return 0
-
-    out = (result.stdout or result.stderr or "").strip()
-    if len(out) > OUTPUT_CAP:
-        out = out[:OUTPUT_CAP] + "\n... (truncated)"
-    sys.stderr.write(f"dart analyze found issues:\n{out}\n")
-    return 2
+    cwd = Path(payload.get("cwd") or Path.cwd())
+    packages: dict[Path, list[str]] = {}
+    for path in extract_file_paths(payload):
+        path = (cwd / path).resolve()
+        if path.suffix == ".dart" and path.is_file():
+            package = find_pubspec(path.parent)
+            if package is not None:
+                packages.setdefault(package, []).append(str(path))
+    try:
+        for package, paths in packages.items():
+            dart = sdk_command(package, "dart")
+            commands = [[*dart, "format", *paths]]
+            # One target per analysis call also supports older pinned Dart SDKs.
+            commands += [[*dart, "analyze", path] for path in paths]
+            for command in commands:
+                result = subprocess.run(command, cwd=package, capture_output=True, text=True)
+                if result.returncode:
+                    output = (result.stdout + result.stderr).strip()
+                    sys.stderr.write(f"Dart check failed:\n{output[:OUTPUT_CAP]}\n")
+                    return 2
+    except (OSError, ValueError) as error:
+        sys.stderr.write(f"Dart checks could not run: {error}\n")
+        return 2
+    return 0
 
 
 if __name__ == "__main__":

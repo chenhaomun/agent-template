@@ -2,6 +2,10 @@
 
 Lean shared configuration for Claude Code and OpenAI Codex. Flutter/Dart support is included, while project-specific rules and existing files remain intact.
 
+Use Python 3.11 or newer. No third-party Python packages are required.
+
+Use Python 3.11 or newer. No third-party Python packages are required.
+
 ## Structure
 
 - `AGENTS.md`: shared runtime rules.
@@ -38,6 +42,10 @@ The installer:
 - aborts when a user-modified owned file or same-name unowned path would be overwritten;
 - creates relative Claude adapter symlinks on Unix/macOS.
 
+The installer rejects symlinks in copied sources and adapter destinations. It excludes caches, timestamped backups, private `.env` files, and `settings.local.json`; `.env.example` files remain distributable. New project context is generated from the destination structure with placeholders for project-specific facts. Existing context stays project-owned.
+
+The installer rejects symlinks in copied sources and adapter destinations. It excludes caches, timestamped backups, private `.env` files, and `settings.local.json`; `.env.example` files remain distributable. New project context is generated from the destination structure with placeholders for project-specific facts. Existing context stays project-owned.
+
 Use `--copy-adapters` on filesystems without symlink support. Windows selects copy mode automatically.
 
 Template rules cannot outrank system instructions. Codex also lets instructions closer to the working directory override root guidance. The managed root block is placed after existing root text for consistent repository-wide defaults without hiding project rules.
@@ -59,6 +67,48 @@ make -f .agents/Makefile sync
 make -f .agents/Makefile verify
 ```
 
+Without `make`, run the same verification with:
+
+```sh
+python .agents/tools/run_checks.py verify
+```
+
+The Makefile uses `python` by default; set `PYTHON=python3` if needed. Verification runs on Windows and Linux in CI, with separate installation and upgrade smoke checks for copied and symlinked adapters.
+
+Project commands can be configured in the project-owned `.agents/project-commands.json`. Each value is an argument array, never a shell command string:
+
+```json
+{
+  "dart": ["fvm", "dart"],
+  "flutter": ["fvm", "flutter"],
+  "analyze": ["python", "scripts/check.py", "analyze"],
+  "test": ["python", "scripts/check.py", "test"]
+}
+```
+
+Configure only the keys your project needs. `format` and `format-check` also accept complete command overrides. SDK overrides apply to Dart hooks as well as verification. Otherwise, checks use a cached `.fvm/flutter_sdk`, then global Dart/Flutter when no FVM pin exists. A missing pinned SDK is reported without downloading it or falling back to a global version. Nested packages inherit the nearest command configuration; checks run from the package/project directory. Missing SDKs and formatting failures are reported by hooks.
+
+Without `make`, run the same verification with:
+
+```sh
+python .agents/tools/run_checks.py verify
+```
+
+The Makefile uses `python` by default; set `PYTHON=python3` if needed. Verification runs on Windows and Linux in CI, with separate installation and upgrade smoke checks for copied and symlinked adapters.
+
+Project commands can be configured in the project-owned `.agents/project-commands.json`. Each value is an argument array, never a shell command string:
+
+```json
+{
+  "dart": ["fvm", "dart"],
+  "flutter": ["fvm", "flutter"],
+  "analyze": ["python", "scripts/check.py", "analyze"],
+  "test": ["python", "scripts/check.py", "test"]
+}
+```
+
+Configure only the keys your project needs. `format` and `format-check` also accept complete command overrides. SDK overrides apply to Dart hooks as well as verification. Otherwise, checks use a cached `.fvm/flutter_sdk`, then global Dart/Flutter when no FVM pin exists. A missing pinned SDK is reported without downloading it or falling back to a global version. Nested packages inherit the nearest command configuration; checks run from the package/project directory. Missing SDKs and formatting failures are reported by hooks.
+
 ## Project context
 
 Agents read `.agents/project-context.md` before broad searches. Curated purpose, architecture, ownership, and command sections stay hand-maintained. Only the marked structural block is generated:
@@ -73,6 +123,10 @@ python .agents/tools/generate_project_context.py --write
 ## Shared skills and subagents
 
 Edit only `.agents/skills/` and `.agents/subagents/`. Run `make sync` after changes.
+
+Sync rejects same-name custom Codex roles instead of overwriting them. It also migrates legacy skill display fields under `interface` while retaining curated values; integrity checks validate that metadata structure.
+
+Sync rejects same-name custom Codex roles instead of overwriting them. It also migrates legacy skill display fields under `interface` while retaining curated values; integrity checks validate that metadata structure.
 
 Active roles:
 
@@ -118,6 +172,10 @@ python .codex/install.py --write
 ```
 
 The device installer merges allowlisted keys and backs up existing `~/.codex/config.toml`; it does not copy auth, sessions, trust, or local provider paths.
+
+Configuration merging preserves array tables and multiline values and validates the complete TOML before writing.
+
+Configuration merging preserves array tables and multiline values and validates the complete TOML before writing.
 
 ## Agent memory
 

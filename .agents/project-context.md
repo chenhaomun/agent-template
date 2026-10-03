@@ -18,6 +18,8 @@ Flutter skills follow project-specific SDK, architecture, and tooling. Local ada
 - Source: `.agents/skills/` and `.agents/subagents/`.
 - Adapters: `.claude/` and `.codex/`.
 - Enforcement and maintenance: `.agents/tools/` with tests in `.agents/tests/`.
+- Project command and SDK selection: `.agents/tools/run_checks.py`; optional project-owned overrides in `.agents/project-commands.json`. Hooks share this resolver and report missing pinned SDKs.
+- Installation lifecycle coverage: `.agents/tests/smoke_install.py`; Windows/Linux verification in `.github/workflows/verify.yml`. Tooling uses Python 3.11+ without third-party packages.
 - Security policy: `SECURITY.md`.
 - Story drafting/approved ClickUp creation: `draft-user-stories`; scoped HTML infographics: `visual-explainer`. Both are project-local skills.
 - Review skills share the concise output contract in `.agents/skills/production-code-review/references/findings.md`.
@@ -26,6 +28,8 @@ Flutter skills follow project-specific SDK, architecture, and tooling. Local ada
 ## Commands
 
 - `make -f .agents/Makefile verify` checks template integrity, context freshness, and project checks.
+- `python .agents/tools/run_checks.py verify` runs equivalent checks without make.
+- `python .agents/tests/smoke_install.py` checks preview, installation, sync, upgrades, and preservation using temporary projects.
 - `make -f .agents/Makefile sync` refreshes adapters after shared source changes.
 - `make -f .agents/Makefile context` updates the generated structure.
 

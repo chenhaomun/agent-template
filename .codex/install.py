@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import shutil
+import tomllib
 from datetime import datetime
 from pathlib import Path
 
@@ -20,77 +21,61 @@ SECTIONS = {
 }
 
 
-def split_sections(text: str) -> tuple[list[str], dict[str, list[str]], list[str]]:
-    root: list[str] = []
-    sections: dict[str, list[str]] = {}
-    order: list[str] = []
-    current: str | None = None
-
+def statements(text: str) -> list[str]:
+    """Keep complete TOML values together, including multiline strings/arrays."""
+    tomllib.loads(text)
+    result: list[str] = []
+    pending = ""
     for line in text.splitlines():
-        stripped = line.strip()
-        if stripped.startswith("[") and stripped.endswith("]"):
-            current = stripped.strip("[]")
-            sections.setdefault(current, [])
-            order.append(current)
+        pending += line + "\n"
+        try:
+            tomllib.loads(pending)
+        except tomllib.TOMLDecodeError:
             continue
+        result.append(pending.rstrip("\n"))
+        pending = ""
+    if pending:
+        raise ValueError("cannot safely split TOML configuration")
+    return result
 
-        if current is None:
-            root.append(line)
+
+def split_sections(text: str) -> tuple[list[str], list[tuple[str, list[str]]]]:
+    root: list[str] = []
+    sections: list[tuple[str, list[str]]] = []
+    current = root
+    for statement in statements(text):
+        if statement.lstrip().startswith("["):
+            current = []
+            sections.append((statement, current))
         else:
-            sections[current].append(line)
+            current.append(statement)
+    return root, sections
 
-    return root, sections, order
 
-
-def key_of(line: str) -> str | None:
-    stripped = line.strip()
-    if not stripped or stripped.startswith("#") or "=" not in stripped:
+def section_name(header: str) -> tuple[str, ...] | None:
+    if header.lstrip().startswith("[["):
         return None
-    return stripped.split("=", 1)[0].strip()
+    value = tomllib.loads(header)
+    parts: list[str] = []
+    while isinstance(value, dict) and len(value) == 1:
+        key, value = next(iter(value.items()))
+        parts.append(key)
+    return tuple(parts)
 
 
-def section_keys(lines: list[str]) -> set[str]:
-    return {key for line in lines if (key := key_of(line))}
+def key_of(statement: str) -> str | None:
+    return next(iter(tomllib.loads(statement)), None)
 
 
-def remove_keys(lines: list[str], keys: set[str]) -> list[str]:
+def merge_values(existing: list[str], example: list[str], allowed: set[str] | None = None) -> list[str]:
+    replacements = {
+        key: statement for statement in example
+        if (key := key_of(statement)) and (allowed is None or key in allowed)
+    }
     output: list[str] = []
-    skip_multiline = False
-
-    for line in lines:
-        if skip_multiline:
-            if '"""' in line:
-                skip_multiline = False
-            continue
-
-        key = key_of(line)
-        if key in keys:
-            if '"""' in line and line.count('"""') == 1:
-                skip_multiline = True
-            continue
-
-        output.append(line)
-
-    return output
-
-
-def merge_root(existing: list[str], example: list[str]) -> list[str]:
-    example_by_key = {key_of(line): line for line in example if key_of(line) in ROOT_KEYS}
-    output: list[str] = []
-    used: set[str] = set()
-
-    for line in existing:
-        key = key_of(line)
-        if key in example_by_key:
-            output.append(example_by_key[key])
-            used.add(key)
-        else:
-            output.append(line)
-
-    for key in ROOT_KEYS - used:
-        if key in example_by_key:
-            output.append(example_by_key[key])
-
+    for statement in existing:
+        output.append(replacements.pop(key_of(statement), statement))
+    output.extend(replacements.values())
     return trim_blank_edges(output)
 
 
@@ -102,48 +87,43 @@ def trim_blank_edges(lines: list[str]) -> list[str]:
     return lines
 
 
-def render(root: list[str], sections: dict[str, list[str]], order: list[str]) -> str:
+def render(root: list[str], sections: list[tuple[str, list[str]]]) -> str:
     lines: list[str] = []
     lines.extend(trim_blank_edges(root.copy()))
 
-    for name in order:
-        body = trim_blank_edges(sections.get(name, []).copy())
+    for header, body in sections:
         if lines:
             lines.append("")
-        lines.append(f"[{name}]")
-        lines.extend(body)
+        lines.append(header)
+        lines.extend(trim_blank_edges(body.copy()))
 
     return "\n".join(lines).rstrip() + "\n"
 
 
 def merge_config(current: str, example: str) -> tuple[str, list[str]]:
-    cur_root, cur_sections, cur_order = split_sections(current)
-    ex_root, ex_sections, ex_order = split_sections(example)
+    cur_root, cur_sections = split_sections(current)
+    ex_root, ex_sections = split_sections(example)
     actions: list[str] = []
 
-    merged_root = merge_root(cur_root, ex_root)
-    merged_sections = dict(cur_sections)
-    merged_order = list(cur_order)
-
-    for name in ex_order:
-        if name not in SECTIONS:
+    merged_root = merge_values(cur_root, ex_root, ROOT_KEYS)
+    merged_sections = list(cur_sections)
+    allowed = {tuple(name.split(".")) for name in SECTIONS}
+    for header, body in ex_sections:
+        name = section_name(header)
+        if name not in allowed:
             continue
-        ex_body = ex_sections.get(name, [])
-        if not ex_body and name not in cur_sections:
-            continue
-        if name in merged_sections:
-            existing_keys = section_keys(merged_sections[name])
-            example_keys = section_keys(ex_body)
-            merged_sections[name] = remove_keys(merged_sections[name], example_keys)
-            merged_sections[name] = trim_blank_edges(ex_body.copy()) + merged_sections[name]
-            changed = ", ".join(sorted(example_keys & existing_keys))
-            actions.append(f"update [{name}]" + (f": {changed}" if changed else ""))
+        index = next((i for i, (old, _) in enumerate(merged_sections) if section_name(old) == name), None)
+        if index is not None:
+            old_header, old_body = merged_sections[index]
+            merged_sections[index] = (old_header, merge_values(old_body, body))
+            actions.append(f"update {header}")
         else:
-            merged_sections[name] = trim_blank_edges(ex_body.copy())
-            merged_order.append(name)
-            actions.append(f"add [{name}]")
+            merged_sections.append((header, body))
+            actions.append(f"add {header}")
 
-    return render(merged_root, merged_sections, merged_order), actions
+    merged = render(merged_root, merged_sections)
+    tomllib.loads(merged)
+    return merged, actions
 
 
 def copy_pet(repo_root: Path, codex_home: Path, force: bool) -> str:
@@ -176,7 +156,10 @@ def main() -> int:
 
     example = example_path.read_text(encoding="utf-8")
     current = target.read_text(encoding="utf-8") if target.exists() else ""
-    merged, actions = merge_config(current, example)
+    try:
+        merged, actions = merge_config(current, example)
+    except ValueError as error:
+        parser.error(f"configuration was not changed: {error}")
 
     print(f"target: {target}")
     print("mode: write" if args.write else "mode: dry-run")

@@ -19,12 +19,38 @@ LINKS = {
     ".claude/agents": ".agents/subagents",
 }
 
-IGNORED_PARTS = {"__pycache__"}
+IGNORED_PARTS = {"__pycache__", ".pytest_cache", ".git", ".skill-refresh"}
 
 
 def relevant(path: Path) -> bool:
     """True if path should participate in mirroring/comparison."""
-    return not (set(path.parts) & IGNORED_PARTS) and path.suffix != ".pyc"
+    return (
+        not (set(path.parts) & IGNORED_PARTS)
+        and not any(".bak-" in part for part in path.parts)
+        and path.suffix not in {".pyc", ".pyo"}
+        and path.name not in {"settings.local.json"}
+        and not (
+            (path.name == ".env" or path.name.startswith(".env."))
+            and not path.name.endswith(".example")
+        )
+    )
+
+
+def openai_metadata_errors(text: str) -> list[str]:
+    """Validate the template's block-style UI metadata convention."""
+    fields = {"display_name", "short_description", "default_prompt"}
+    top_level = list(re.finditer(r"^([A-Za-z_][\w-]*):([^\n]*)", text, re.MULTILINE))
+    errors = [f"{match[1]} must be nested under interface" for match in top_level if match[1] in fields]
+    interface = next((match for match in top_level if match[1] == "interface"), None)
+    if interface is None or interface[2].strip().split("#", 1)[0].strip():
+        return errors + ["interface must be a block mapping"]
+    end = next((match.start() for match in top_level if match.start() > interface.start()), len(text))
+    values = dict(re.findall(r"^  ([A-Za-z_]+):[ \t]*([^\n]+)", text[interface.end():end], re.MULTILINE))
+    for field in sorted(fields):
+        value = values.get(field, "").strip()
+        if not value or value in {'""', "''", "null", "~", "true", "false"} or value.startswith("#"):
+            errors.append(f"interface.{field} must contain text")
+    return errors
 
 
 def parse_frontmatter(text: str) -> tuple[dict[str, str], str]:

@@ -2,6 +2,8 @@
 
 This folder stores safe, portable Codex preferences for this template.
 
+The device installer requires Python 3.11 or newer for built-in TOML validation. It preserves unrelated configuration, including repeated skill entries and multiline values, and rejects invalid merges before writing.
+
 It is not auto-loaded by Codex. On a new device, ask Codex to read `.codex/README.md` and apply the setup, or run:
 
 ```sh

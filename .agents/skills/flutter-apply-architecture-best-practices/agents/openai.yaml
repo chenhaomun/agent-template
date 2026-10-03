@@ -1,3 +1,4 @@
-display_name: "Flutter Apply Architecture Best Practices"
-short_description: "Refine Flutter feature boundaries using the project's established architecture."
-default_prompt: "Use flutter-apply-architecture-best-practices for this task."
+interface:
+  display_name: "Flutter Apply Architecture Best Practices"
+  short_description: "Refine Flutter feature boundaries using the project's established architecture."
+  default_prompt: "Use flutter-apply-architecture-best-practices for this task."
