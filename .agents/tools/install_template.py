@@ -18,6 +18,9 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+from _template_lib import relevant
+from generate_project_context import write_document
+
 
 SOURCE_ROOT = Path(__file__).resolve().parents[2]
 MANAGED_NAME = "agent-template"
@@ -38,7 +41,6 @@ COPY_ENTRIES = (
     ".codex/install.py",
     "skills-lock.json",
 )
-SEED_IF_ABSENT = (".agents/project-context.md",)
 MANIFEST_RELATIVE = ".agents/.template-manifest.json"
 ADAPTERS = {
     ".claude/agents": ".agents/subagents",
@@ -163,14 +165,17 @@ def template_files(source_root: Path) -> dict[str, Path]:
     """Return canonical template files, excluding caches and directories."""
     files: dict[str, Path] = {}
     for relative in COPY_ENTRIES:
-        source = source_root / relative
+        source = safe_target(source_root, relative)
         if not source.exists():
             continue
         if source.is_file():
             files[relative] = source
             continue
         for child in source.rglob("*"):
-            if child.is_file() and "__pycache__" not in child.parts and child.suffix != ".pyc":
+            if not relevant(child.relative_to(source_root)):
+                continue
+            safe_target(source_root, child.relative_to(source_root).as_posix())
+            if child.is_file():
                 files[child.relative_to(source_root).as_posix()] = child
     return files
 
@@ -251,7 +256,14 @@ def effective_files(
     root: Path, updates: list[tuple[Path, Path]], deletes: list[Path]
 ) -> dict[Path, Path]:
     """Files a target directory will contain after planned canonical updates."""
-    files = {path.relative_to(root): path for path in root.rglob("*") if path.is_file()} if root.is_dir() else {}
+    files: dict[Path, Path] = {}
+    if root.is_dir():
+        for path in root.rglob("*"):
+            if not relevant(path.relative_to(root)):
+                continue
+            safe_target(root, path.relative_to(root).as_posix())
+            if path.is_file():
+                files[path.relative_to(root)] = path
     for source, target in updates:
         try:
             relative = target.relative_to(root)
@@ -344,7 +356,10 @@ def install(source_root: Path, target_root: Path, *, write: bool, copy_adapters:
             mode = "copy" if copy_adapters else "symlink"
             changes.append(f"{mode} adapter: {adapter} -> {target_rel}")
             if copy_adapters:
-                adapter_updates.extend((source, adapter_path / relative) for relative, source in expected.items())
+                adapter_updates.extend(
+                    (source, safe_target(target_root, f"{adapter}/{relative.as_posix()}"))
+                    for relative, source in expected.items()
+                )
             else:
                 adapter_symlinks.add(adapter)
         elif adapter_path.is_symlink() and adapter_path.resolve() != adapter_source.resolve():
@@ -355,7 +370,7 @@ def install(source_root: Path, target_root: Path, *, write: bool, copy_adapters:
             raise InstallConflict(f"unowned conflict: {adapter}")
         elif not adapter_path.is_symlink():
             for relative, source in expected.items():
-                destination = adapter_path / relative
+                destination = safe_target(target_root, f"{adapter}/{relative.as_posix()}")
                 if not destination.exists():
                     adapter_updates.append((source, destination))
                     continue
@@ -399,12 +414,10 @@ def install(source_root: Path, target_root: Path, *, write: bool, copy_adapters:
     if manifest != next_manifest:
         changes.append(f"update manifest: {MANIFEST_RELATIVE}")
 
-    seeds = [
-        (source_root / relative, safe_target(target_root, relative))
-        for relative in SEED_IF_ABSENT
-        if (source_root / relative).is_file() and not (target_root / relative).exists()
-    ]
-    changes.extend(f"seed: {target.relative_to(target_root).as_posix()}" for _, target in seeds)
+    context = safe_target(target_root, ".agents/project-context.md")
+    seed_context = not context.exists()
+    if seed_context:
+        changes.append("seed: .agents/project-context.md")
 
     if not write:
         return changes
@@ -423,9 +436,6 @@ def install(source_root: Path, target_root: Path, *, write: bool, copy_adapters:
     for source, target in canonical_updates:
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, target)
-    for source, target in seeds:
-        target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(source, target)
     for target in canonical_deletes:
         remove_owned_file(target, target_root)
     for adapter, target_rel in ADAPTERS.items():
@@ -442,6 +452,8 @@ def install(source_root: Path, target_root: Path, *, write: bool, copy_adapters:
         shutil.copy2(source, destination)
     for destination in adapter_deletes:
         remove_owned_file(destination, target_root)
+    if seed_context:
+        write_document(target_root)
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     manifest_path.write_text(json.dumps(next_manifest, indent=2) + "\n", encoding="utf-8")
     return changes

@@ -1,3 +1,4 @@
-display_name: "Flutter Use Http Package"
-short_description: "Implement requests with the existing `http` package integration."
-default_prompt: "Use flutter-use-http-package for this task."
+interface:
+  display_name: "Flutter Use Http Package"
+  short_description: "Implement requests with the existing `http` package integration."
+  default_prompt: "Use flutter-use-http-package for this task."

@@ -1,3 +1,4 @@
-display_name: "Flutter Implement Json Serialization"
-short_description: "Implement manual JSON mapping using the project's model conventions."
-default_prompt: "Use flutter-implement-json-serialization for this task."
+interface:
+  display_name: "Flutter Implement Json Serialization"
+  short_description: "Implement manual JSON mapping using the project's model conventions."
+  default_prompt: "Use flutter-implement-json-serialization for this task."

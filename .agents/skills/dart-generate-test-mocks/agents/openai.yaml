@@ -1,3 +1,4 @@
-display_name: "Dart Generate Test Mocks"
-short_description: "Generate Mockito mocks for existing build-runner test setups."
-default_prompt: "Use dart-generate-test-mocks for this task."
+interface:
+  display_name: "Dart Generate Test Mocks"
+  short_description: "Generate Mockito mocks for existing build-runner test setups."
+  default_prompt: "Use dart-generate-test-mocks for this task."

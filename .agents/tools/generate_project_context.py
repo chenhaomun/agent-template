@@ -86,15 +86,19 @@ def starter_document(structure: str) -> str:
 
 ## Purpose
 
-Reusable agent-configuration template for projects that use Claude and Codex.
+Describe this project's purpose, users, and main behavior here.
 
 ## Architecture
+
+Document the application's architecture and important boundaries here.
 
 - `.agents/` is the source of truth for shared instructions, skills, subagents, tools, and checks.
 - `.claude/` and `.codex/` are adapters generated or linked from that shared source.
 - `.agents/Makefile` exposes portable sync and verification commands; a project root Makefile remains project-owned.
 
 ## Ownership
+
+Record application modules and their owners here.
 
 - Source: `.agents/skills/` and `.agents/subagents/`.
 - Adapters: `.claude/` and `.codex/`.

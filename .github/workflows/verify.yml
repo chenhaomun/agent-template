@@ -1,0 +1,26 @@
+name: Template verification
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.11', '3.13']
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Refresh platform adapters
+        run: python .agents/tools/sync_shared.py
+      - name: Verify template and regression tests
+        run: python .agents/tools/run_checks.py verify
+      - name: Exercise installation and upgrades
+        run: python .agents/tests/smoke_install.py

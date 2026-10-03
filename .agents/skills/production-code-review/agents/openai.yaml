@@ -1,3 +1,4 @@
-display_name: Production Code Review
-short_description: Review a branch against its ticket; report only problems with file and line references.
-default_prompt: "Review {branch name}; ticket: {ticket URL}. Report only problems in short, precise bullets with files and lines."
+interface:
+  display_name: Production Code Review
+  short_description: Review a branch against its ticket; report only problems with file and line references.
+  default_prompt: "Review {branch name}; ticket: {ticket URL}. Report only problems in short, precise bullets with files and lines."

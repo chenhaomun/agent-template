@@ -19,6 +19,8 @@ Idempotent. A correctly-resolving symlink is left untouched. Run with
 from __future__ import annotations
 
 import filecmp
+import json
+import re
 import shutil
 from pathlib import Path
 
@@ -84,7 +86,7 @@ GENERATED_HEADER = "# Generated from .agents/subagents; edit the source Markdown
 
 
 def toml_basic(value: str) -> str:
-    return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
+    return json.dumps(value, ensure_ascii=False)
 
 
 def toml_body(value: str) -> str:
@@ -96,14 +98,9 @@ def toml_body(value: str) -> str:
     silently dropped from the generated adapter.
     """
     if '"""' not in value:
-        return f'"""\n{value}"""'
-    escaped = (
-        value.replace("\\", "\\\\")
-        .replace('"', '\\"')
-        .replace("\t", "\\t")
-        .replace("\n", "\\n")
-    )
-    return f'"{escaped}"'
+        escaped = "\n".join(toml_basic(line)[1:-1] for line in value.split("\n"))
+        return f'"""\n{escaped}"""'
+    return toml_basic(value)
 
 
 def render_codex_toml(
@@ -134,6 +131,7 @@ def generate_codex_agents(actions: list[str]) -> None:
         raise RuntimeError(f"refusing symlinked Codex agents directory: {CODEX_AGENTS}")
     CODEX_AGENTS.mkdir(parents=True, exist_ok=True)
     wanted: set[str] = set()
+    updates: list[tuple[Path, str]] = []
     for md in sorted(SUBAGENTS.glob("*.md")):
         front, body = parse_frontmatter(md.read_text(encoding="utf-8"))
         name, description = front.get("name"), front.get("description")
@@ -148,9 +146,14 @@ def generate_codex_agents(actions: list[str]) -> None:
             raise RuntimeError(f"refusing symlinked Codex agent: {out}")
         wanted.add(out.name)
         content = render_codex_toml(name, description, body, model, effort)
-        if not out.exists() or out.read_text(encoding="utf-8") != content:
-            out.write_text(content, encoding="utf-8")
-            actions.append(f"generated .codex/agents/{out.name}")
+        previous = out.read_text(encoding="utf-8") if out.exists() else None
+        if previous is not None and not previous.startswith(GENERATED_HEADER):
+            raise RuntimeError(f"unowned Codex agent conflict: {out}")
+        if previous != content:
+            updates.append((out, content))
+    for out, content in updates:
+        out.write_text(content, encoding="utf-8")
+        actions.append(f"generated .codex/agents/{out.name}")
     for toml in CODEX_AGENTS.glob("*.toml"):
         if toml.name not in wanted and toml.read_text(encoding="utf-8").startswith(GENERATED_HEADER):
             toml.unlink()
@@ -173,18 +176,27 @@ def short_description(description: str, limit: int = 140) -> str:
 
 
 def generate_openai_adapters(actions: list[str]) -> None:
-    """Create a default agents/openai.yaml for any skill that lacks one.
-
-    Codex only surfaces a skill as a `$`-command when this adapter exists;
-    generating missing ones keeps the Codex and Claude skill sets identical
-    without hand-maintaining a second description. Curated adapters are never
-    overwritten — only absent ones are filled in.
-    """
+    """Create UI metadata or nest legacy UI fields without changing their values."""
     if not SKILLS.is_dir():
         return
     for skill_md in sorted(SKILLS.glob("*/SKILL.md")):
         out = skill_md.parent / "agents" / "openai.yaml"
         if out.exists():
+            previous = out.read_text(encoding="utf-8")
+            fields = list(re.finditer(
+                r"^(?:display_name|short_description|default_prompt):[^\n]*(?:\n[ \t]+[^\n]+)*\n?",
+                previous, re.MULTILINE,
+            ))
+            if fields and not re.search(r"^interface:", previous, re.MULTILINE):
+                interface = "interface:\n" + "\n".join(
+                    "\n".join("  " + line for line in field.group().rstrip().splitlines())
+                    for field in fields
+                ) + "\n"
+                remaining = previous
+                for field in reversed(fields):
+                    remaining = remaining[:field.start()] + remaining[field.end():]
+                out.write_text(interface + remaining, encoding="utf-8")
+                actions.append(f"migrated .agents/skills/{skill_md.parent.name}/agents/openai.yaml")
             continue
         front, _ = parse_frontmatter(skill_md.read_text(encoding="utf-8", errors="ignore"))
         name = front.get("name") or skill_md.parent.name
@@ -193,9 +205,10 @@ def generate_openai_adapters(actions: list[str]) -> None:
             actions.append(f"skip openai.yaml for {name}: missing description")
             continue
         content = (
-            f"display_name: {yaml_quote(name.replace('-', ' ').title())}\n"
-            f"short_description: {yaml_quote(short_description(description))}\n"
-            f"default_prompt: {yaml_quote(f'Use {name} for this task.')}\n"
+            "interface:\n"
+            f"  display_name: {yaml_quote(name.replace('-', ' ').title())}\n"
+            f"  short_description: {yaml_quote(short_description(description))}\n"
+            f"  default_prompt: {yaml_quote(f'Use ${name} for this task.')}\n"
         )
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(content, encoding="utf-8")

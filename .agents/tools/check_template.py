@@ -20,7 +20,7 @@ import json
 import re
 from pathlib import Path
 
-from _template_lib import LINKS, ROOT, gated_skill_names, parse_frontmatter, relevant
+from _template_lib import LINKS, ROOT, gated_skill_names, openai_metadata_errors, parse_frontmatter, relevant
 from detect_project import detect
 from sync_shared import CODEX_TIER, GENERATED_HEADER, render_codex_toml
 
@@ -110,8 +110,13 @@ def check_skills(errors: list[str]) -> int:
             errors.append(f"{rel}: frontmatter name {front.get('name')!r} != directory name")
         if not front.get("description"):
             errors.append(f"{rel}: frontmatter missing 'description:'")
-        if not (skill_dir / "agents" / "openai.yaml").is_file():
+        adapter = skill_dir / "agents" / "openai.yaml"
+        if not adapter.is_file():
             errors.append(f"{rel}: missing agents/openai.yaml (run make sync)")
+        else:
+            errors.extend(f"{rel}/agents/openai.yaml: {error}" for error in openai_metadata_errors(
+                adapter.read_text(encoding="utf-8")
+            ))
     return count
 
 
