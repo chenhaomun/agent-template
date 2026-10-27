@@ -1,9 +1,9 @@
 # User-story pattern
 
-Save one file in the target repository. Use an epic heading and repeat the story section below for each outcome. Draft metadata stays outside the published body.
+Repeat the story section for each outcome. Group each story statement and scenario into a compact block. Use Markdown hard line breaks (`\` at line end) within blocks; blank lines separate sections and scenarios only. Preserve visible line breaks in ClickUp and verify they neither collapse nor display literal escape characters.
 
 ```markdown
-# [Epic title]
+# [Epic/topic title]
 
 ## FE - Apps - [Feature] - Outcome
 
@@ -12,32 +12,24 @@ Save one file in the target repository. Use an epic heading and repeat the story
 - Assignee: [Approved or proposed member/team]
 - Priority: Normal
 
-**As a [role],**
-**I want to** [user action],
+**As a [role],**\
+**I want to** [user action],\
 **So that** [useful outcome].
 
 ### Acceptance Criteria
 
-**Scenario 1: [Short outcome title]**
-**Given** [relevant starting state],
-**When** [action or event],
-**Then** [observable result].
-
-**Scenario 2: [Short outcome title]**
-**Given** [relevant starting state],
-**When** [action or event],
+**Scenario 1: [Short outcome title]**\
+**Given** [starting condition],\
+**When** [action or event],\
 **Then** [observable result].
 ```
 
-Use only as many scenarios as needed; one concise sentence per Given, When, and Then. Do not pad a simple story or drop essential conditions to shorten it.
+Use one short sentence per clause, without an arbitrary word cap. Prefer “Then I see matching records” to “Then the system displays a list containing all records matching my search.”
 
-Append an **API** section only when needed, with short endpoint bullets. Never add Scope notes or Screenshots/Flow.
-
-After the last story, append the shared questions section in the same file:
+Append optional API endpoint bullets within the relevant story. After the final story, add:
 
 ```markdown
 ## Open Questions
+
 - [Story title]: [Unresolved material question?]
 ```
-
-Deduplicate shared questions; write “None” when resolved. Add only material gaps/coverage notes. Record created ticket links beside the corresponding story metadata. No separate README or per-story files; never publish the combined draft or its questions.
