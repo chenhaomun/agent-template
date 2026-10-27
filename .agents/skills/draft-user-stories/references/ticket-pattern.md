@@ -1,34 +1,37 @@
 # User-story pattern
 
-- Title: `FE - Apps - [Feature] - Action`; adapt the prefix to the supplied project convention.
-- Body: a short user story and testable behavior bullets. Include API when backend effort is required; otherwise omit it by default. No Screenshots/Flow section.
-- Creation fields: **Task Type = User Story**, **Target Platform(s) = Mobile App**. Link the standalone story to the epic through **Related tasks**, never as a subtask. Keep these operational fields out of the story body.
-- Use explicit instructions or private project configuration first; infer missing metadata from the epic, comments, and related conventions. Show inferred values as proposed for review. No real project details belong in this reference.
-
-Use this shape, replacing placeholders with evidence and removing drafting notes before creation:
+Use an outcome-based title. Draft metadata stays outside the published body.
 
 ```markdown
-# FE - Apps - [Feature] - Action
+# FE - Apps - [Feature] - Outcome
 
-- Epic: [Supplied epic reference]
-- Tags: [Specified tags or inferred tags marked proposed]
-- Assignee: [Specified member/team or inferred identity marked proposed]
+- Epic: [Supplied reference]
+- Tags: [Approved or proposed tags]
+- Assignee: [Approved or proposed member/team]
 - Priority: Normal
 
-## User Story
-As a customer, I can [action] so I can [outcome].
+**As a [role],**
+**I want to** [user action],
+**So that** [useful outcome].
 
-## Acceptance Criteria
-- [Action or condition] → [visible result].
+### Acceptance Criteria
 
-## API
-- `METHOD /confirmed/path` — [inputs, outputs, and when called].
+**Scenario 1: [Short outcome title]**
+**Given** [relevant starting state],
+**When** [action or event],
+**Then** [observable result].
 
+**Scenario 2: [Short outcome title]**
+**Given** [relevant starting state],
+**When** [action or event],
+**Then** [observable result].
 ```
 
-Remove the API section when no backend work or requested API documentation is needed. Preserve inspected codebase conventions for behavior the requirements leave unspecified. Keep only unresolved material decisions in README; do not ask routine metadata or existing-behavior questions. Never include destination lists or draft versions.
+Use only as many scenarios as needed; one concise sentence per Given, When, and Then. Do not pad a simple story or drop essential conditions to shorten it.
 
-Deliver the folder under Downloads using the sanitized epic ticket name. Generate a short `README.md` alongside the stories:
+Append an **API** section only when needed, with short endpoint bullets. Never add Scope notes or Screenshots/Flow.
+
+Generate a separate local README:
 
 ```markdown
 # [Epic title]
@@ -37,8 +40,7 @@ Deliver the folder under Downloads using the sanitized epic ticket name. Generat
 - [Story title](story-name.md)
 
 ## Open Questions
-- [Story title](story-name.md): [Short question?]
-- Shared: [Question affecting several stories?]
+- [Story title](story-name.md): [Unresolved material question?]
 ```
 
-Omit empty question groups; say “None” when there are no open questions. Add source/access gaps only when material. After creation, append ticket links to the story index. Never upload README or send its questions to tickets; publish only the approved story body sections.
+Deduplicate shared questions; write “None” when resolved. Add only material gaps/coverage notes. Append created ticket links to the index; never publish README or its questions.
