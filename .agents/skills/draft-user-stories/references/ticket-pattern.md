@@ -1,9 +1,11 @@
 # User-story pattern
 
-Use an outcome-based title. Draft metadata stays outside the published body.
+Save one file in the target repository. Use an epic heading and repeat the story section below for each outcome. Draft metadata stays outside the published body.
 
 ```markdown
-# FE - Apps - [Feature] - Outcome
+# [Epic title]
+
+## FE - Apps - [Feature] - Outcome
 
 - Epic: [Supplied reference]
 - Tags: [Approved or proposed tags]
@@ -31,16 +33,11 @@ Use only as many scenarios as needed; one concise sentence per Given, When, and 
 
 Append an **API** section only when needed, with short endpoint bullets. Never add Scope notes or Screenshots/Flow.
 
-Generate a separate local README:
+After the last story, append the shared questions section in the same file:
 
 ```markdown
-# [Epic title]
-
-## Stories
-- [Story title](story-name.md)
-
 ## Open Questions
-- [Story title](story-name.md): [Unresolved material question?]
+- [Story title]: [Unresolved material question?]
 ```
 
-Deduplicate shared questions; write “None” when resolved. Add only material gaps/coverage notes. Append created ticket links to the index; never publish README or its questions.
+Deduplicate shared questions; write “None” when resolved. Add only material gaps/coverage notes. Record created ticket links beside the corresponding story metadata. No separate README or per-story files; never publish the combined draft or its questions.
