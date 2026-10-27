@@ -151,7 +151,7 @@ Follow the comment rule in `AGENTS.md`: explain complex code only when needed, i
 
 ## Story drafts and visual explanations
 
-- `draft-user-stories`: supply FRS, epic tickets, API references, and screenshots to get concise Markdown stories under Downloads in an epic-named folder. Questions stay in the generated README only. API is optional without backend work; Screenshots/Flow, draft versions, and destination lists are omitted. Approve creation with the desired tags and assignee; priority defaults to Normal.
+- `draft-user-stories`: supply FRS, epic tickets, API references, and screenshots to get one Markdown file in the target repository containing all stories and a final Open Questions section. No Downloads folder or separate README. API is optional without backend work; Screenshots/Flow, draft versions, and destination lists are omitted. Approve creation with the desired tags and assignee; priority defaults to Normal.
 - `visual-explainer`: request an HTML explanation of a feature, bug, architecture, screen, or flow. Output uses diagrams, callouts, and short labels, limited to the requested scope.
 
 Examples: `Use draft-user-stories with this FRS and epic; draft only.` or `Use visual-explainer to show this screen's buttons and navigation.`
