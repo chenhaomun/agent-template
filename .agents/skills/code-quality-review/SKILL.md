@@ -13,6 +13,6 @@ Follow project conventions. SOLID, DRY, and KISS guide decisions; they do not re
 - Prefer direct control flow and local ownership over speculative generalization.
 - Recommend the smallest compatible fix; do not prescribe packages, repositories, or dependency injection merely to satisfy a pattern.
 
-## Findings
+## Review checks and findings
 
-Use the shared [findings format](../production-code-review/references/findings.md) for short, plain-language issue bullets.
+Follow the shared [review guidance](../production-code-review/references/findings.md) before running checks and when reporting findings.

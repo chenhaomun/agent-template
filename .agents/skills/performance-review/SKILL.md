@@ -16,6 +16,6 @@ Identify user-visible latency, frame work, memory growth, and scaling risks. Nam
 
 Prefer the smallest measurable fix. Do not add caching, isolates, or repaint boundaries without a plausible bottleneck and tradeoff assessment.
 
-## Findings
+## Review checks and findings
 
-Use the shared [findings format](../production-code-review/references/findings.md) for short, plain-language issue bullets.
+Follow the shared [review guidance](../production-code-review/references/findings.md) before running checks and when reporting findings.

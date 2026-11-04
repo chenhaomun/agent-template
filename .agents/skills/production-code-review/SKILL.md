@@ -21,6 +21,6 @@ Accept: `Review {branch}; ticket: {ticket URL}.`
 - Identify concrete maintainability/performance risks; use specialist review only when warranted.
 - Distinguish introduced defects from pre-existing issues; flag unrelated churn when it creates risk.
 
-## Findings
+## Review checks and findings
 
-Use the shared [findings format](references/findings.md) for short, plain-language issue bullets.
+Follow the shared [review guidance](references/findings.md) before running checks and when reporting findings.

@@ -13,6 +13,6 @@ Review affected ownership boundaries using the project's established architectur
 - Keep refactors scoped. Add boundaries only for current complexity or demonstrated coupling.
 - Direct UI/data access is not automatically a defect; assess project conventions and behavior.
 
-## Findings
+## Review checks and findings
 
-Use the shared [findings format](../production-code-review/references/findings.md) for short, plain-language issue bullets.
+Follow the shared [review guidance](../production-code-review/references/findings.md) before running checks and when reporting findings.

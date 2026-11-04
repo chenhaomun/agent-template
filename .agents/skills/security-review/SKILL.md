@@ -13,6 +13,6 @@ Review threat-relevant changes and trace untrusted data to sensitive operations.
 - Assess transport security, denied-permission behavior, retention, and dependency exposure where affected.
 - Describe the exploit/leak path and smallest mitigation. Separate unknown trust assumptions from proven vulnerabilities.
 
-## Findings
+## Review checks and findings
 
-Use the shared [findings format](../production-code-review/references/findings.md) for short, plain-language issue bullets.
+Follow the shared [review guidance](../production-code-review/references/findings.md) before running checks and when reporting findings.
