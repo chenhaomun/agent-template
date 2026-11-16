@@ -17,20 +17,20 @@ Read-only investigation by default. Do not fix code, post comments, change ticke
 
 ## Return
 
-Return these fields, without hyperlinks or an investigation recap. Omit Root Cause Category when neither a ticket value nor a supported choice from its options is available:
+Return rendered Markdown with every label and its colon bolded; do not wrap the response in a code block. No hyperlinks or investigation recap. Omit Root Cause Category when neither a ticket value nor a supported choice from its options is available:
 
-```text
-RCA: <Brief explanation of the trigger, faulty logic in the relevant file/method, and user impact.>
+```markdown
+**RCA:** <Brief explanation of the trigger, faulty logic in the relevant file/method, and user impact.>
 
-Root Cause Category: <Exact ticket label, or proposed label from its options>
+**Root Cause Category:** <Exact ticket label, or proposed label from its options>
 
-Sprint Point: <n>
+**Sprint Point:** <n>
 
-Caused By: <commit> - <author name>
+**Caused By:** `<commit>` - <author name>
 ```
 
-Keep the RCA brief and clear, without a fixed sentence limit. Include the relevant filename and method when verified, plus the condition or state that caused the failure. Connect that logic to the user impact; use plain text or inline code, never hyperlinks. Omit code dumps, unnecessary call chains, and detailed history. Do not add fix direction, uncertainty, or evidence sections.
+Keep the RCA brief and clear, without a fixed sentence limit. Include the relevant filename and method when verified, plus the condition or state that caused the failure. Connect that logic to the user impact. Use inline backticks for filenames/paths, classes, widgets, methods/functions, variables, properties, enum values, and code expressions; keep ordinary prose and author names unformatted. Omit code dumps, unnecessary call chains, and detailed history. Do not add fix direction, uncertainty, or evidence sections.
 
-Always include the estimate as `Sprint Point: n`, replacing `n` with the chosen number. Keep sizing rationale internal unless requested; do not change the ticket's stored points.
+Always include the estimate as `**Sprint Point:** n`, replacing `n` with the chosen number. Keep sizing rationale internal unless requested; do not change the ticket's stored points.
 
-Use a verified, unambiguous short commit SHA and its recorded Git author name. Omit the commit subject, author email, and proof narrative. Verification remains required internally; never attribute the bug to the assignee, committer, merger, or last editor without causal proof. If attribution cannot be verified, use `Caused By: Unconfirmed` rather than guessing; qualify an unverified cause briefly within RCA. External updates still require approval of the exact text and fields.
+Use a verified, unambiguous short commit SHA and its recorded Git author name. Omit the commit subject, author email, and proof narrative. Verification remains required internally; never attribute the bug to the assignee, committer, merger, or last editor without causal proof. If attribution cannot be verified, use `**Caused By:** Unconfirmed` rather than guessing; qualify an unverified cause briefly within RCA. External updates still require approval of the exact text and fields.
