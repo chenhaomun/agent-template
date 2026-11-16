@@ -108,7 +108,7 @@
     "root-cause-analyze": {
       "sourceType": "local",
       "skillPath": "skills/root-cause-analyze/SKILL.md",
-      "notes": "Read-only ticket RCA returning a brief Cause and Caused By: commit - author name. Verify attribution internally; no hyperlinks, extra sections, fixed sentence limit, or stored workspace data."
+      "notes": "Read-only ticket RCA with file/method context, an optional ticket-sourced category, and verified Caused By: commit - author name. Proposed category choices use live ticket options; no hyperlinks, fixed sentence limit, or stored workspace data."
     }
   }
 }
