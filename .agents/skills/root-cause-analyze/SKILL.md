@@ -15,10 +15,14 @@ Read-only investigation by default. Do not fix code, post comments, change ticke
 
 ## Return
 
-Prioritize clarity over a fixed sentence count. Use concise paragraphs or bullets with enough technical context to explain the failure. Omit category and evidence sections; verification still supports the conclusions.
+Return only these two fields, without hyperlinks or an investigation recap:
 
-- **Cause:** explain the trigger, failed rule/state/contract, and user impact. Include relevant uncertainty naturally in the explanation.
-- **Fix direction:** smallest corrective change and regression check; label it proposed.
-- **Introducing commit / author:** SHA, subject, and recorded Git author name, with the parent comparison supporting attribution. This identifies a code change, not personal fault. If evidence is incomplete, say “Unconfirmed” and label candidates as suspects. Missing/shallow history or a configuration/backend cause may prevent commit attribution.
+```text
+Cause: <Short explanation of the trigger, faulty behavior, and user impact.>
 
-Keep the commit/author conclusion last. Do not expose author email addresses or claim the ticket assignee, committer, merger, or last line editor caused the bug. Separate the technical cause from how it escaped tests when both are requested. External updates require approval of the exact summary and fields.
+Caused By: <commit> - <author name>
+```
+
+Keep the cause brief and clear, without a fixed sentence limit. Include only technical names needed to understand the failure; omit code dumps, file/line references, and detailed history. Do not add fix direction, uncertainty, category, or evidence sections.
+
+Use a verified, unambiguous short commit SHA and its recorded Git author name. Omit the commit subject, author email, and proof narrative. Verification remains required internally; never attribute the bug to the assignee, committer, merger, or last editor without causal proof. If attribution cannot be verified, use `Caused By: Unconfirmed` rather than guessing; qualify an unverified cause briefly within Cause. External updates still require approval of the exact text and fields.

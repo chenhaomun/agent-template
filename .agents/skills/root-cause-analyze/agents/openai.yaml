@@ -1,4 +1,4 @@
 interface:
   display_name: "Root Cause Analyze"
   short_description: "Trace bug causes and evidence-backed commit attribution"
-  default_prompt: "Use $root-cause-analyze to explain this bug clearly, suggest a fix direction, and identify the introducing commit and author when verified."
+  default_prompt: "Use $root-cause-analyze to return a brief Cause and Caused By: <commit> - <author name>, without hyperlinks or extra sections."
