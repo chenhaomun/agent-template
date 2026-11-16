@@ -148,7 +148,7 @@ Follow the comment rule in `AGENTS.md`: explain complex code only when needed, i
 ## Story drafts and visual explanations
 
 - `draft-user-stories`: supply FRS, epic tickets, API references, and screenshots to get one Markdown file in the target repository containing all stories and a final Open Questions section. No Downloads folder or separate README. API is optional without backend work; Screenshots/Flow, draft versions, and destination lists are omitted. Approve creation with the desired tags and assignee; priority defaults to Normal, with proposed Fibonacci sprint points using the mobile sizing guide.
-- `root-cause-analyze`: supply a bug ticket for a brief RCA with file/method context, its root-cause category when available, and `Caused By: <commit> - <author name>`. Category choices from unset ticket options are marked proposed. No hyperlinks or extra sections. Investigation stays read-only; unverified attribution is marked Unconfirmed.
+- `root-cause-analyze`: supply a bug ticket for a brief RCA with file/method context, its category when available, `Sprint Point: n` for corrective mobile work, and `Caused By: <commit> - <author name>`. Uses the shared mobile sizing guide; category choices from unset ticket options are marked proposed. No hyperlinks or extra sections. Investigation stays read-only; unverified attribution is marked Unconfirmed.
 - `visual-explainer`: request an HTML explanation of a feature, bug, architecture, screen, or flow. Output uses diagrams, callouts, and short labels, limited to the requested scope.
 
 Examples: `Use draft-user-stories with this FRS and epic; draft only.` or `Use visual-explainer to show this screen's buttons and navigation.`
