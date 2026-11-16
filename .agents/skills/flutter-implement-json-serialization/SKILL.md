@@ -16,6 +16,7 @@ Inspect neighbouring models, API contracts, and serialization tooling first. Use
 - Keep wire-format models separate from UI-only state when the project makes that distinction. Preserve field names, nullability, defaults, dates, enums, and nested structures from the contract.
 - Decode into checked map/list shapes before reading values. Validate required fields and incompatible types with a useful `FormatException` or the project's typed parse failure.
 - Treat optional and nullable API fields deliberately; do not coerce missing or invalid data into misleading defaults.
+- Preserve numeric precision, time zones, and unknown-enum behavior from the contract. Distinguish omitted fields from explicit null when updates give them different meanings; keep payload values out of parse-error logs.
 - Serialize only fields accepted by the endpoint and omit nulls only when the API contract calls for it.
 - Keep conversion free of network and UI concerns. Use a top-level or static parser off the UI isolate only for demonstrated large parsing work.
 

@@ -21,7 +21,7 @@ description: Generate a concise HTML infographic explaining a feature, bug, arch
    - Bug: trigger → failure → impact; show expected behavior or a proposed fix only when evidenced or requested.
    - Architecture: boundaries, owners, and labelled data flow; show current and proposed designs separately when both matter.
 4. Keep essential behavior visible. Use native `<details>` for supporting detail only when useful. Add navigation or filters only for genuinely long content. Put source links beside the claims they support; avoid repeating them in a long appendix.
-5. Use system fonts, embedded CSS, and inline SVG by default; no framework or CDN is needed. Embed provided local images when feasible so the HTML is portable. Label unavailable images without fabricating a replacement. Escape source text and avoid executing scripts copied from reference documents.
+5. Use system fonts, embedded CSS, and inline SVG by default; no framework or CDN is needed. Embed safe local images for portability; exclude credentials and personal data under SECURITY.md. Label unavailable images without fabricating replacements. Escape source text and allow only safe link/image schemes; never execute reference scripts or include tracking resources.
 6. Use semantic headings, readable contrast, text labels alongside color, keyboard-operable controls, and responsive layouts. Keep diagrams legible on narrow screens with stacked flows or clearly bounded scrolling. No emojis unless requested.
 
 ## Verify and deliver

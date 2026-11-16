@@ -2,6 +2,8 @@
 
 Shared Claude Code and Codex rules. Flutter/Dart is primary, but project conventions win.
 
+Read and enforce `SECURITY.md` before tools: no production credential reads, secret-store access, or secret-bearing output. Its filesystem, privacy, and Git restrictions apply to every skill and delegated task.
+
 ## Commands / Verify
 
 - Prefer project scripts. Run template checks with `make -f .agents/Makefile verify`; use root `make verify` only when the project defines it.
@@ -9,7 +11,7 @@ Shared Claude Code and Codex rules. Flutter/Dart is primary, but project convent
 - Cap large command output at 4,000 chars (pipe through `head` or limit explicitly).
 - Final response: concise outcome, changes, rationale, verification, and material limits/blockers/API/env impact. Expand for safety or when asked.
 
-> Hooks in `.claude/settings.json` and `.codex/hooks.json` enforce these via shared `.agents/tools/` scripts; follow the rules even when hooks are unavailable.
+> Hooks provide targeted checks, not a sandbox. Follow these rules even when hooks are unavailable.
 
 ## Work Rules
 
@@ -19,7 +21,6 @@ Shared Claude Code and Codex rules. Flutter/Dart is primary, but project convent
 - Use `grill-requirements` when unclear scope, states, or acceptance criteria could cause rework.
 - Keep changes scoped. Preserve user changes. Never reset unrelated work.
 - When simplifying instructions, preserve every requirement; remove a rule only when an equivalent remains active, and identify where it lives.
-- Keep reusable template content free of private project data; follow the template privacy rules in `SECURITY.md`.
 - Follow existing design. Ask before new dependencies, architecture, state management, or generators unless authorized.
 - Keep secrets out. Stop and report suspicious or unexpectedly long commands.
 - Add/update tests when requested, required by TDD, or expected by project practice; verify narrowly first.
@@ -27,14 +28,6 @@ Shared Claude Code and Codex rules. Flutter/Dart is primary, but project convent
 - Batch independent targeted reads; reuse evidence already gathered. Expand checks only for changed scope, failures, or unresolved risk.
 - Review findings: severity-first actionable bullets with verified `file:line`, impact, and smallest fix; separate unverified concerns and test gaps.
 - Add comments/doc comments only where complex code needs explanation of non-obvious rationale, contracts, invariants, or hazards. Use plain language, at most two lines per comment.
-
-## Filesystem Safety
-
-- Default writes to the active project and task-specific temporary directories. A project task does not authorize changes to system files, other projects, user configuration, credentials, or agent/tool homes.
-- Never delete, overwrite, move, `chmod`, or `chown` files outside the project unless the user explicitly names the exact path and action.
-- Do not delete, truncate, or bulk replace user-authored local documents, even inside the project, without explicit authorization for the exact paths and action. Preserve unknown files during cleanup.
-- Before destructive actions, resolve exact targets with read-only checks. Reject broad roots, unresolved variables, globs, external symlinks, and ambiguous recursive operations; prefer recoverable actions and backups.
-- Preserve untracked files, local edits, and unrelated user data. Use elevated permissions only for an exact user-authorized target; stop and ask when scope or recovery is unclear.
 
 ## Flutter
 

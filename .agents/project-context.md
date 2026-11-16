@@ -20,9 +20,10 @@ Flutter skills follow project-specific SDK, architecture, and tooling. Local ada
 - Enforcement and maintenance: `.agents/tools/` with tests in `.agents/tests/`.
 - Project command and SDK selection: `.agents/tools/run_checks.py`; optional project-owned overrides in `.agents/project-commands.json`. Hooks share this resolver and report missing pinned SDKs.
 - Installation lifecycle coverage: `.agents/tests/smoke_install.py`; Windows/Linux verification in `.github/workflows/verify.yml`. Tooling uses Python 3.11+ without third-party packages.
-- Security policy: `SECURITY.md`.
+- Security policy: `SECURITY.md`, installed as a managed block. `hook_guard_credentials.py` checks tool inputs without reading target contents; host isolation remains necessary for comprehensive access control.
 - Story drafting/approved ClickUp creation: `draft-user-stories`; scoped HTML infographics: `visual-explainer`. Both are project-local skills.
 - Review skills share the concise output contract in `.agents/skills/production-code-review/references/findings.md`.
+- Ticket RCA: `root-cause-analyze` traces behavior and history before commit attribution; story estimates use the generic mobile sizing reference.
 - Flutter app-flow test authoring: `flutter-add-integration-test`; default triggers and setup authorization live in `AGENTS.md`.
 
 ## Commands

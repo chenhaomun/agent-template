@@ -30,7 +30,7 @@ Verify: exact narrow commands or scenarios
 Return: verdict, decisive file/test evidence, changed paths, open items (20 lines max)
 ```
 
-Anchor the brief to relevant paths and `.agents/project-context.md`. Agents read nearby code first, preserve other work, avoid scope expansion, and write only inside assigned ownership.
+Anchor the brief to relevant paths, `.agents/project-context.md`, and `SECURITY.md`. Share only needed sanitized evidence, never credentials. Agents preserve others' edits and write only inside assigned ownership.
 
 ## Production Bar
 

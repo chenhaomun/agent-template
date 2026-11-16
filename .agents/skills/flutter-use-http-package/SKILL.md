@@ -18,6 +18,7 @@ Inspect the project's API client, configuration, auth, error model, and tests be
 - Apply an explicit timeout when the project has no central timeout policy. Translate transport failures, timeouts, malformed payloads, and non-success responses into the project's typed error/result contract.
 - Accept the endpoint's documented success statuses; do not assume a single status code or return a fabricated empty model for an empty response.
 - Retry only when the existing policy permits an idempotent operation and has bounded backoff. Never silently retry mutations.
+- A timeout does not necessarily cancel the underlying request. Preserve client ownership, cancellation, and idempotency; close only clients this code owns. Never bypass TLS validation to handle connection failures.
 - Parse large payloads off the UI isolate only when measurement or payload size justifies the overhead.
 
 ## UI Integration

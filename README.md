@@ -4,8 +4,6 @@ Lean shared configuration for Claude Code and OpenAI Codex. Flutter/Dart support
 
 Use Python 3.11 or newer. No third-party Python packages are required.
 
-Use Python 3.11 or newer. No third-party Python packages are required.
-
 ## Structure
 
 - `AGENTS.md`: shared runtime rules.
@@ -33,7 +31,7 @@ python .agents/tools/install_template.py /path/to/project --write
 
 The installer:
 
-- appends or refreshes marked template blocks in existing `AGENTS.md` and `CLAUDE.md`;
+- appends or refreshes marked template blocks in existing `AGENTS.md`, `CLAUDE.md`, and `SECURITY.md`;
 - preserves existing instructions outside those blocks;
 - merges only missing template hooks into Claude/Codex JSON settings;
 - leaves an existing `Makefile` untouched;
@@ -126,8 +124,6 @@ Edit only `.agents/skills/` and `.agents/subagents/`. Run `make sync` after chan
 
 Sync rejects same-name custom Codex roles instead of overwriting them. It also migrates legacy skill display fields under `interface` while retaining curated values; integrity checks validate that metadata structure.
 
-Sync rejects same-name custom Codex roles instead of overwriting them. It also migrates legacy skill display fields under `interface` while retaining curated values; integrity checks validate that metadata structure.
-
 Active roles:
 
 - `team-lead`: read-only planning, architecture, and final review.
@@ -151,7 +147,8 @@ Follow the comment rule in `AGENTS.md`: explain complex code only when needed, i
 
 ## Story drafts and visual explanations
 
-- `draft-user-stories`: supply FRS, epic tickets, API references, and screenshots to get one Markdown file in the target repository containing all stories and a final Open Questions section. No Downloads folder or separate README. API is optional without backend work; Screenshots/Flow, draft versions, and destination lists are omitted. Approve creation with the desired tags and assignee; priority defaults to Normal.
+- `draft-user-stories`: supply FRS, epic tickets, API references, and screenshots to get one Markdown file in the target repository containing all stories and a final Open Questions section. No Downloads folder or separate README. API is optional without backend work; Screenshots/Flow, draft versions, and destination lists are omitted. Approve creation with the desired tags and assignee; priority defaults to Normal, with proposed Fibonacci sprint points using the mobile sizing guide.
+- `root-cause-analyze`: supply a bug ticket for a clear cause explanation, proposed fix direction, and verified introducing commit/author. No fixed sentence limit or category/evidence sections. Investigation stays read-only; uncertain attribution is marked unconfirmed.
 - `visual-explainer`: request an HTML explanation of a feature, bug, architecture, screen, or flow. Output uses diagrams, callouts, and short labels, limited to the requested scope.
 
 Examples: `Use draft-user-stories with this FRS and epic; draft only.` or `Use visual-explainer to show this screen's buttons and navigation.`
@@ -175,8 +172,6 @@ The device installer merges allowlisted keys and backs up existing `~/.codex/con
 
 Configuration merging preserves array tables and multiline values and validates the complete TOML before writing.
 
-Configuration merging preserves array tables and multiline values and validates the complete TOML before writing.
-
 ## Agent memory
 
 Required behavior stays in checked-in instructions. Auto-memory is optional recall and must not become the only copy of a rule or project fact.
@@ -185,7 +180,7 @@ Codex local memory is off by default and controlled through `/memories` or user 
 
 ## Security
 
-See `SECURITY.md` for filesystem boundaries, destructive-action safeguards, safe installation, and secret handling.
+Read `SECURITY.md` before tools. The installer preserves project security policy and adds the template block. Both hook adapters block recognizable credential access without reading contents. These checks are not a sandbox; keep production credentials outside agent access and enforce host restrictions. See the policy for filesystem, privacy, and Git boundaries.
 
 ## Skill maintenance
 

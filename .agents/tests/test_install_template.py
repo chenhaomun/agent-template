@@ -29,6 +29,7 @@ class InstallTemplateTest(unittest.TestCase):
 
     def _source(self, root: Path) -> Path:
         (root / ".agents" / "tools").mkdir(parents=True)
+        (root / "SECURITY.md").write_text("Template security policy.\n", encoding="utf-8")
         (root / ".agents" / "skills" / "core").mkdir(parents=True)
         (root / ".agents" / "subagents").mkdir(parents=True)
         (root / ".agents" / "tools" / "tool.py").write_text("tool\n", encoding="utf-8")
@@ -64,6 +65,18 @@ class InstallTemplateTest(unittest.TestCase):
 
             self.assertTrue(actions)
             self.assertEqual(list(target.iterdir()), [])
+
+    def test_installs_security_policy_without_replacing_project_policy(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source, target = self._source(root / "source"), self._target(root)
+            (source / "SECURITY.md").write_text("Never read production credentials.\n")
+            (target / "SECURITY.md").write_text("Project reporting policy.\n")
+            self.installer.install(source, target, write=True, copy_adapters=False)
+            text = (target / "SECURITY.md").read_text()
+            self.assertIn("Project reporting policy.", text)
+            self.assertIn("Never read production credentials.", text)
+            self.assertTrue(list(target.glob("SECURITY.md.bak-*")))
 
     def test_refreshed_instruction_block_moves_to_file_end(self) -> None:
         with tempfile.TemporaryDirectory() as temp:

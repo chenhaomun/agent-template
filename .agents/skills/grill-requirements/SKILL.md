@@ -1,38 +1,12 @@
 ---
 name: grill-requirements
-description: Clarify unclear, broad, contradictory, or incomplete requirements before planning.
+description: Clarify blocking gaps or contradictions in requirements before planning.
 ---
 
 # Grill Requirements
 
-Use automatically when missing information blocks a good plan. Do not question obvious or discoverable facts.
+Inspect supplied evidence and existing behavior first. Ask at most three blocking questions, prioritizing outcome, scope, user flow, and acceptance. Reuse established state/error behavior; do not ask users to repeat discoverable facts or decide implementation details for a business-only request.
 
-## Rules
+Proceed with safe, stated assumptions when no blocker remains. Use short complete questions and a recommended default where helpful. Route technical questions to a team lead only when delegation is authorized.
 
-- Ask max 3 blocking questions by default.
-- If no blocking question exists, proceed and state safe assumptions.
-- Ask business/product questions first; route technical questions to TL.
-- Prefer one clear default assumption when safe.
-- Do not ask about implementation if the user only gave business requirements.
-- If repo inspection can answer it, inspect instead of asking.
-
-## Question Types
-
-| Need | Ask |
-|---|---|
-| Outcome | What should be true when this is done? |
-| Scope | What is explicitly out of scope? |
-| User flow | Which user/path/state must work first? |
-| Edge state | What should happen for empty/error/permission/offline? |
-| Acceptance | What check proves this is accepted? |
-
-## Output
-
-```text
-Blocking questions:
-1. <question>
-2. <question>
-
-Safe assumption:
-- <assumption, or None>
-```
+Return only unresolved questions and material assumptions; no mandatory questionnaire or empty sections.

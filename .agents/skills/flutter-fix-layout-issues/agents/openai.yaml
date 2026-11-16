@@ -1,4 +1,4 @@
 interface:
   display_name: "Flutter Fix Layout Issues"
-  short_description: "Fix Flutter layout errors — RenderFlex overflow, unbounded height/width, ParentData misuse — via Dart/Flutter MCP tools."
-  default_prompt: "Use flutter-fix-layout-issues for this task."
+  short_description: "Fix Flutter constraints, overflow, and ParentData errors"
+  default_prompt: "Use $flutter-fix-layout-issues to diagnose and verify this layout."

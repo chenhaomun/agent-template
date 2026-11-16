@@ -27,6 +27,7 @@ MANAGED_NAME = "agent-template"
 INSTRUCTION_FILES = {
     "AGENTS.md": SOURCE_ROOT / "AGENTS.md",
     "CLAUDE.md": SOURCE_ROOT / "CLAUDE.md",
+    "SECURITY.md": SOURCE_ROOT / "SECURITY.md",
 }
 COPY_ENTRIES = (
     ".agents/Makefile",

@@ -1,4 +1,4 @@
 interface:
   display_name: "Draft User Stories"
-  short_description: "Draft stories in one repository Markdown file"
-  default_prompt: "Use $draft-user-stories to turn this FRS, epic, and screenshots into one Markdown file in the target repository for approval."
+  short_description: "Draft concise stories with mobile sprint-point estimates"
+  default_prompt: "Use $draft-user-stories to draft this topic in one repository Markdown file with sprint points for approval."

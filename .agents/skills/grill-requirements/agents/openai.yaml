@@ -1,4 +1,4 @@
 interface:
-  display_name: Grill Requirements
-  short_description: Clarify incomplete or risky requirements before planning.
-  default_prompt: Use grill-requirements on this task before planning.
+  display_name: "Grill Requirements"
+  short_description: "Clarify only blocking gaps before planning"
+  default_prompt: "Use $grill-requirements to resolve blocking questions for this task."

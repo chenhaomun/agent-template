@@ -26,7 +26,7 @@ Use automatically for Flutter feature implementation, regression fixes, and arch
 
 - Run the affected file first through project scripts, SDK wrapper, flavor, and configured test environment. For a standard native SDK setup, adapt `flutter test integration_test/<flow>_test.dart -d <device-id>` to verified project settings. Web and custom harnesses use their established runners.
 - Format touched Dart, analyze affected code, and run relevant unit/widget tests. Broaden integration coverage for changed shared routes, bootstrap, persistence, or contracts.
-- If a required device, credential, or environment is unavailable, still complete the test code and available checks; report the exact blocker and pending command. Never call a skipped test passing or substitute static analysis for a device run.
+- If a required device, safe test account, or environment is unavailable, complete test code and available checks; report the blocker and pending command. Follow SECURITY.md rather than retrieving credentials. Never call a skipped test passing or substitute analysis for a device run.
 - Report the journey covered, target/environment, results, and material gaps. Do not modify unrelated CI or add a full test matrix for a scoped change.
 
 SDK reference when setup details are needed: [Flutter integration testing](https://docs.flutter.dev/testing/integration-tests). Prefer the project's pinned SDK conventions over newer examples.

@@ -11,6 +11,7 @@ Repeat the story section for each outcome. Group each story statement and scenar
 - Tags: [Approved or proposed tags]
 - Assignee: [Approved or proposed member/team]
 - Priority: Normal
+- Sprint points: [Proposed Fibonacci value] — [Short mobile sizing reason]
 
 **As a [role],**\
 **I want to** [user action],\

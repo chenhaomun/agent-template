@@ -14,11 +14,11 @@ Trigger: `<<<<<<<`/`=======`/`>>>>>>>` markers, or a halted `git merge`/`rebase`
 ## Steps
 
 1. Know the operation: `git status` says merge vs rebase (in a rebase, "ours"/"theirs" are swapped — ours = the branch you're replaying onto). State which before resolving.
-2. Per file, understand BOTH sides and WHY each changed: `git log --merge -p <file>`, `git blame`. Do not resolve a hunk you don't understand.
+2. Per safe source file, understand both sides and why each changed using scoped history and diffs. Apply SECURITY.md before reading content; credential-bearing conflicts require sanitized evidence. Do not resolve a hunk you don't understand.
 3. Resolve preserving both intents. Combine changes when both are wanted; drop a side only when it is genuinely superseded — never to make markers disappear. Remove every conflict marker.
 4. Do NOT hand-merge generated/vendored files (`*.g.dart`, `*.freezed.dart`, `build/`, etc. — see AGENTS.md). Take one side or `--theirs`/`--ours` to unblock, then regenerate from source. Same for lockfiles: resolve `pubspec.yaml`/`package.json` by hand, then regenerate `pubspec.lock`/lockfiles.
-5. Verify before continuing: `make verify` (or narrow `flutter analyze`/`flutter test` on touched areas). Conflicts often produce code that merges cleanly but doesn't compile.
-6. `git add` each resolved file, then continue (`git rebase --continue` / `git cherry-pick --continue` / commit the merge). Never `git commit` with unresolved markers.
+5. Verify with the project's relevant commands; use `make -f .agents/Makefile verify` for template checks. Cleanly merged code can still fail to compile or behave incorrectly.
+6. Stage only resolved files when the requested conflict workflow calls for it. Continuing a rebase/cherry-pick or committing a merge creates commits: do so only with explicit authorization under AGENTS.md. Otherwise leave the verified resolution ready for the user. Never continue with unresolved markers.
 
 ## Guardrails
 

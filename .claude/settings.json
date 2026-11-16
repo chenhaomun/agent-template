@@ -12,6 +12,16 @@
   "hooks": {
     "PreToolUse": [
       {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.agents/tools/hook_guard_credentials.py\"",
+            "commandWindows": "python \"$CLAUDE_PROJECT_DIR/.agents/tools/hook_guard_credentials.py\""
+          }
+        ]
+      },
+      {
         "matcher": "Edit|Write|MultiEdit",
         "hooks": [
           {

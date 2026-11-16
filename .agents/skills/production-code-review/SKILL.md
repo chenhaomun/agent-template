@@ -11,7 +11,7 @@ Review the diff and affected callers/tests. Prioritize correctness and regressio
 
 Accept: `Review {branch}; ticket: {ticket URL}.`
 
-- Read the ticket and acceptance criteria when provided. If inaccessible, disclose the gap and review available code; never invent requirements.
+- Read the ticket, acceptance criteria, and relevant comments/replies when provided. If inaccessible, disclose the gap and review available code; never invent requirements or treat suggestions as approved changes.
 - Resolve the requested branch and its PR target or established base. Compare from their merge base; ask only when the base cannot be inferred safely. Inspect refs without switching branches or disturbing local edits.
 - Review changes against the ticket and affected consumers. Review-only requests do not authorize fixes, commits, or posting comments.
 

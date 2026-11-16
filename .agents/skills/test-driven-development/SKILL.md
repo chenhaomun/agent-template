@@ -5,38 +5,13 @@ description: Use focused failing tests for clear behavior changes: bugs, validat
 
 # Test Driven Development
 
-Use TDD automatically when expected behavior is clear enough to test. Do not wait for the user to say "TDD" or invoke this skill explicitly.
+Apply automatically when expected behavior is testable. Skip strict TDD for trivial styling/copy/config, generated files, exploratory refactors, or unclear requirements. Inspect contracts before asking about a genuine blocker.
 
-Do not use strict TDD for trivial UI styling, copy/config edits, generated files, exploratory refactors, or ambiguous requirements.
+1. State observable behavior; add the smallest test demonstrating it is missing/broken.
+2. Run that test and verify the intended assertion fails, not setup.
+3. Make the smallest compatible fix; refactor only after it passes.
+4. Re-run focused tests and relevant analysis, expanding for shared risk.
 
-Project conventions win over examples. Use existing test libraries, helpers, mocks, fixtures, naming, and folder layout.
+Use existing libraries, helpers, fixtures, and conventions. Prefer unit tests for logic/mappers/services/state, widget/component tests for rendering/interactions, and integration tests for full flows. Flutter flow coverage follows `flutter-add-integration-test` and AGENTS.md's default triggers/setup authorization; other new harnesses require approval.
 
-## Loop
-
-| Step | Action |
-|---|---|
-| 1. Behavior | State the exact behavior under test in one sentence |
-| 2. Red | Add/update the smallest failing test that proves the behavior is missing or broken |
-| 3. Run narrow | Run only the new/changed test first |
-| 4. Green | Implement the smallest project-compatible change to pass |
-| 5. Refactor | Clean duplication or naming only after the test passes |
-| 6. Verify | Re-run the focused test, then the narrow relevant linter/test command |
-
-If the test cannot be written because requirements are unclear, inspect relevant contracts, then ask the user only if ambiguity still blocks a meaningful test.
-
-## Test Choice
-
-| Behavior | Prefer |
-|---|---|
-| Pure logic, mappers, validators, use cases | Unit test |
-| Service/state events and state transitions | Unit test using existing project pattern |
-| Repository behavior with dependency | Unit test with existing mock/fake style |
-| Component rendering or interaction | Component/widget test |
-| Flutter feature, regression fix, or architecture change affecting an app flow | Use `flutter-add-integration-test` by default; retain focused unit/widget tests |
-| Other full navigation/user flow | Integration/E2E test when existing or requested |
-
-Follow `AGENTS.md` for authorized minimal Flutter SDK integration-test setup. Other new testing packages, mocking libraries, or harnesses require approval.
-
-## Report
-
-Briefly state behavior covered, checks run, and material gaps. Do not repeat the workflow or emit a mandatory TDD table.
+Report behavior covered, actual checks, and material gaps without repeating this workflow.

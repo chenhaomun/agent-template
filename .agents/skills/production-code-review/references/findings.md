@@ -9,6 +9,7 @@
 
 ## Findings
 
+- Apply SECURITY.md before reading diffs/logs; inspect safe source paths and redact sensitive evidence. Stay within the requested scope, expanding only to callers/contracts that establish impact.
 - Report proven, actionable problems only. Verify the trigger and impact in code and affected callers; style preferences and unmeasured suspicions are not defects.
 - Use one bullet per cause, highest severity first: P0 critical, P1 high, P2 medium, P3 low.
 - Write `[P1] file:line — What breaks and when. Smallest fix.` Aim for 30 words or fewer after the location; keep necessary conditions even if longer. Use everyday words and concrete outcomes, not abstract labels.
