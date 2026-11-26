@@ -12,12 +12,12 @@ usePointerCursors = true
 followUpQueueMode = "steer"
 reviewDelivery = "inline"
 git-commit-instructions = """
-${feature/bugfix/task}/${ticket number}-ticket-name ${Summary of this ticket}
+<ticket> - <summary>
 
-- ${Point 1}
-- ${Point 2}
-- ${Point N}"""
-selected-avatar-id = "custom:codehound"
+- <point A>
+- <point B>
+
+Omit "<ticket> - " when there is no ticket."""
 conversationDetailMode = "STEPS_COMMANDS"
 defaultTerminalLocation = "bottom"
 appearanceDarkCodeThemeId = "github"
@@ -54,3 +54,7 @@ skill = "#0000ff"
 
 [features]
 js_repl = false
+
+[mcp_servers.dart]
+command = "dart"
+args = ["mcp-server"]

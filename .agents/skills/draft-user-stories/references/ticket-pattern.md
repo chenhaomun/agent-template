@@ -25,6 +25,24 @@ Repeat the story section for each outcome. Group each story statement and scenar
 **Then** [observable result].
 ```
 
+For tasks under an Enhancement, replace the story statement with a short description and keep the same metadata (with `Enhancement:` instead of `Epic:`) and Acceptance Criteria:
+
+```markdown
+## FE - Apps - [Feature] - Change
+
+- Enhancement: [Supplied reference]
+- Tags, Assignee, Priority, Sprint points: as above
+
+[One or two sentences: what changes and why.]
+
+### Acceptance Criteria
+
+**Scenario 1: [Short outcome title]**\
+**Given** [starting condition],\
+**When** [action or event],\
+**Then** [observable result].
+```
+
 Use one short sentence per clause, without an arbitrary word cap. Prefer “Then I see matching records” to “Then the system displays a list containing all records matching my search.”
 
 Append optional API endpoint bullets within the relevant story. After the final story, add:

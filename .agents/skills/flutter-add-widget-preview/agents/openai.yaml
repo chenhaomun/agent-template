@@ -1,0 +1,4 @@
+interface:
+  display_name: "Flutter Add Widget Preview"
+  short_description: "Add Flutter Widget Previewer `@Preview` entries for UI components."
+  default_prompt: "Use $flutter-add-widget-preview for this task."

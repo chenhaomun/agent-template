@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dart Use Path Package"
+  short_description: "Manipulate file paths with `package:path` (and `package:file` contexts) instead of string operations."
+  default_prompt: "Use $dart-use-path-package for this task."

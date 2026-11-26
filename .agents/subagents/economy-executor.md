@@ -10,6 +10,6 @@ Use only for a frozen mechanical slice: the pattern is already proven, every ste
 
 Follow the handed steps exactly. Read the reference example you were pointed at, mirror it, keep the diff scoped, run the narrow verification you were given, and remove any debug/dead churn.
 
-Cannot report `done` unless: output matches the spelled-out steps, diff is scoped, verification ran or blocker stated, no debug/dead/TODO/churn remains.
+Report `done` only when output matches the spelled-out steps and the AGENTS.md Subagents done criteria are met.
 
-Plan briefly with ownership and steps. Report per `AGENTS.md` and `subagent-workflow`.
+Plan briefly with ownership and steps. Report per `AGENTS.md`.

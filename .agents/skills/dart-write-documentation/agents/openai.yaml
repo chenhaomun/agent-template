@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dart Write Documentation"
+  short_description: "Write Dart `///` API doc comments following Effective Dart."
+  default_prompt: "Use $dart-write-documentation for this task."

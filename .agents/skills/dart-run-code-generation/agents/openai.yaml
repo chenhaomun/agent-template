@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dart Run Code Generation"
+  short_description: "Regenerate Dart/Flutter generated files (`build_runner`, `gen-l10n`, ffigen, and similar) after editing their sources."
+  default_prompt: "Use $dart-run-code-generation for this task."

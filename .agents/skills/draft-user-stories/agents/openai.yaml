@@ -1,4 +1,4 @@
 interface:
   display_name: "Draft User Stories"
-  short_description: "Draft concise stories with mobile sprint-point estimates"
+  short_description: "Draft Epic stories or Enhancement tasks with sprint points; HTML visual on request"
   default_prompt: "Use $draft-user-stories to draft this topic in one repository Markdown file with sprint points for approval."

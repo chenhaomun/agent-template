@@ -1,0 +1,4 @@
+interface:
+  display_name: "Flutter Setup Declarative Routing"
+  short_description: "Add or extend declarative routing and deep links (for example `go_router` with `MaterialApp.router`)."
+  default_prompt: "Use $flutter-setup-declarative-routing for this task."

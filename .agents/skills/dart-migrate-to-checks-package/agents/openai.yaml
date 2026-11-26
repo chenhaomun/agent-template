@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dart Migrate To Checks Package"
+  short_description: "Migrate Dart tests from `package:matcher` `expect` to `package:checks`."
+  default_prompt: "Use $dart-migrate-to-checks-package for this task."

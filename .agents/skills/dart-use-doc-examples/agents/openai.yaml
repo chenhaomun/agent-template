@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dart Use Doc Examples"
+  short_description: "Inject analyzable example files into Dartdoc with `{@example}`, `#region`, and `#hide`."
+  default_prompt: "Use $dart-use-doc-examples for this task."

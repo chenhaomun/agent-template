@@ -47,6 +47,12 @@ ADAPTERS = {
     ".claude/agents": ".agents/subagents",
     ".claude/skills": ".agents/skills",
 }
+MCP_FILE = ".mcp.json"
+# Allow rules installed projects need so recording a review never prompts.
+CLAUDE_ALLOW = (
+    "Bash(python3 .agents/tools/review_gate.py record:*)",
+    "Bash(python .agents/tools/review_gate.py record:*)",
+)
 HOOK_FILES = {
     ".claude/settings.json": SOURCE_ROOT / ".claude/settings.json",
     ".codex/hooks.json": SOURCE_ROOT / ".codex/hooks.json",
@@ -115,6 +121,37 @@ def replace_block(current: str, name: str, block: str) -> str:
     outside = current[:start_at] + current[end_at + len(end) :]
     prefix = "" if not outside.strip() else outside.rstrip() + "\n\n"
     return prefix + block
+
+
+def merge_allow(current: dict, rules: tuple[str, ...]) -> dict:
+    """Add missing Claude allow rules without touching other permissions."""
+    permissions = current.get("permissions", {})
+    allow = permissions.get("allow", []) if isinstance(permissions, dict) else None
+    if not isinstance(allow, list):
+        raise InstallConflict("permissions.allow must be a JSON list")
+    missing = [rule for rule in rules if rule not in allow]
+    if not missing:
+        return current
+    return {**current, "permissions": {**permissions, "allow": [*allow, *missing]}}
+
+
+def entry_hash(entry: object) -> str:
+    return hashlib.sha256(json.dumps(entry, sort_keys=True).encode()).hexdigest()
+
+
+def merge_mcp(current: dict, template: dict, previous: dict[str, str]) -> tuple[dict, dict[str, str]]:
+    """Add or refresh template MCP servers; keep any same-name server the project changed."""
+    servers = current.get("mcpServers", {})
+    additions = template.get("mcpServers", {})
+    if not isinstance(servers, dict) or not isinstance(additions, dict):
+        raise InstallConflict("mcpServers must be a JSON object")
+    merged, owned = dict(servers), {}
+    for name, entry in additions.items():
+        if name not in servers or servers[name] == entry or entry_hash(servers[name]) == previous.get(name):
+            merged[name] = entry
+            owned[name] = entry_hash(entry)
+    result = current if merged == servers else {**current, "mcpServers": merged}
+    return result, owned
 
 
 def load_object(path: Path) -> dict:
@@ -206,6 +243,11 @@ def load_manifest(path: Path) -> dict[str, object]:
             raise InstallConflict("invalid manifest adapter hash")
     if any(relative not in HOOK_FILES for relative in hooks):
         raise InstallConflict("invalid manifest hook path")
+    mcp = data.get("mcp", {})
+    if not isinstance(mcp, dict) or not all(
+        isinstance(name, str) and isinstance(digest, str) and HASH.fullmatch(digest) for name, digest in mcp.items()
+    ):
+        raise InstallConflict("invalid manifest MCP entries")
     return data
 
 
@@ -334,11 +376,23 @@ def install(source_root: Path, target_root: Path, *, write: bool, copy_adapters:
         previous = old_hooks.get(relative, [])
         if not isinstance(previous, list) or not all(isinstance(entry, dict) for entry in previous):
             raise InstallConflict(f"invalid manifest hooks: {relative}")
-        after, next_entries = merge_hooks(before, load_object(source), previous)
+        hooked, next_entries = merge_hooks(before, load_object(source), previous)
+        after = merge_allow(hooked, CLAUDE_ALLOW) if relative == ".claude/settings.json" else hooked
         next_hook_entries[relative] = next_entries
         if after != before:
             hook_updates[target] = after
-            changes.append(f"merge template hooks: {relative}")
+            parts = [name for name, changed in (("hooks", hooked != before), ("permissions", after != hooked)) if changed]
+            changes.append(f"merge template {' and '.join(parts)}: {relative}")
+
+    next_mcp: dict[str, str] = {}
+    mcp_source = source_root / MCP_FILE
+    if mcp_source.is_file():
+        target = safe_target(target_root, MCP_FILE)
+        before = load_object(target) if target.exists() else {}
+        after, next_mcp = merge_mcp(before, load_object(mcp_source), manifest.get("mcp", {}))
+        if after != before:
+            hook_updates[target] = after
+            changes.append(f"merge template MCP servers: {MCP_FILE}")
 
     for source, target in canonical_updates:
         relative = target.relative_to(target_root).as_posix()
@@ -411,6 +465,7 @@ def install(source_root: Path, target_root: Path, *, write: bool, copy_adapters:
         "files": {relative: file_hash(path) for relative, path in sorted(source_files.items())},
         "adapters": dict(sorted(next_adapter_hashes.items())),
         "hooks": next_hook_entries,
+        "mcp": next_mcp,
     }
     if manifest != next_manifest:
         changes.append(f"update manifest: {MANIFEST_RELATIVE}")

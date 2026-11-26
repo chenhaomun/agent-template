@@ -20,9 +20,9 @@ import json
 import re
 from pathlib import Path
 
-from _template_lib import LINKS, ROOT, gated_skill_names, openai_metadata_errors, parse_frontmatter, relevant
+from _template_lib import LINKS, ROOT, gated_skill_names, is_template_source, lock_skill_dir, openai_metadata_errors, parse_frontmatter, relevant, skill_hash
 from detect_project import detect
-from sync_shared import CODEX_TIER, GENERATED_HEADER, render_codex_toml
+from sync_shared import GENERATED_HEADER, render_subagent
 
 try:
     import tomllib
@@ -132,6 +132,13 @@ def check_skills_lock(errors: list[str]) -> None:
         local = entry.get("localPath", ".agents/" + entry.get("skillPath", ""))
         if not (ROOT / local).is_file():
             errors.append(f"skills-lock.json: {name} points at missing file {local}")
+        elif is_template_source(ROOT) and entry.get("computedHash") != skill_hash(lock_skill_dir(ROOT, entry)):
+            errors.append(f"skills-lock.json: {name} computedHash is stale (run make sync)")
+    # Installed projects may add their own skills without editing the installer-owned lock.
+    skills_dir = ROOT / ".agents" / "skills"
+    if is_template_source(ROOT) and skills_dir.is_dir():
+        for missing in sorted({p.name for p in skills_dir.iterdir() if (p / "SKILL.md").is_file()} - set(lock)):
+            errors.append(f"skills-lock.json: no provenance entry for {missing}")
 
 
 def parse_agent_toml(text: str) -> dict[str, object]:
@@ -166,7 +173,7 @@ def check_codex(errors: list[str], expected_agents: int) -> None:
         hooks_text = ""
         hooks = {}
 
-    for event in ("PreToolUse", "PostToolUse", "SessionStart"):
+    for event in ("PreToolUse", "PostToolUse", "SessionStart", "UserPromptSubmit", "Stop"):
         if event not in hooks:
             errors.append(f".codex/hooks.json missing {event}")
     if "CLAUDE_PROJECT_DIR" in hooks_text:
@@ -195,8 +202,7 @@ def check_codex(errors: list[str], expected_agents: int) -> None:
         errors.append(".codex/agents does not match .agents/subagents")
     for source in sorted((ROOT / ".agents" / "subagents").glob("*.md")):
         front, body = parse_frontmatter(source.read_text(encoding="utf-8"))
-        model, effort = CODEX_TIER.get(front.get("model", ""), (None, None))
-        expected = render_codex_toml(front["name"], front["description"], body, model, effort)
+        expected = render_subagent(front, body)
         adapter = ROOT / ".codex" / "agents" / f"{front['name']}.toml"
         if adapter.is_file() and adapter.read_text(encoding="utf-8") != expected:
             errors.append(f"{adapter.name} has drifted from .agents/subagents/{source.name}")
@@ -209,7 +215,7 @@ def check_claude(errors: list[str]) -> None:
     except (OSError, ValueError, KeyError, TypeError) as error:
         errors.append(f".claude/settings.json hooks are invalid: {error}")
         return
-    for event in ("PreToolUse", "PostToolUse", "SessionStart"):
+    for event in ("PreToolUse", "PostToolUse", "SessionStart", "UserPromptSubmit", "Stop"):
         if event not in hooks:
             errors.append(f".claude/settings.json missing {event}")
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dart Use Pattern Matching"
+  short_description: "Use Dart 3 patterns, switch expressions, and destructuring where they simplify validation, sealed-type handling, and list/record/map decomp…"
+  default_prompt: "Use $dart-use-pattern-matching for this task."

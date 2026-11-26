@@ -18,7 +18,10 @@ SECTIONS = {
     "desktop.appearanceLightChromeTheme.fonts",
     "desktop.appearanceLightChromeTheme.semanticColors",
     "features",
+    "mcp_servers.dart",
 }
+# Sections added only when missing, so a user's own entry is never rewritten.
+ADD_ONLY = {"mcp_servers.dart"}
 
 
 def statements(text: str) -> list[str]:
@@ -100,6 +103,14 @@ def render(root: list[str], sections: list[tuple[str, list[str]]]) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
+def has_path(data: dict, keys: tuple[str, ...]) -> bool:
+    for key in keys:
+        if not isinstance(data, dict) or key not in data:
+            return False
+        data = data[key]
+    return True
+
+
 def merge_config(current: str, example: str) -> tuple[str, list[str]]:
     cur_root, cur_sections = split_sections(current)
     ex_root, ex_sections = split_sections(example)
@@ -108,12 +119,15 @@ def merge_config(current: str, example: str) -> tuple[str, list[str]]:
     merged_root = merge_values(cur_root, ex_root, ROOT_KEYS)
     merged_sections = list(cur_sections)
     allowed = {tuple(name.split(".")) for name in SECTIONS}
+    existing = tomllib.loads(current) if current.strip() else {}
     for header, body in ex_sections:
         name = section_name(header)
         if name not in allowed:
             continue
         index = next((i for i, (old, _) in enumerate(merged_sections) if section_name(old) == name), None)
-        if index is not None:
+        if ".".join(name) in ADD_ONLY and has_path(existing, name):
+            actions.append(f"keep existing {header}")
+        elif index is not None:
             old_header, old_body = merged_sections[index]
             merged_sections[index] = (old_header, merge_values(old_body, body))
             actions.append(f"update {header}")
@@ -126,27 +140,10 @@ def merge_config(current: str, example: str) -> tuple[str, list[str]]:
     return merged, actions
 
 
-def copy_pet(repo_root: Path, codex_home: Path, force: bool) -> str:
-    src = repo_root / ".codex" / "pets" / "codehound"
-    dst = codex_home / "pets" / "codehound"
-    if not src.exists():
-        return "skip pet: .codex/pets/codehound missing"
-    if (dst.exists() or dst.is_symlink()) and not force:
-        return "skip pet: already installed; pass --force-pet to overwrite"
-    if dst.exists() or dst.is_symlink():
-        stamp = datetime.now().strftime("%Y%m%d%H%M%S%f")
-        dst.rename(dst.with_name(f"{dst.name}.bak-{stamp}"))
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copytree(src, dst)
-    return f"install pet: {dst}"
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description="Apply shared Codex template settings.")
     parser.add_argument("--dry-run", action="store_true", help="preview changes without writing")
     parser.add_argument("--write", action="store_true", help="write changes to ~/.codex/config.toml")
-    parser.add_argument("--install-pet", action="store_true", help="install .codex/pets/codehound")
-    parser.add_argument("--force-pet", action="store_true", help="back up and replace existing Codehound pet")
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parents[1]
@@ -166,10 +163,6 @@ def main() -> int:
     for action in actions:
         print(f"- {action}")
 
-    if args.install_pet:
-        pet_action = "pending pet install"
-        print(f"- {pet_action}")
-
     if not args.write:
         print("no files changed")
         return 0
@@ -183,9 +176,6 @@ def main() -> int:
 
     target.write_text(merged, encoding="utf-8")
     print("config written")
-
-    if args.install_pet:
-        print(copy_pet(repo_root, codex_home, args.force_pet))
 
     return 0
 

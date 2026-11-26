@@ -1,4 +1,4 @@
 interface:
   display_name: "Resolving Merge Conflicts"
-  short_description: "Resolve git merge/rebase/cherry-pick conflicts safely — understand both sides, preserve intent, regenerate generated files, verify."
+  short_description: "Resolve conflicts from the latest intent in code, tickets, and commit history, then verify."
   default_prompt: "Use resolving-merge-conflicts for this task."

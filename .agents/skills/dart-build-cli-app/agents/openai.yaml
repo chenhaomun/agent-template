@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dart Build Cli App"
+  short_description: "Build or change Dart command-line tools - entrypoints, `package:args` parsing, exit codes, stdout/stderr, subprocesses, signals, and tests."
+  default_prompt: "Use $dart-build-cli-app for this task."

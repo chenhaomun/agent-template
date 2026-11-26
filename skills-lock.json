@@ -5,110 +5,286 @@
       "source": "JuliusBrussee/caveman",
       "sourceType": "github-adapted",
       "skillPath": "skills/caveman/SKILL.md",
-      "computedHash": "1902fa0b569912d0c05736d8d98a72097d9b82719aac88c0c1d03bb546f9176d",
-      "notes": "Default-on, persistent opt-out, all six modes, exact payload/language, clarity exceptions, and normal artifact prose preserved in a shorter local body. No upstream companion dependencies. computedHash is stale and requires external tooling.",
-      "lastReviewedCommit": "b4ee71d557d96e3cbc14f88fa6e953a1362865f5",
-      "lastReviewedAt": "2026-11-16"
+      "computedHash": "57d44393a216abd01f43c1055b77e9b2ea427965be7e6bf17689cb968469397a",
+      "notes": "Default-on at full with ultra interim notes, persistent opt-out, all six modes, exact payload/language, clarity exceptions, and normal artifact prose preserved in a shorter local body. No upstream companion dependencies.",
+      "lastReviewedCommit": "47c61be2d10a354f0c5cbe2b90959d24c06b16c6",
+      "lastReviewedAt": "2026-11-25"
     },
     "dart-add-unit-test": {
       "source": "dart-lang/skills",
       "sourceType": "github-adapted",
       "skillPath": "skills/dart-add-unit-test/SKILL.md",
-      "computedHash": "326a2b6cb57bcb4f40203e063a1060e9549a8cea0ece1a5c9a0d39a2f2b85bc8",
-      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials. computedHash is stale and requires external tooling.",
-      "lastReviewedCommit": "fa691671fda391ea1d1f8c7ae61bddc03348ec85",
-      "lastReviewedAt": "2026-11-16"
+      "computedHash": "c7f969b73b6edb51a25e9c43c3b04a682ef5bdbfe69dda5e3aa25dd99b2884e3",
+      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials.",
+      "lastReviewedCommit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "lastReviewedAt": "2026-11-25"
+    },
+    "dart-build-cli-app": {
+      "source": "dart-lang/skills",
+      "sourceType": "github-adapted",
+      "skillPath": "skills/dart-build-cli-app/SKILL.md",
+      "notes": "Local stack key and shortened description. Thin entrypoint, exit codes, stream routing, AOT executable and signal rules kept; new packages need approval; distribution and build_version guidance plus upstream examples/references not vendored.",
+      "lastReviewedCommit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "lastReviewedAt": "2026-11-25",
+      "computedHash": "352d41911180de05215372d6a3777854faff7468d71f3cdce909f3f174f48d7b"
+    },
+    "dart-collect-coverage": {
+      "source": "dart-lang/skills",
+      "sourceType": "github-adapted",
+      "skillPath": "skills/dart-collect-coverage/SKILL.md",
+      "notes": "Local stack key and shortened description. Prefers flutter test --coverage or existing CI; adding package:coverage needs approval; ignore directives only for generated or untestable code.",
+      "lastReviewedCommit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "lastReviewedAt": "2026-11-25",
+      "computedHash": "6712f41b6178b44259c939918c2afc3a4f6c2de1c5f80402cb4990f21bb41890"
     },
     "dart-fix-runtime-errors": {
       "source": "dart-lang/skills",
       "sourceType": "github-adapted",
       "skillPath": "skills/dart-fix-runtime-errors/SKILL.md",
-      "computedHash": "7b13cb0df76693d8c798432a1f86325b093a35e9687f231a012763fcad54fb2c",
-      "notes": "Local stack and runtime-focused description/body. Replaces unrelated static-analysis tutorial with crash diagnosis, sound contracts, regression coverage, and honest runtime verification; lint policy stays project-owned. computedHash is stale and requires external tooling.",
-      "lastReviewedCommit": "fa691671fda391ea1d1f8c7ae61bddc03348ec85",
-      "lastReviewedAt": "2026-11-16"
+      "computedHash": "005a861908fdfad6435b2e4fe959d50f2659dec0d985f9e974dfa766d5836221",
+      "notes": "Local stack and runtime-focused description/body. Replaces unrelated static-analysis tutorial with crash diagnosis, sound contracts, regression coverage, and honest runtime verification; lint policy stays project-owned.",
+      "lastReviewedCommit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "lastReviewedAt": "2026-11-25"
     },
     "dart-generate-test-mocks": {
       "source": "dart-lang/skills",
       "sourceType": "github-adapted",
       "skillPath": "skills/dart-generate-test-mocks/SKILL.md",
-      "computedHash": "7bf12a98d63e96ed51ba077a24426be1b11a9fc508f7dfca60fc6e118c3fc923",
-      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials. computedHash is stale and requires external tooling.",
-      "lastReviewedCommit": "fa691671fda391ea1d1f8c7ae61bddc03348ec85",
-      "lastReviewedAt": "2026-11-16"
+      "computedHash": "72db34c755a6d64b79290032c125d05410ec8fcf45ad8465ddcf8bb182848d1e",
+      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials.",
+      "lastReviewedCommit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "lastReviewedAt": "2026-11-25"
+    },
+    "dart-migrate-to-checks-package": {
+      "source": "dart-lang/skills",
+      "sourceType": "github-adapted",
+      "skillPath": "skills/dart-migrate-to-checks-package/SKILL.md",
+      "notes": "Local stack key and shortened description. Only on request; pitfalls and mappings condensed; discovery grep commands and long examples dropped.",
+      "lastReviewedCommit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "lastReviewedAt": "2026-11-25",
+      "computedHash": "bd4cf14dd697ed4b18d628cf16a8b29effc61ee7447f5390a9da8d7585324966"
+    },
+    "dart-resolve-package-conflicts": {
+      "source": "dart-lang/skills",
+      "sourceType": "github-adapted",
+      "skillPath": "skills/dart-resolve-package-conflicts/SKILL.md",
+      "notes": "Local stack key and shortened description. Uses targeted pub upgrade <package> instead of hand-deleting a pubspec.lock block (no generated-file edits); major bumps, new packages, and dependency_overrides need approval.",
+      "lastReviewedCommit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "lastReviewedAt": "2026-11-25",
+      "computedHash": "ade3318fa531f04603f65b53fb2c951a8dd3e3d5cab829f6bc222d20bea053a8"
+    },
+    "dart-run-code-generation": {
+      "sourceType": "local",
+      "skillPath": "skills/dart-run-code-generation/SKILL.md",
+      "notes": "Local skill: regenerate build_runner, gen-l10n, and ffigen output from sources with project wrappers; conflicting outputs deleted only when confirmed generated.",
+      "computedHash": "37a78ba9fc58faa69bc06ea1031d12ff9698f45f615276a2d3db16439eba9892"
     },
     "dart-run-static-analysis": {
       "source": "dart-lang/skills",
       "sourceType": "github-adapted",
       "skillPath": "skills/dart-run-static-analysis/SKILL.md",
-      "computedHash": "e64ea092e216ecdc9b4a8b49b06d0b9a0b49f680c1116ada1d247b2de3fa6fe1",
-      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials. computedHash is stale and requires external tooling.",
-      "lastReviewedCommit": "fa691671fda391ea1d1f8c7ae61bddc03348ec85",
-      "lastReviewedAt": "2026-11-16"
+      "computedHash": "c4e2f589712845ca99b8f69e8247f7e580fef8f7fd03ca7c61b2c14d45ac1ecc",
+      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials.",
+      "lastReviewedCommit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "lastReviewedAt": "2026-11-25"
+    },
+    "dart-setup-ffi-assets": {
+      "source": "dart-lang/skills",
+      "sourceType": "github-adapted",
+      "skillPath": "skills/dart-setup-ffi-assets/SKILL.md",
+      "notes": "Local stack key and shortened description. Requires explicit native/FFI approval; precompiled downloads verified with SHA-256 (not MD5), fail closed, offline local_build fallback; host toolchains reported, not installed.",
+      "lastReviewedCommit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "lastReviewedAt": "2026-11-25",
+      "computedHash": "c77d1172e98b0b62fa89e7ae2da008bef529cd4862e955eae4b658606035ce89"
+    },
+    "dart-use-doc-examples": {
+      "source": "dart-lang/skills",
+      "sourceType": "github-adapted",
+      "skillPath": "skills/dart-use-doc-examples/SKILL.md",
+      "notes": "Local stack key and shortened description. Condensed directive, region, and hide rules.",
+      "lastReviewedCommit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "lastReviewedAt": "2026-11-25",
+      "computedHash": "c9d82c69d286182994469adf26a5c48cf468c7e3088b019b78c349c9c81a8875"
+    },
+    "dart-use-ffigen": {
+      "source": "dart-lang/skills",
+      "sourceType": "github-adapted",
+      "skillPath": "skills/dart-use-ffigen/SKILL.md",
+      "notes": "Local stack key and shortened description. Requires native/FFI approval; follows existing generator config; never commits or hand-edits generated bindings.",
+      "lastReviewedCommit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "lastReviewedAt": "2026-11-25",
+      "computedHash": "6ff711f6b22e68fcfa696cebefbef677b89a10062ccbf470c9319d39020bfe96"
+    },
+    "dart-use-path-package": {
+      "source": "dart-lang/skills",
+      "sourceType": "github-adapted",
+      "skillPath": "skills/dart-use-path-package/SKILL.md",
+      "notes": "Local stack key and shortened description. package:path addition needs approval; anti-pattern table condensed; upstream examples not vendored.",
+      "lastReviewedCommit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "lastReviewedAt": "2026-11-25",
+      "computedHash": "d65121702fee36307e813119de436bb23b625d7a51d58082a15ae5d3c9ab797c"
+    },
+    "dart-use-pattern-matching": {
+      "source": "dart-lang/skills",
+      "sourceType": "github-adapted",
+      "skillPath": "skills/dart-use-pattern-matching/SKILL.md",
+      "notes": "Local stack key and shortened description. Choose/avoid rules condensed; upstream examples not vendored.",
+      "lastReviewedCommit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "lastReviewedAt": "2026-11-25",
+      "computedHash": "949177faf07e64d3fc63995e2bb78e8fd810a5fe2f2007d03f4ae8aadced50ca"
+    },
+    "dart-use-primary-constructors": {
+      "source": "dart-lang/skills",
+      "sourceType": "github-adapted",
+      "skillPath": "skills/dart-use-primary-constructors/SKILL.md",
+      "notes": "Local stack key and shortened description. Gated on SDK constraint and request; no experiment enabling or mass migration.",
+      "lastReviewedCommit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "lastReviewedAt": "2026-11-25",
+      "computedHash": "8c9bf34ea305d7b06678f36d8438c750778a0927c15ec62bd2dca631e82a26e3"
+    },
+    "dart-write-documentation": {
+      "source": "dart-lang/skills",
+      "sourceType": "github-adapted",
+      "skillPath": "skills/dart-write-documentation/SKILL.md",
+      "notes": "Local stack key and shortened description. Effective Dart rules condensed; requested public API docs exempt from the AGENTS.md two-line comment cap.",
+      "lastReviewedCommit": "f84b16872b5d186f4e877511b49b93c204a1c4ef",
+      "lastReviewedAt": "2026-11-25",
+      "computedHash": "344ca2cff39897526458fc2f07ac4feb9eda74b413849a2b30acdeb6dc648d95"
+    },
+    "draft-user-stories": {
+      "sourceType": "local",
+      "skillPath": "skills/draft-user-stories/SKILL.md",
+      "notes": "Local skill: Epic stories or Enhancement tasks in one Markdown draft, approved ClickUp creation, and HTML visuals only on request.",
+      "computedHash": "db095084fe908fc48d91b16313998fdf2fe79f27aaf13ad0c84fd3b881d2bfd5"
+    },
+    "flutter-add-integration-test": {
+      "sourceType": "local",
+      "skillPath": "skills/flutter-add-integration-test/SKILL.md",
+      "notes": "Local skill, distinct from the upstream flutter/agent-plugins skill of the same name; keep this version during skill maintenance.",
+      "computedHash": "673de532080823d78c78b7ea8e3367dbe4d3954acd34186acfb5a0af342b6411"
+    },
+    "flutter-add-widget-preview": {
+      "source": "flutter/agent-plugins",
+      "sourceType": "github-adapted",
+      "skillPath": "skills/flutter-add-widget-preview/SKILL.md",
+      "notes": "Local stack key and shortened description. Gated on SDK support and existing preview use; reuse app theme/l10n wrappers; web-only limits kept; upstream code examples dropped.",
+      "lastReviewedCommit": "ff6d472ee66dbed566c4500edee460c94fde0a02",
+      "lastReviewedAt": "2026-11-25",
+      "computedHash": "d16f854b93c7385b2828174070200bb4eeb4e9e6dbe666ada574c73d712cd3e3"
     },
     "flutter-add-widget-test": {
-      "source": "flutter/skills",
+      "source": "flutter/agent-plugins",
       "sourceType": "github-adapted",
       "skillPath": "skills/flutter-add-widget-test/SKILL.md",
-      "computedHash": "c4f263c59cfe331ef42dba2aa81e25142aa4f7284518907c6b847e04502676b0",
-      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials. computedHash is stale and requires external tooling.",
-      "lastReviewedCommit": "e5a88d2be19cbf7ba1ef974375e5846492aca2ac",
-      "lastReviewedAt": "2026-11-16"
+      "computedHash": "4eefe5ada3e254e2dfe834111057e4c9069792854384f0574b39d2b5661a3f11",
+      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials.",
+      "lastReviewedCommit": "ff6d472ee66dbed566c4500edee460c94fde0a02",
+      "lastReviewedAt": "2026-11-25"
     },
     "flutter-apply-architecture-best-practices": {
-      "source": "flutter/skills",
+      "source": "flutter/agent-plugins",
       "sourceType": "github-adapted",
       "skillPath": "skills/flutter-apply-architecture-best-practices/SKILL.md",
-      "computedHash": "2b1b63214d6b153c50aacd4bbcb76ce91dece449de9e06f477f8aad3163d667f",
-      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials. computedHash is stale and requires external tooling.",
-      "lastReviewedCommit": "e5a88d2be19cbf7ba1ef974375e5846492aca2ac",
-      "lastReviewedAt": "2026-11-16"
+      "computedHash": "8c5e509c20297c9bdb76e908280c256b0ff77b73b6ddffc5db975ba77d5ea4b5",
+      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials.",
+      "lastReviewedCommit": "ff6d472ee66dbed566c4500edee460c94fde0a02",
+      "lastReviewedAt": "2026-11-25"
     },
     "flutter-build-responsive-layout": {
-      "source": "flutter/skills",
+      "source": "flutter/agent-plugins",
       "sourceType": "github-adapted",
       "skillPath": "skills/flutter-build-responsive-layout/SKILL.md",
-      "computedHash": "f762ea2ee83d4f1f35d9093b41d2520dd024ab80c9539d4860b9ae7f2a4dc6a0",
-      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials. computedHash is stale and requires external tooling.",
-      "lastReviewedCommit": "e5a88d2be19cbf7ba1ef974375e5846492aca2ac",
-      "lastReviewedAt": "2026-11-16"
+      "computedHash": "3676e80f35bb5b87f18b361007ce73c25da97a49198a2d69af4f11638e02fd40",
+      "notes": "Local stack key and description retained/adapted; body condensed for project conventions, scoped verification, and Flutter quality. Intentional local adaptation; do not overwrite with upstream tutorials.",
+      "lastReviewedCommit": "ff6d472ee66dbed566c4500edee460c94fde0a02",
+      "lastReviewedAt": "2026-11-25"
     },
     "flutter-fix-layout-issues": {
-      "source": "flutter/skills",
+      "source": "flutter/agent-plugins",
       "sourceType": "github-adapted",
       "skillPath": "skills/flutter-fix-layout-issues/SKILL.md",
-      "computedHash": "1aaba922c951159118f9b141788f7bb7b8167bdc0bd5c6f0738ebb90c29b9532",
-      "notes": "Local stack and concise diagnostic body preserve constraint/ParentData cases and verification; replaces blanket Expanded fixes with bounded-axis checks. computedHash is stale and requires external tooling.",
-      "lastReviewedCommit": "e5a88d2be19cbf7ba1ef974375e5846492aca2ac",
-      "lastReviewedAt": "2026-11-16"
+      "computedHash": "51ba264aab8f4309addd085a02d115ab5b16934660b4ed6c8b33df80142b1670",
+      "notes": "Local stack and concise diagnostic body preserve constraint/ParentData cases and verification; replaces blanket Expanded fixes with bounded-axis checks.",
+      "lastReviewedCommit": "ff6d472ee66dbed566c4500edee460c94fde0a02",
+      "lastReviewedAt": "2026-11-25"
     },
     "flutter-implement-json-serialization": {
-      "source": "flutter/skills",
+      "source": "flutter/agent-plugins",
       "sourceType": "github-adapted",
       "skillPath": "skills/flutter-implement-json-serialization/SKILL.md",
-      "computedHash": "0eed26f25308d78c6a9036ec936db93342f064d64f2cbac5e0e8648ba6b9db3f",
-      "notes": "Local stack and condensed project-aware body; preserves scoped verification and adds contract/security edge cases. Do not restore tutorials or mandatory packages. computedHash is stale and requires external tooling.",
-      "lastReviewedCommit": "e5a88d2be19cbf7ba1ef974375e5846492aca2ac",
-      "lastReviewedAt": "2026-11-16"
+      "computedHash": "93d26858a6017cac7651684041e96e8dcfe4804e2aac79b42fde4e62a61e3ff2",
+      "notes": "Local stack and condensed project-aware body; preserves scoped verification and adds contract/security edge cases. Do not restore tutorials or mandatory packages.",
+      "lastReviewedCommit": "ff6d472ee66dbed566c4500edee460c94fde0a02",
+      "lastReviewedAt": "2026-11-25"
+    },
+    "flutter-setup-declarative-routing": {
+      "source": "flutter/agent-plugins",
+      "sourceType": "github-adapted",
+      "skillPath": "skills/flutter-setup-declarative-routing/SKILL.md",
+      "notes": "Local stack key and shortened description. Extends the existing router; go_router addition needs approval; adds typed param validation, untrusted-link handling, and placeholder-only signing config; project scaffolding steps dropped.",
+      "lastReviewedCommit": "ff6d472ee66dbed566c4500edee460c94fde0a02",
+      "lastReviewedAt": "2026-11-25",
+      "computedHash": "512b9c723c4ac14d353f42da53a7b0416dda7576333bcc1ccce82bcb03acbfa7"
+    },
+    "flutter-setup-localization": {
+      "source": "flutter/agent-plugins",
+      "sourceType": "github-adapted",
+      "skillPath": "skills/flutter-setup-localization/SKILL.md",
+      "notes": "Local stack key and shortened description. Extends existing l10n; intl version follows the SDK pin instead of any; non-synthetic generated output on recent SDKs; other locales only from provided translations.",
+      "lastReviewedCommit": "ff6d472ee66dbed566c4500edee460c94fde0a02",
+      "lastReviewedAt": "2026-11-25",
+      "computedHash": "529bd2ae25ff51395aad7effffc850a64c92c3a7707831dd0c8b39f42b81b814"
     },
     "flutter-use-http-package": {
-      "source": "flutter/skills",
+      "source": "flutter/agent-plugins",
       "sourceType": "github-adapted",
       "skillPath": "skills/flutter-use-http-package/SKILL.md",
-      "computedHash": "17efcf4da9933afaf9c1d41940bd6b92f1ae73dcae4bf6c59cfe24f7e487ee9f",
-      "notes": "Local stack and condensed project-aware body; preserves scoped verification and adds contract/security edge cases. Do not restore tutorials or mandatory packages. computedHash is stale and requires external tooling.",
-      "lastReviewedCommit": "e5a88d2be19cbf7ba1ef974375e5846492aca2ac",
-      "lastReviewedAt": "2026-11-16"
+      "computedHash": "672dc213ae4ed20f9b4c3a16b9c66ce75a667421bf0f01bdf278de77d912338c",
+      "notes": "Local stack and condensed project-aware body; preserves scoped verification and adds contract/security edge cases. Do not restore tutorials or mandatory packages.",
+      "lastReviewedCommit": "ff6d472ee66dbed566c4500edee460c94fde0a02",
+      "lastReviewedAt": "2026-11-25"
     },
-    "skill-maintenance": {
+    "git-staged-commit-message": {
       "sourceType": "local",
-      "skillPath": "skills/skill-maintenance/SKILL.md",
-      "notes": "Local maintenance entrypoint; no computedHash."
+      "skillPath": "skills/git-staged-commit-message/SKILL.md",
+      "notes": "Local skill: commit message from staged changes in the AGENTS.md format, copied to the clipboard; never stages or commits.",
+      "computedHash": "5725e24be4a134435f8cbe7ce1c88325c99d8218a983a6fa7615a502e6ec2aae"
+    },
+    "grill-requirements": {
+      "sourceType": "local",
+      "skillPath": "skills/grill-requirements/SKILL.md",
+      "notes": "Local skill: at most three blocking requirement questions after inspecting evidence.",
+      "computedHash": "13d2198672ca5ebba7cbd6f81bb1ef9ed4ac9b0b5b4a611d316ee8ab1a19730e"
+    },
+    "production-code-review": {
+      "sourceType": "local",
+      "skillPath": "skills/production-code-review/SKILL.md",
+      "notes": "Local skill: the single review skill (correctness, architecture, quality, performance, security) with problem-only output and sprint-point estimates for unpointed tickets.",
+      "computedHash": "b2e1d0475db9ff4f7c63072e3c2d45372cd115e400712cc659d0b38f4e2bea7e"
+    },
+    "resolving-merge-conflicts": {
+      "sourceType": "local",
+      "skillPath": "skills/resolving-merge-conflicts/SKILL.md",
+      "notes": "Local skill: resolves conflicts from the latest intent in code, tickets, and commit history; no default side.",
+      "computedHash": "9708c361944ed30afa2a130e188c6b4351bad059a012c2159b5b6aa2d941fa68"
     },
     "root-cause-analyze": {
       "sourceType": "local",
       "skillPath": "skills/root-cause-analyze/SKILL.md",
-      "notes": "Read-only ticket RCA with file/method context, optional ticket category, Sprint Point: n from the shared mobile guide, and verified Caused By: commit - author name. Proposed categories use live options; no hyperlinks, fixed sentence limit, or stored workspace data."
+      "notes": "Read-only ticket RCA with file/method context, optional ticket category, Sprint Point: n from the shared mobile guide, and verified Caused By: commit - author name. Proposed categories use live options; no hyperlinks, fixed sentence limit, or stored workspace data.",
+      "computedHash": "adf00c5c6a426ed291a3e78f08a3a3089e073d72202ae0e3d3daa377542452cf"
+    },
+    "skill-maintenance": {
+      "sourceType": "local",
+      "skillPath": "skills/skill-maintenance/SKILL.md",
+      "notes": "Local maintenance entrypoint.",
+      "computedHash": "30d5a1b46c4d4dd37e89d37477431be93d7404dd7be792a0370959ad93b35645"
+    },
+    "test-driven-development": {
+      "sourceType": "local",
+      "skillPath": "skills/test-driven-development/SKILL.md",
+      "notes": "Local skill: focused failing test first for clear behavior changes.",
+      "computedHash": "d04caff84a8918febc866996240c7c8c1fa9cf6dbc46ad341c41ab168e34c7d8"
     }
   }
 }

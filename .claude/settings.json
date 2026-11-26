@@ -1,11 +1,44 @@
 {
-  "model": "claude-sonnet-5",
   "permissions": {
     "allow": [
-      "Bash(git:*)",
-      "Bash(python:*)",
-      "Bash(python3:*)",
-      "Bash(make:*)"
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch --show-current)",
+      "Bash(git branch --list:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git ls-files:*)",
+      "Bash(git blame:*)",
+      "Bash(git merge-base:*)",
+      "Bash(make verify:*)",
+      "Bash(make sync:*)",
+      "Bash(make check-template:*)",
+      "Bash(make check-context:*)",
+      "Bash(make tool-tests:*)",
+      "Bash(make context:*)",
+      "Bash(make -f .agents/Makefile verify:*)",
+      "Bash(make -f .agents/Makefile sync:*)",
+      "Bash(make -f .agents/Makefile check-template:*)",
+      "Bash(make -f .agents/Makefile check-context:*)",
+      "Bash(make -f .agents/Makefile tool-tests:*)",
+      "Bash(make -f .agents/Makefile context:*)",
+      "Bash(python .agents/tools/run_checks.py:*)",
+      "Bash(python .agents/tools/check_template.py:*)",
+      "Bash(python .agents/tools/check_project_context.py:*)",
+      "Bash(python .agents/tools/sync_shared.py:*)",
+      "Bash(python .agents/tools/generate_project_context.py:*)",
+      "Bash(python .agents/tests/smoke_install.py:*)",
+      "Bash(python -m unittest discover -s .agents/tests:*)",
+      "Bash(python3 .agents/tools/run_checks.py:*)",
+      "Bash(python3 .agents/tools/check_template.py:*)",
+      "Bash(python3 .agents/tools/check_project_context.py:*)",
+      "Bash(python3 .agents/tools/sync_shared.py:*)",
+      "Bash(python3 .agents/tools/generate_project_context.py:*)",
+      "Bash(python3 .agents/tests/smoke_install.py:*)",
+      "Bash(python3 -m unittest discover -s .agents/tests:*)",
+      "Bash(python .agents/tools/review_gate.py record:*)",
+      "Bash(python3 .agents/tools/review_gate.py record:*)"
     ],
     "deny": []
   },
@@ -51,6 +84,28 @@
             "type": "command",
             "command": "python3 \"$CLAUDE_PROJECT_DIR/.agents/tools/session_start.py\"",
             "commandWindows": "python \"$CLAUDE_PROJECT_DIR/.agents/tools/session_start.py\""
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.agents/tools/review_gate.py\" turn-start",
+            "commandWindows": "python \"$CLAUDE_PROJECT_DIR/.agents/tools/review_gate.py\" turn-start"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.agents/tools/review_gate.py\" stop",
+            "commandWindows": "python \"$CLAUDE_PROJECT_DIR/.agents/tools/review_gate.py\" stop"
           }
         ]
       }

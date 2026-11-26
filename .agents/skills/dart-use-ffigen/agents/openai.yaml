@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dart Use Ffigen"
+  short_description: "Generate Dart FFI bindings with `package:ffigen` instead of hand-writing them."
+  default_prompt: "Use $dart-use-ffigen for this task."

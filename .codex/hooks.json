@@ -52,6 +52,32 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.agents/tools/review_gate.py\" turn-start",
+            "commandWindows": "python \"$(git rev-parse --show-toplevel)/.agents/tools/review_gate.py\" turn-start",
+            "timeout": 30,
+            "statusMessage": "Recording turn baseline"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.agents/tools/review_gate.py\" stop",
+            "commandWindows": "python \"$(git rev-parse --show-toplevel)/.agents/tools/review_gate.py\" stop",
+            "timeout": 30,
+            "statusMessage": "Checking independent review"
+          }
+        ]
+      }
     ]
   }
 }

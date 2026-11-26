@@ -1,0 +1,4 @@
+interface:
+  display_name: "Flutter Setup Localization"
+  short_description: "Set up or extend Flutter localization with `flutter_localizations`, `intl`, ARB files, and generated `AppLocalizations`."
+  default_prompt: "Use $flutter-setup-localization for this task."

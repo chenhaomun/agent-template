@@ -1,28 +1,27 @@
 ---
 name: resolving-merge-conflicts
-description: Resolve git merge/rebase/cherry-pick conflicts safely — understand both sides, preserve intent, regenerate generated files, verify. Use when conflict markers or a halted merge/rebase appear.
+description: Resolve git merge, rebase, cherry-pick, or stash conflicts by working out the latest intended behavior from code, tickets, and commit history. Use when conflict markers or a halted operation appear.
 ---
 
 # Resolving Merge Conflicts
 
-Resolve conflicts by understanding intent, not by blind-picking a side. Preserve everyone's work.
+Decide each conflict from evidence of what the code should do now. No side wins by default.
 
-## Scope
+## Gather evidence
 
-Trigger: `<<<<<<<`/`=======`/`>>>>>>>` markers, or a halted `git merge`/`rebase`/`cherry-pick`/`stash pop`. First run `git status` and `git diff --name-only --diff-filter=U` to list conflicted files.
+- Run `git status` and `git diff --name-only --diff-filter=U` to see the operation and conflicted files. In a rebase, "ours" is the branch being replayed onto.
+- For each conflict, read the base and both sides (`git show :1:<path>`, `:2:<path>`, `:3:<path>`), the commits that changed it on each side with their messages, linked tickets or PRs, and current callers and tests.
+- Establish the latest intended behavior: which change reflects the current requirement, and whether one side already includes, moves, renames, reverts, or replaces the other.
 
-## Steps
+## Resolve
 
-1. Know the operation: `git status` says merge vs rebase (in a rebase, "ours"/"theirs" are swapped — ours = the branch you're replaying onto). State which before resolving.
-2. Per safe source file, understand both sides and why each changed using scoped history and diffs. Apply SECURITY.md before reading content; credential-bearing conflicts require sanitized evidence. Do not resolve a hunk you don't understand.
-3. Resolve preserving both intents. Combine changes when both are wanted; drop a side only when it is genuinely superseded — never to make markers disappear. Remove every conflict marker.
-4. Do NOT hand-merge generated/vendored files (`*.g.dart`, `*.freezed.dart`, `build/`, etc. — see AGENTS.md). Take one side or `--theirs`/`--ours` to unblock, then regenerate from source. Same for lockfiles: resolve `pubspec.yaml`/`package.json` by hand, then regenerate `pubspec.lock`/lockfiles.
-5. Verify with the project's relevant commands; use `make -f .agents/Makefile verify` for template checks. Cleanly merged code can still fail to compile or behave incorrectly.
-6. Stage only resolved files when the requested conflict workflow calls for it. Continuing a rebase/cherry-pick or committing a merge creates commits: do so only with explicit authorization under AGENTS.md. Otherwise leave the verified resolution ready for the user. Never continue with unresolved markers.
+- Write the code that delivers that behavior and fits current callers. It may be one side, both, or a new combination.
+- For generated files and lockfiles, resolve their sources, then regenerate.
+- Remove every conflict marker. Keep unrelated local changes.
+- If the evidence conflicts or intent stays unclear, stop and ask, citing the hunk and the evidence.
 
-## Guardrails
+## Verify and report
 
-- Never `git checkout --ours`/`--theirs` on a whole file to skip understanding it, and never `git merge --abort`/`reset --hard` without asking — that discards work.
-- Preserve unrelated local changes; keep the resolution scoped to the conflict.
-- If either side's intent is unclear or the sides truly contradict, stop and ask rather than guessing.
-- Re-run any codegen (`build_runner`) and format after resolving; remove leftover debug/churn.
+- Build or analyze, then run tests that cover the conflicted code; a clean merge can still break.
+- Report per file what was chosen and why (commit, ticket, or caller).
+- Do not continue the operation, commit, abort, or reset without an explicit request.

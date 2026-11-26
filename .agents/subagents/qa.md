@@ -13,4 +13,4 @@ Automated tests are out of scope: never create or edit test files. If a check ne
 
 Run feasible checks using project scripts. Stop long commands and report command plus elapsed time.
 
-Plan briefly with checks and scenarios. Report per `AGENTS.md` and `subagent-workflow`.
+Plan briefly with checks and scenarios. Report per `AGENTS.md`.

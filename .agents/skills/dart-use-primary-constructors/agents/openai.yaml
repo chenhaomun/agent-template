@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dart Use Primary Constructors"
+  short_description: "Write or migrate to Dart primary constructors and concise constructor syntax."
+  default_prompt: "Use $dart-use-primary-constructors for this task."

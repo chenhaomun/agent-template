@@ -104,6 +104,12 @@ Record application modules and their owners here.
 - Adapters: `.claude/` and `.codex/`.
 - Enforcement and maintenance: `.agents/tools/` with tests in `.agents/tests/`.
 
+## Feature Map
+
+Map user-facing feature names to their screens/routes and source paths so agents share one vocabulary.
+
+- <Feature name>: <screen or route> — `<source path>`
+
 ## Commands
 
 - `make -f .agents/Makefile verify` checks template integrity, context freshness, and project checks.

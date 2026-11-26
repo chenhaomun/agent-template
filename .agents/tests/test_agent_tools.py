@@ -187,7 +187,7 @@ class AdapterPreservationTest(unittest.TestCase):
             )
             (adapters / "custom.toml").write_text("project owned\n", encoding="utf-8")
             (root / ".codex" / "hooks.json").write_text(
-                json.dumps({"hooks": {"PreToolUse": [], "PostToolUse": [], "SessionStart": []}}),
+                json.dumps({"hooks": {"PreToolUse": [], "PostToolUse": [], "SessionStart": [], "UserPromptSubmit": [], "Stop": []}}),
                 encoding="utf-8",
             )
             old_root = check.ROOT
@@ -241,6 +241,14 @@ class CodexTomlTest(unittest.TestCase):
 
         self.assertEqual(parsed["developer_instructions"], body)
 
+    def test_only_explicit_sandbox_field_sets_read_only(self) -> None:
+        sync = load_tool("sync_shared")
+        base = {"name": "a", "description": "d"}
+
+        self.assertIn('sandbox_mode = "read-only"', sync.render_subagent({**base, "sandbox": "read-only"}, "b"))
+        self.assertNotIn("sandbox_mode", sync.render_subagent({**base, "tools": "Read, Bash"}, "b"))
+        self.assertNotIn("sandbox_mode", sync.render_subagent(base, "b"))
+
 
 class CodexConfigTest(unittest.TestCase):
     def test_example_enables_documented_sol_context_window(self) -> None:
@@ -252,28 +260,6 @@ class CodexConfigTest(unittest.TestCase):
 
         self.assertEqual(config["model"], "gpt-6-sol")
         self.assertEqual(config["model_context_window"], 1_050_000)
-
-    def test_force_pet_preserves_existing_local_files(self) -> None:
-        with tempfile.TemporaryDirectory() as temp:
-            root = Path(temp)
-            source = root / "source" / ".codex" / "pets" / "codehound"
-            source.mkdir(parents=True)
-            (source / "pet.json").write_text("new", encoding="utf-8")
-            codex_home = root / "home"
-            existing = codex_home / "pets" / "codehound"
-            existing.mkdir(parents=True)
-            (existing / "notes.md").write_text("local notes", encoding="utf-8")
-            spec = importlib.util.spec_from_file_location("codex_install", ROOT / ".codex" / "install.py")
-            assert spec and spec.loader
-            installer = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(installer)
-
-            installer.copy_pet(root / "source", codex_home, force=True)
-
-            backups = list((codex_home / "pets").glob("codehound.bak-*"))
-            self.assertEqual(len(backups), 1)
-            self.assertEqual((backups[0] / "notes.md").read_text(encoding="utf-8"), "local notes")
-            self.assertEqual((existing / "pet.json").read_text(encoding="utf-8"), "new")
 
 
 if __name__ == "__main__":

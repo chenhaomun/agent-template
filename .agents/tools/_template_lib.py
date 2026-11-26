@@ -8,6 +8,8 @@ keep `.claude/` adapters in step with `.agents/` are defined exactly once.
 
 from __future__ import annotations
 
+import hashlib
+import json
 import re
 from pathlib import Path
 
@@ -28,7 +30,7 @@ def relevant(path: Path) -> bool:
         not (set(path.parts) & IGNORED_PARTS)
         and not any(".bak-" in part for part in path.parts)
         and path.suffix not in {".pyc", ".pyo"}
-        and path.name not in {"settings.local.json"}
+        and path.name not in {"settings.local.json", ".DS_Store", "Thumbs.db", "desktop.ini"}
         and not (
             (path.name == ".env" or path.name.startswith(".env."))
             and not path.name.endswith(".example")
@@ -120,3 +122,29 @@ def gated_skill_names(skills_src: Path, detected: set[str]) -> set[str]:
         if stack is not None and stack not in effective:
             excluded.add(skill_md.parent.name)
     return excluded
+
+
+LOCK_PATH = ROOT / "skills-lock.json"
+
+
+def is_template_source(root: Path = ROOT) -> bool:
+    """True in the template repository; installed projects carry an installer manifest."""
+    return not (root / ".agents" / ".template-manifest.json").exists()
+
+
+def skill_hash(skill_dir: Path) -> str:
+    """SHA-256 of a skill folder's relevant files; line endings normalized for Windows checkouts."""
+    digest = hashlib.sha256()
+    files = sorted(p for p in skill_dir.rglob("*") if p.is_file() and relevant(p.relative_to(skill_dir)))
+    for path in files:
+        digest.update(path.relative_to(skill_dir).as_posix().encode() + b"\0")
+        digest.update(path.read_bytes().replace(b"\r\n", b"\n") + b"\0")
+    return digest.hexdigest()
+
+
+def lock_skill_dir(root: Path, entry: dict) -> Path:
+    return (root / entry.get("localPath", ".agents/" + entry.get("skillPath", ""))).parent
+
+
+def load_lock(root: Path = ROOT) -> dict:
+    return json.loads((root / "skills-lock.json").read_text(encoding="utf-8"))

@@ -24,7 +24,9 @@ import re
 import shutil
 from pathlib import Path
 
-from _template_lib import LINKS, ROOT, gated_skill_names, parse_frontmatter, relevant
+import json
+
+from _template_lib import LINKS, LOCK_PATH, ROOT, gated_skill_names, is_template_source, load_lock, lock_skill_dir, parse_frontmatter, relevant, skill_hash
 from detect_project import detect
 
 SUBAGENTS = ROOT / ".agents" / "subagents"
@@ -109,6 +111,7 @@ def render_codex_toml(
     body: str,
     model: str | None = None,
     effort: str | None = None,
+    read_only: bool = False,
 ) -> str:
     lines = [
         GENERATED_HEADER,
@@ -119,8 +122,17 @@ def render_codex_toml(
         lines.append(f"model = {toml_basic(model)}")
     if effort:
         lines.append(f"model_reasoning_effort = {toml_basic(effort)}")
+    if read_only:
+        lines.append('sandbox_mode = "read-only"')
     lines.append(f"developer_instructions = {toml_body(body)}")
     return "\n".join(lines) + "\n"
+
+
+def render_subagent(front: dict[str, str], body: str) -> str:
+    """Render one subagent's Codex TOML; `sandbox: read-only` frontmatter enforces read-only on Codex."""
+    model, effort = CODEX_TIER.get(front.get("model", ""), (None, None))
+    read_only = front.get("sandbox") == "read-only"
+    return render_codex_toml(front["name"], front["description"], body, model, effort, read_only)
 
 
 def generate_codex_agents(actions: list[str]) -> None:
@@ -138,14 +150,11 @@ def generate_codex_agents(actions: list[str]) -> None:
         if not name or not description:
             actions.append(f"skip {md.name}: missing name/description")
             continue
-        # Map the vendor-neutral Claude tier to a Codex model + effort; unknown
-        # or absent tiers emit nothing and inherit the session default.
-        model, effort = CODEX_TIER.get(front.get("model", ""), (None, None))
         out = CODEX_AGENTS / f"{name}.toml"
         if out.is_symlink():
             raise RuntimeError(f"refusing symlinked Codex agent: {out}")
         wanted.add(out.name)
-        content = render_codex_toml(name, description, body, model, effort)
+        content = render_subagent(front, body)
         previous = out.read_text(encoding="utf-8") if out.exists() else None
         if previous is not None and not previous.startswith(GENERATED_HEADER):
             raise RuntimeError(f"unowned Codex agent conflict: {out}")
@@ -215,10 +224,27 @@ def generate_openai_adapters(actions: list[str]) -> None:
         actions.append(f"generated .agents/skills/{skill_md.parent.name}/agents/openai.yaml")
 
 
+def update_lock_hashes(actions: list[str]) -> None:
+    """Record each vendored skill folder's content hash in skills-lock.json."""
+    if not LOCK_PATH.is_file() or not is_template_source():
+        return
+    lock = load_lock()
+    changed = False
+    for name, entry in lock.get("skills", {}).items():
+        folder = lock_skill_dir(ROOT, entry)
+        if folder.is_dir() and entry.get("computedHash") != (digest := skill_hash(folder)):
+            entry["computedHash"] = digest
+            changed = True
+    if changed:
+        LOCK_PATH.write_text(json.dumps(lock, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        actions.append("updated skills-lock.json hashes")
+
+
 def main() -> int:
     actions: list[str] = []
     generate_codex_agents(actions)
     generate_openai_adapters(actions)
+    update_lock_hashes(actions)
     detected = set(detect())
     for link, target in LINKS.items():
         link_path = ROOT / link

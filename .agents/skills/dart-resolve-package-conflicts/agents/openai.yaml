@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dart Resolve Package Conflicts"
+  short_description: "Diagnose and fix `pub get` version conflicts, retracted versions, and outdated dependencies with minimal upgrades."
+  default_prompt: "Use $dart-resolve-package-conflicts for this task."

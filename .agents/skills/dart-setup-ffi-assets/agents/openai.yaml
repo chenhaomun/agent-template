@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dart Setup Ffi Assets"
+  short_description: "Compile or bundle C/C++ code as Dart native code assets with `hook/build.dart` and `hook/link.dart`."
+  default_prompt: "Use $dart-setup-ffi-assets for this task."

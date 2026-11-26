@@ -8,20 +8,20 @@ It is not auto-loaded by Codex. On a new device, ask Codex to read `.codex/READM
 
 ```sh
 python .codex/install.py --dry-run
-python .codex/install.py --write --install-pet
+python .codex/install.py --write
 ```
 
 What it syncs:
 
 - Model/personality defaults.
 - Desktop appearance, terminal location, review display, and commit message template.
-- Optional Codehound pet from `.codex/pets/codehound`.
+- `[mcp_servers.dart]` (Dart/Flutter MCP server via `dart` on PATH), added only when missing; an existing entry is kept.
 
 What it does not sync:
 
 - Account auth, sessions, logs, cache, or local runtime paths.
 - Project trust paths.
-- MCP server binary paths or local marketplace cache paths.
+- Other MCP servers, machine-specific MCP binary paths, or local marketplace cache paths.
 
 The installer backs up `~/.codex/config.toml` before writing.
 

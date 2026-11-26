@@ -1,79 +1,47 @@
 # Agent Template
 
-Lean shared configuration for Claude Code and OpenAI Codex. Flutter/Dart support is included, while project-specific rules and existing files remain intact.
-
-Use Python 3.11 or newer. No third-party Python packages are required.
+Lean shared configuration for Claude Code and OpenAI Codex. Flutter/Dart support is included; project-specific rules and existing files remain intact. Requires Python 3.11+ and no third-party packages.
 
 ## Structure
 
-- `AGENTS.md`: shared runtime rules.
-- `CLAUDE.md`: imports shared rules and adds Claude-only behavior.
-- `.agents/project-context.md`: project purpose, architecture, ownership, commands, and generated structure.
-- `.agents/skills/`: canonical skills.
-- `.agents/subagents/`: canonical planner, developer, economy, and QA roles.
-- `.agents/tools/`: safe installer, adapter sync, hooks, context checks, and integrity checks.
-- `.agents/tests/`: deterministic tooling tests.
-- `.agents/Makefile`: portable verification targets without owning a project's root Makefile.
-- `.claude/skills` and `.claude/agents`: relative symlinks to canonical sources.
-- `.codex/agents/`: generated TOML adapters.
-- `skills-lock.json`: upstream skill provenance.
+- `AGENTS.md`: shared runtime rules. `CLAUDE.md` imports them and adds Claude-only behavior. `SECURITY.md`: mandatory security policy.
+- `.agents/project-context.md`: purpose, architecture, ownership, feature map, commands, and generated structure.
+- `.agents/skills/` and `.agents/subagents/`: canonical skills and roles (`team-lead`, `developer`, `economy-executor`, `qa`, `reviewer`).
+- `.agents/tools/` and `.agents/tests/`: installer, adapter sync, hooks, context and integrity checks, and their tests.
+- `.agents/Makefile`: portable targets that never own a project's root Makefile.
+- `.claude/skills`, `.claude/agents`: relative symlinks to canonical sources. `.codex/agents/`: generated TOML.
+- `skills-lock.json`: provenance and content hashes for every skill (hashes written by sync, checked in the template repository).
 
-Rare setup skills are not vendored. Install them only when a project needs them.
+All upstream Flutter and Dart skills are vendored in adapted form and stack-gated, so they install only into matching projects.
 
 ## Install into an existing project
 
-Do not broadly copy this repository over another project. Preview the managed installation:
+Never copy this repository over another project. Preview, then write:
 
 ```sh
 python .agents/tools/install_template.py /path/to/project
 python .agents/tools/install_template.py /path/to/project --write
 ```
 
-The installer:
+The installer appends or refreshes marked blocks in existing `AGENTS.md`, `CLAUDE.md`, and `SECURITY.md`; merges missing hooks (and, for Claude, the review-gate `record` allow rules) into Claude/Codex settings; leaves an existing `Makefile` untouched; backs up changed instruction and settings files; records hashes so unchanged template-owned files upgrade safely; and aborts when a user-modified owned file or unowned same-name path would be overwritten.
 
-- appends or refreshes marked template blocks in existing `AGENTS.md`, `CLAUDE.md`, and `SECURITY.md`;
-- preserves existing instructions outside those blocks;
-- merges only missing template hooks into Claude/Codex JSON settings;
-- leaves an existing `Makefile` untouched;
-- backs up changed instruction and settings files;
-- records installed hashes so unchanged template-owned files can be upgraded safely;
-- aborts when a user-modified owned file or same-name unowned path would be overwritten;
-- creates relative Claude adapter symlinks on Unix/macOS.
+It rejects symlinks in copied sources and adapter destinations and excludes caches, backups, private `.env` files, and `settings.local.json` (`.env.example` stays). New project context is generated from the destination structure with placeholders; existing context stays project-owned. Use `--copy-adapters` without symlink support; Windows selects copy mode automatically.
 
-The installer rejects symlinks in copied sources and adapter destinations. It excludes caches, timestamped backups, private `.env` files, and `settings.local.json`; `.env.example` files remain distributable. New project context is generated from the destination structure with placeholders for project-specific facts. Existing context stays project-owned.
+Template rules cannot outrank system instructions, and Codex lets instructions closer to the working directory override root guidance. The managed block is placed after existing root text.
 
-The installer rejects symlinks in copied sources and adapter destinations. It excludes caches, timestamped backups, private `.env` files, and `settings.local.json`; `.env.example` files remain distributable. New project context is generated from the destination structure with placeholders for project-specific facts. Existing context stays project-owned.
+## Commands
 
-Use `--copy-adapters` on filesystems without symlink support. Windows selects copy mode automatically.
-
-Template rules cannot outrank system instructions. Codex also lets instructions closer to the working directory override root guidance. The managed root block is placed after existing root text for consistent repository-wide defaults without hiding project rules.
-
-## New projects
-
-This repository itself uses:
-
-```sh
-make sync
-make context
-make verify
-```
-
-For another project, keep its existing build commands and Makefile. The installer intentionally does not replace them. Run portable checks directly or call them from the project's workflow:
+This repository uses `make sync`, `make context`, and `make verify`. Other projects keep their own Makefile and call:
 
 ```sh
 make -f .agents/Makefile sync
 make -f .agents/Makefile verify
+python .agents/tools/run_checks.py verify   # without make
 ```
 
-Without `make`, run the same verification with:
+The Makefile uses `python`; set `PYTHON=python3` if needed. CI verifies Windows and Linux, plus install/upgrade smoke checks for copied and symlinked adapters.
 
-```sh
-python .agents/tools/run_checks.py verify
-```
-
-The Makefile uses `python` by default; set `PYTHON=python3` if needed. Verification runs on Windows and Linux in CI, with separate installation and upgrade smoke checks for copied and symlinked adapters.
-
-Project commands can be configured in the project-owned `.agents/project-commands.json`. Each value is an argument array, never a shell command string:
+Configure project commands in the project-owned `.agents/project-commands.json`. Values are argument arrays, never shell strings; set only needed keys:
 
 ```json
 {
@@ -84,108 +52,50 @@ Project commands can be configured in the project-owned `.agents/project-command
 }
 ```
 
-Configure only the keys your project needs. `format` and `format-check` also accept complete command overrides. SDK overrides apply to Dart hooks as well as verification. Otherwise, checks use a cached `.fvm/flutter_sdk`, then global Dart/Flutter when no FVM pin exists. A missing pinned SDK is reported without downloading it or falling back to a global version. Nested packages inherit the nearest command configuration; checks run from the package/project directory. Missing SDKs and formatting failures are reported by hooks.
+`format` and `format-check` also accept full overrides. SDK overrides apply to hooks and verification. Otherwise checks use a cached `.fvm/flutter_sdk`, then global Dart/Flutter when no FVM pin exists. A missing pinned SDK is reported, never downloaded or replaced by a global version. Nested packages inherit the nearest configuration and run from their own directory.
 
-Without `make`, run the same verification with:
+## Dart and Flutter tool server
 
-```sh
-python .agents/tools/run_checks.py verify
-```
+`.mcp.json` registers the Dart and Flutter MCP server (`dart mcp-server`, bundled with the Dart SDK) for Claude Code. `.agents/tools/dart_mcp.py` starts it with the same SDK verification uses: `project-commands.json`, then the cached FVM SDK, then `dart` on PATH. It uses the repository-root pin; for a pin that lives only in a nested package, set `dart` in `project-commands.json`. Claude asks once to approve project MCP servers. The launcher runs `python3`, which Windows machines must provide. The installer adds the `dart` server to an existing `.mcp.json`, refreshes it on upgrade only while unchanged, and never replaces a project-edited same-name server.
 
-The Makefile uses `python` by default; set `PYTHON=python3` if needed. Verification runs on Windows and Linux in CI, with separate installation and upgrade smoke checks for copied and symlinked adapters.
-
-Project commands can be configured in the project-owned `.agents/project-commands.json`. Each value is an argument array, never a shell command string:
-
-```json
-{
-  "dart": ["fvm", "dart"],
-  "flutter": ["fvm", "flutter"],
-  "analyze": ["python", "scripts/check.py", "analyze"],
-  "test": ["python", "scripts/check.py", "test"]
-}
-```
-
-Configure only the keys your project needs. `format` and `format-check` also accept complete command overrides. SDK overrides apply to Dart hooks as well as verification. Otherwise, checks use a cached `.fvm/flutter_sdk`, then global Dart/Flutter when no FVM pin exists. A missing pinned SDK is reported without downloading it or falling back to a global version. Nested packages inherit the nearest command configuration; checks run from the package/project directory. Missing SDKs and formatting failures are reported by hooks.
+Codex reads MCP servers from user config; `python .codex/install.py --write` adds `[mcp_servers.dart]` only when missing. It uses `dart` on PATH rather than a project's pinned SDK. On SDKs without `mcp-server` the server does not start, and agents fall back to normal commands.
 
 ## Project context
 
-Agents read `.agents/project-context.md` before broad searches. Curated purpose, architecture, ownership, and command sections stay hand-maintained. Only the marked structural block is generated:
+Purpose, architecture, ownership, feature map, and commands are hand-maintained. The feature map gives agents shared names for user-facing features and where they live. Only the marked structure block is generated:
 
 ```sh
-python .agents/tools/generate_project_context.py
+python .agents/tools/generate_project_context.py          # preview
 python .agents/tools/generate_project_context.py --write
 ```
 
-`check_project_context.py` fails when detected folders and the generated block differ. Session start checks freshness but never writes, avoiding unexpected dirty worktrees.
+`check_project_context.py` fails when detected folders drift. Session start checks freshness but never writes.
 
-## Shared skills and subagents
+## Skills and subagents
 
-Edit only `.agents/skills/` and `.agents/subagents/`. Run `make sync` after changes.
+Edit only `.agents/skills/` and `.agents/subagents/`, then run `make -f .agents/Makefile sync`. Sync rejects same-name custom Codex roles instead of overwriting them and migrates legacy skill display fields under `interface`.
 
-Sync rejects same-name custom Codex roles instead of overwriting them. It also migrates legacy skill display fields under `interface` while retaining curated values; integrity checks validate that metadata structure.
+Before delivering file changes, agents get an independent review from the read-only `reviewer` subagent and fix findings internally; `review_gate.py` hooks (UserPromptSubmit and Stop) keep the turn going until that review is recorded. The installer also adds the `review_gate.py record` allow rules to installed projects' Claude settings, so recording never prompts. The gate is a strong nudge, not proof: an agent can record a review it did not run, and sessions sharing one worktree see each other's edits. Other subagents run only when requested; routing, the delegation brief, and done criteria live in `AGENTS.md`. Chat uses `caveman` at **full** by default, with **ultra** for interim progress notes (`normal mode` or `off` opts out); saved artifacts keep normal prose. Personal response-format preferences belong in user-level files (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`), not in this shared template.
 
-Active roles:
+Notable project-local skills:
 
-- `team-lead`: read-only planning, architecture, and final review.
-- `developer`: Flutter, backend/API, application, data, platform, and tests.
-- `economy-executor`: frozen mechanical work only.
-- `qa`: read-only functional and regression verification.
+- `draft-user-stories`: one Markdown file of user stories under an Epic, or tasks under an Enhancement (never stories), from FRS and screenshots; creates ClickUp items only after approval, and builds an HTML visual only on request.
+- `root-cause-analyze`: brief RCA with category, sprint points, and verified introducing commit.
+- `production-code-review`: the single review skill, covering correctness, architecture, quality, performance, and security. `Review {branch name}; ticket: {ticket URL}.` returns severity-ranked problems with `file:line` and fix direction, plus a sprint-point estimate when the ticket has none.
 
-Subagents are optional and used when requested. `subagent-workflow` contains routing and a compact delegation brief. Requirements clarification uses `grill-requirements`.
+`skill-maintenance` (on request only) compares upstream changes, preserves local adaptations, and records reviewed commits in `skills-lock.json`. Restart active agents if changed skill metadata does not refresh.
 
-Chat responses use `caveman` by default; say `normal mode` or `off` to opt out. Saved documents, tickets, code comments, and other artifacts retain normal prose.
+## Device setup
 
-Flutter features, regression fixes, and architecture changes use `flutter-add-integration-test` by default for affected app flows. Reuse sufficient coverage; explain when no executable flow is affected. Minimal Flutter SDK test setup is authorized, while third-party harnesses still need approval. Report device/environment blockers without claiming tests passed.
-
-## UI from screenshots
-
-Provide screenshot file paths in the task. Agents inspect the referenced files, reuse project tokens/components/assets, implement responsive and interaction states, and compare the result with those screenshots. No fixed folder or Figma-specific workflow is required.
-
-## Comments
-
-Follow the comment rule in `AGENTS.md`: explain complex code only when needed, in plain language, with at most two lines per comment/doc comment.
-
-## Story drafts and visual explanations
-
-- `draft-user-stories`: supply FRS, epic tickets, API references, and screenshots to get one Markdown file in the target repository containing all stories and a final Open Questions section. No Downloads folder or separate README. API is optional without backend work; Screenshots/Flow, draft versions, and destination lists are omitted. Approve creation with the desired tags and assignee; priority defaults to Normal, with proposed Fibonacci sprint points using the mobile sizing guide.
-- `root-cause-analyze`: supply a bug ticket for a brief RCA with file/method context, its category when available, `Sprint Point: n` for corrective mobile work, and `Caused By: <commit> - <author name>`. Uses the shared mobile sizing guide; category choices from unset ticket options are marked proposed. No hyperlinks or extra sections. Investigation stays read-only; unverified attribution is marked Unconfirmed.
-- `visual-explainer`: request an HTML explanation of a feature, bug, architecture, screen, or flow. Output uses diagrams, callouts, and short labels, limited to the requested scope.
-
-Examples: `Use draft-user-stories with this FRS and epic; draft only.` or `Use visual-explainer to show this screen's buttons and navigation.`
-
-## Codex context
-
-`.codex/config.example.toml` selects `gpt-6-sol` and sets:
-
-```toml
-model_context_window = 1050000
-```
-
-Apply device preferences with a preview first:
+Optional user-level preferences, never auto-loaded. Preview first:
 
 ```sh
 python .codex/install.py --dry-run
-python .codex/install.py --write
+python .claude/device-setup/install.py --dry-run
 ```
 
-The device installer merges allowlisted keys and backs up existing `~/.codex/config.toml`; it does not copy auth, sessions, trust, or local provider paths.
+See `.codex/README.md` and `.claude/device-setup/README.md`. Installers merge allowlisted keys, validate the result, and back up existing config; they never copy auth, sessions, trust, or local provider paths.
 
-Configuration merging preserves array tables and multiline values and validates the complete TOML before writing.
+## Memory and security
 
-## Agent memory
-
-Required behavior stays in checked-in instructions. Auto-memory is optional recall and must not become the only copy of a rule or project fact.
-
-Codex local memory is off by default and controlled through `/memories` or user config. Claude Code auto-memory is per repository and managed through `/memory`. Neither generated memory store should contain secrets.
-
-## Security
-
-Read `SECURITY.md` before tools. The installer preserves project security policy and adds the template block. Both hook adapters block recognizable credential access without reading contents. These checks are not a sandbox; keep production credentials outside agent access and enforce host restrictions. See the policy for filesystem, privacy, and Git boundaries.
-
-## Skill maintenance
-
-Run `skill-maintenance` only when requested. It compares upstream changes while preserving local adaptations and records reviewed commits in `skills-lock.json`. Stored hashes marked stale require external tooling. Restart active agents if changed skill metadata does not refresh.
-
-Flutter guidance follows each project's SDK, architecture, packages, flavors, and tests. Routine work does not require delegation, full builds, or loading every review skill. Performance guidance emphasizes concrete bottlenecks and measured improvements.
-
-For a ticket-based code review, use `Review {branch name}; ticket: {ticket URL}.` The production review skill reports only actionable problems in short severity-ranked bullets with verified file and line references.
+Required behavior stays in checked-in instructions; Claude/Codex auto-memory is optional recall and must hold no secrets. Read `SECURITY.md` before tools. Hooks block recognizable credential access without reading contents, but they are not a sandbox: keep production credentials outside agent access and enforce host restrictions.

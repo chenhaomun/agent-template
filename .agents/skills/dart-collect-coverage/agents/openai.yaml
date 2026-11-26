@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dart Collect Coverage"
+  short_description: "Collect Dart/Flutter test coverage and produce an LCOV report."
+  default_prompt: "Use $dart-collect-coverage for this task."
